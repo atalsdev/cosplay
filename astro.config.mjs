@@ -2,8 +2,11 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
 import node from '@astrojs/node';
+import { fileURLToPath } from 'url';
+import path from 'path';
 import 'dotenv/config';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOMAINE = import.meta.env.DOMAINE || 'https://perfectmotoride.com';
 
 export default defineConfig({
@@ -20,10 +23,10 @@ export default defineConfig({
     },
     resolve: {
       alias: {
-        '@layouts': '/src/layouts',
-        '@components': '/src/components',
-        '@utils': '/src/utils',
-        '@themes': '/src/themes'
+        '@layouts': path.resolve(__dirname, './src/layouts'),
+        '@components': path.resolve(__dirname, './src/components'),
+        '@utils': path.resolve(__dirname, './src/utils'),
+        '@themes': path.resolve(__dirname, './src/themes')
       }
     }
   },

@@ -1,15 +1,15 @@
 ---
-import Layout from '../layouts/LayoutP.astro';
-import { getTranslatedProductByHandle } from '../../../lib/shopify';
-import AddToCart from '../../../themes/default/components/AddToCart';
-import SizeChart from '../../../components/SizeChart.astro';
-import Reviews from '../../../components/Reviews.astro';
-import ProductFAQ from '../../../components/ProductFAQ.astro';
+import Layout from '@layouts/LayoutP.astro';
+import { getTranslatedProductByHandle } from '@utils/shopify';
+import AddToCart from '@themes/default/components/AddToCart';
+import SizeChart from '@components/SizeChart.astro';
+import Reviews from '@components/Reviews.astro';
+import ProductFAQ from '@components/ProductFAQ.astro';
 import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
-import ProductCard from '../../../themes/default/components/ProductCard';
-import BaseHead from '../../../themes/default/components/BaseHead.astro';
-import ProductSpecs from '../../../components/ProductSpecs.astro';
-import KeyFeatures from '../../../components/KeyFeatures.astro';
+import ProductCard from '@themes/default/components/ProductCard';
+import BaseHead from '@themes/default/components/BaseHead.astro';
+import ProductSpecs from '@components/ProductSpecs.astro';
+import KeyFeatures from '@components/KeyFeatures.astro';
 
 const { lang, handle } = Astro.params;
 const supportedLanguages = ['en', 'fr', 'de', 'es', 'it'];
