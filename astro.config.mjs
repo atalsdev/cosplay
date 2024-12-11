@@ -18,5 +18,13 @@ export default defineConfig({
     define: {
       'import.meta.env.GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.GOOGLE_MAPS_API_KEY),
     },
+    resolve: {
+      alias: {
+        '@layouts': '/src/layouts',
+        '@components': '/src/components',
+        '@utils': '/src/utils',
+        '@themes': '/src/themes'
+      }
+    }
   },
 });
