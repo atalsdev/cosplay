@@ -1,0 +1,620 @@
+---
+import Layout from '../../../layouts/LayoutP.astro';
+import { getTranslatedProductByHandle } from '../../../lib/shopify';
+import AddToCart from '../../../themes/default/components/AddToCart';
+import SizeChart from '../../../components/SizeChart.astro';
+import Reviews from '../../../components/Reviews.astro';
+import ProductFAQ from '../../../components/ProductFAQ.astro';
+import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
+import ProductCard from '../../../themes/default/components/ProductCard';
+import BaseHead from '../../../themes/default/components/BaseHead.astro';
+import ProductSpecs from '../../../components/ProductSpecs.astro';
+import KeyFeatures from '../../../components/KeyFeatures.astro';
+
+const { lang, handle } = Astro.params;
+const supportedLanguages = ['en', 'fr', 'de', 'es', 'it'];
+
+let product;
+let relatedProducts;
+let error;
+
+console.log(`🔍 Fetching product: ${handle} in language: ${lang}`);
+
+try {
+  const { product: translatedProduct, relatedProducts: translatedRelated } = 
+    await getTranslatedProductByHandle(handle, lang);
+    
+  if (!translatedProduct) {
+    console.error(`❌ No product found for ${handle} in ${lang}`);
+    error = `Product not available in ${lang}`;
+  } else {
+    console.log(`✅ Successfully fetched ${lang} version`);
+    product = translatedProduct;
+    relatedProducts = translatedRelated;
+  }
+
+  if (!product) {
+    error = 'Product not found';
+    console.error(`❌ Product not found: ${handle}`);
+    return new Response(null, {
+      status: 404,
+      statusText: 'Product not found'
+    });
+  }
+
+  // Validate and process product data
+  const images = product?.images?.edges?.map(edge => edge.node) || [];
+  const variants = product?.variants?.edges?.map(edge => ({
+    ...edge.node,
+    availableForSale: true
+  })) || [];
+  const options = product?.options || [];
+
+  // Detailed validation with specific error messages
+  if (images.length === 0) {
+    console.error(`❌ No images found for product: ${handle}`);
+    error = 'Product images not available';
+  }
+  
+  if (variants.length === 0) {
+    console.error(`❌ No variants available for product: ${handle}`);
+    console.log('Product data:', JSON.stringify(product, null, 2));
+    error = 'Product variants not available';
+  }
+
+  if (error) {
+    return new Response(null, {
+      status: 404,
+      statusText: error
+    });
+  }
+
+  // Assign processed data back to product for template use
+  product.processedImages = images;
+  product.processedVariants = variants;
+  product.processedOptions = options;
+
+} catch (e) {
+  console.error(`❌ Error processing product:`, {
+    handle,
+    language: lang,
+    error: e.message,
+    stack: e.stack,
+    productData: product
+  });
+  
+  return new Response(null, {
+    status: 404,
+    statusText: `Failed to process product: ${e.message}`
+  });
+}
+
+// Final validation before rendering
+if (!product || !product.processedImages || !product.processedVariants) {
+  console.error(`❌ Invalid processed data structure:`, { 
+    product,
+    hasImages: !!product?.processedImages,
+    hasVariants: !!product?.processedVariants
+  });
+  return new Response(null, {
+    status: 404,
+    statusText: 'Invalid processed data'
+  });
+}
+
+// Generate structured data for the product
+const productSchema = {
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": product.title,
+  "description": product.description,
+  "image": product.processedImages.map(img => img.url),
+  "sku": product.id,
+  "offers": product.processedVariants.map(variant => ({
+    "@type": "Offer",
+    "price": variant.price.amount,
+    "priceCurrency": variant.price.currencyCode,
+    "availability": variant.availableForSale 
+      ? "https://schema.org/InStock" 
+      : "https://schema.org/OutOfStock"
+  })),
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.7",
+    "reviewCount": "3"
+  },
+  "review": [
+    {
+      "@type": "Review",
+      "author": "Sarah M.",
+      "datePublished": "2024-02-15",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5"
+      }
+    }
+  ]
+};
+
+// Generate breadcrumb schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": `${Astro.url.origin}/${lang}`
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Products",
+      "item": `${Astro.url.origin}/${lang}/products`
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": product.title,
+      "item": Astro.url.href
+    }
+  ]
+};
+
+// Generate alternate language URLs
+const alternateUrls = supportedLanguages.map(l => ({
+  lang: l,
+  url: `${Astro.url.origin}/${l}/products/${handle}`
+}));
+
+// Meta description optimization
+const metaDescription = `Buy ${product.title} - ${
+  product.description
+    .slice(0, 150)
+    .replace(/[^\w\s-]/g, '')
+    .trim()
+}...`;
+
+// Process the product data before passing to components
+const processProductData = (rawProduct) => {
+  // Ensure variants are properly structured
+  const processedVariants = rawProduct.variants.edges.map(edge => ({
+    ...edge.node,
+    selectedOptions: edge.node.selectedOptions,
+    image: edge.node.image ? {
+      id: edge.node.image.id,
+      altText: edge.node.image.altText
+    } : null
+  }));
+
+  // Ensure images are properly structured
+  const processedImages = rawProduct.images.edges.map(edge => ({
+    id: edge.node.id,
+    url: edge.node.url,
+    altText: edge.node.altText || rawProduct.title
+  }));
+
+  return {
+    id: rawProduct.id,
+    title: rawProduct.title,
+    variants: processedVariants,
+    options: rawProduct.options,
+    image: processedImages[0]?.url,
+    images: processedImages,
+  };
+};
+
+// Process the product data
+const processedProduct = product ? processProductData(product) : null;
+
+// Debug logging
+console.log('Processed product data:', {
+  variants: processedProduct?.variants.length,
+  images: processedProduct?.images.length,
+  options: processedProduct?.options
+});
+
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+  <head>
+    <BaseHead 
+      title={product.seo?.title || `${product.title} | RidWear`}
+      description={product.seo?.description || metaDescription}
+      image={product.processedImages[0].url}
+      article={false}
+    />
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="robots" content="index, follow" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    
+    <!-- Open Graph Product Specific -->
+    <meta property="og:price:amount" content={product.processedVariants[0].price.amount} />
+    <meta property="og:price:currency" content={product.processedVariants[0].price.currencyCode} />
+    <meta property="product:availability" content={product.processedVariants[0].availableForSale ? "in stock" : "out of stock"} />
+    
+    <!-- Language variants -->
+    {alternateUrls.map(({ lang, url }) => (
+      <link rel="alternate" hreflang={lang} href={url} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={`${Astro.url.origin}/en/products/${handle}`} />
+    
+    <!-- Additional Schema Markup -->
+    <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    
+    <!-- Mobile Optimization -->
+    <link rel="preload" as="image" href={product.processedImages[0].url} />
+    {product.processedImages.slice(1).map(img => (
+      <link rel="prefetch" as="image" href={img.url} />
+    ))}
+    
+    <!-- PWA Tags -->
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="manifest" href="/manifest.json" />
+  </head>
+  <body>
+    <Layout title={`${product.title} | RidWear`}>
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="Breadcrumb" class="max-w-7xl mx-auto px-4 py-4">
+        <ol class="flex items-center space-x-2 text-sm text-gray-600">
+          <li>
+            <a href={`/${lang}`} class="hover:text-blue-600">Home</a>
+          </li>
+          <li>
+            <span class="mx-2">/</span>
+            <a href={`/${lang}/products`} class="hover:text-blue-600">Products</a>
+          </li>
+          <li>
+            <span class="mx-2">/</span>
+            <span class="text-gray-900">{product.title}</span>
+          </li>
+        </ol>
+      </nav>
+
+      <main class="max-w-7xl mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <!-- Image Gallery -->
+          <div class="space-y-4 lg:sticky lg:top-24 lg:self-start">
+            <div class="relative bg-gray-50 rounded-2xl overflow-hidden">
+              <div class="aspect-square">
+                <img
+                  id="mainImage"
+                  src={product.processedImages[0].url}
+                  alt={product.processedImages[0].altText}
+                  class="w-full h-full object-contain"
+                />
+              </div>
+              {product.processedImages.length > 1 && (
+                <>
+                  <button 
+                    id="prevImage"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  <button 
+                    id="nextImage"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                </>
+              )}
+            </div>
+            
+            {product.processedImages.length > 1 && (
+              <div class="flex gap-2 overflow-x-auto pb-2">
+                {product.processedImages.map((image, index) => (
+                  <button 
+                    class="flex-none w-20 aspect-square rounded-lg overflow-hidden bg-gray-50 hover:opacity-75 transition-opacity"
+                    data-image-url={image.url}
+                    data-image-id={image.id}
+                    data-image-index={index}
+                  >
+                    <img
+                      src={image.url}
+                      alt={image.altText}
+                      class="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <!-- Product Info -->
+          <div class="space-y-8 relative" style="z-index: 50;">
+            <div>
+              <h1 class="text-3xl font-bold mb-2">{product.title}</h1>
+              <div class="flex items-center gap-2 text-sm text-gray-600">
+                <div class="flex items-center">
+                  ★★★★☆
+                  <span class="ml-1">4.0</span>
+                </div>
+                <span>•</span>
+                <a href="#reviews" class="hover:text-blue-500">42 Reviews</a>
+              </div>
+            </div>
+
+            <AddToCart
+              client:load
+              product={processedProduct}
+              language={lang}
+            />
+
+            <!-- Add debug output in development -->
+            {import.meta.env.DEV && (
+              <script define:vars={{ debug: processedProduct }}>
+                console.log('Product data passed to AddToCart:', debug);
+              </script>
+            )}
+
+            <!-- Product Description - Optimized for Dynamic Content -->
+            <div class="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 shadow-sm">
+              <h2 class="text-2xl font-bold mb-4 text-gray-900 flex items-center gap-2">
+                <Info className="w-6 h-6 text-blue-600" />
+                Product Details
+              </h2>
+              <div 
+                set:html={product.descriptionHtml} 
+                class="
+                  text-gray-700 
+                  [&>p]:mb-6 
+                  [&>p]:leading-relaxed 
+                  [&>p]:text-base
+
+                  [&>h2]:text-xl 
+                  [&>h2]:font-bold 
+                  [&>h2]:text-gray-900 
+                  [&>h2]:mt-10 
+                  [&>h2]:mb-6
+                  [&>h2]:pb-2
+                  [&>h2]:border-b
+                  [&>h2]:border-gray-200
+
+                  [&>h3]:text-xl 
+                  [&>h3]:font-semibold 
+                  [&>h3]:text-gray-800 
+                  [&>h3]:mt-8 
+                  [&>h3]:mb-4
+                  [&>h3]:flex
+                  [&>h3]:items-center
+                  [&>h3]:gap-2
+
+                  [&>h4]:text-lg 
+                  [&>h4]:font-semibold 
+                  [&>h4]:text-gray-800 
+                  [&>h4]:mt-6 
+                  [&>h4]:mb-3
+
+                  [&>ul]:list-disc 
+                  [&>ul]:ml-6 
+                  [&>ul]:mb-6 
+                  [&>ul>li]:mb-2
+                  [&>ul>li]:text-gray-700
+
+                  [&>ol]:list-decimal 
+                  [&>ol]:ml-6 
+                  [&>ol]:mb-6 
+                  [&>ol>li]:mb-2
+                  [&>ol>li]:text-gray-700
+
+                  [&>strong]:font-bold
+                  [&>strong]:text-gray-900
+
+                  [&>em]:italic
+                  
+                  [&>a]:text-blue-600 
+                  [&>a]:underline 
+                  [&>a]:font-medium
+                  [&>a:hover]:text-blue-800
+
+                  [&>blockquote]:pl-4 
+                  [&>blockquote]:border-l-4 
+                  [&>blockquote]:border-gray-200 
+                  [&>blockquote]:italic
+                  [&>blockquote]:text-gray-600
+                  [&>blockquote]:my-6
+
+                  [&>img]:rounded-lg
+                  [&>img]:shadow-md
+                  [&>img]:my-4
+
+                  [&>table]:w-full
+                  [&>table]:border-collapse
+                  [&>table]:mb-6
+                  [&>table]:bg-white
+                  [&>table]:shadow-sm
+                  [&>table]:rounded-lg
+                  [&>table]:overflow-hidden
+                  [&>table]:border
+                  [&>table]:border-gray-200
+
+                  [&>table>thead]:bg-gray-50
+                  [&>table>thead>tr]:border-b
+                  [&>table>thead>tr]:border-gray-200
+
+                  [&>table>thead>tr>th]:px-6
+                  [&>table>thead>tr>th]:py-3
+                  [&>table>thead>tr>th]:text-left
+                  [&>table>thead>tr>th]:font-semibold
+                  [&>table>thead>tr>th]:text-gray-900
+                  [&>table>thead>tr>th]:text-sm
+                  [&>table>thead>tr>th]:uppercase
+                  [&>table>thead>tr>th]:tracking-wider
+
+                  [&>table>tbody>tr]:border-b
+                  [&>table>tbody>tr]:border-gray-200
+                  [&>table>tbody>tr]:last:border-b-0
+                  [&>table>tbody>tr:hover]:bg-gray-50
+
+                  [&>table>tbody>tr>td]:px-6
+                  [&>table>tbody>tr>td]:py-4
+                  [&>table>tbody>tr>td]:text-sm
+                  [&>table>tbody>tr>td]:text-gray-700
+                  [&>table>tbody>tr>td]:whitespace-normal
+
+                  [&>table>tbody>tr>td:first-child]:font-medium
+                  [&>table>tbody>tr>td:first-child]:text-gray-900
+
+                  [&>table>tfoot]:bg-gray-50
+                  [&>table>tfoot>tr]:border-t
+                  [&>table>tfoot>tr]:border-gray-200
+                  [&>table>tfoot>tr>td]:px-6
+                  [&>table>tfoot>tr>td]:py-3
+                  [&>table>tfoot>tr>td]:text-sm
+                  [&>table>tfoot>tr>td]:font-semibold
+
+                  [&>*:first-child]:mt-0
+                  [&>*:last-child]:mb-0
+                "
+              />
+            </div>
+
+            <!-- Key Features List -->
+            <KeyFeatures productTitle={product.title} language={lang} />
+
+            <!-- Product Specifications -->
+            <ProductSpecs productTitle={product.title} language={lang} />
+
+            <!-- Size Chart Component -->
+            <SizeChart productTitle={product.title} language={lang} />
+
+            <!-- Reviews Component -->
+            <Reviews language={lang} />
+
+            <!-- Product FAQ Component -->
+            <ProductFAQ productTitle={product.title} language={lang} />
+          </div>
+        </div>
+
+        <!-- Related Products -->
+        <div class="mt-16 border-t pt-16">
+          <h2 class="text-2xl font-bold mb-8">Related Products</h2>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {relatedProducts.map((product) => (
+              <ProductCard
+                client:load
+                id={product.node.id}
+                title={product.node.title}
+                price={parseFloat(product.node.priceRange.minVariantPrice.amount)}
+                image={product.node.images.edges[0]?.node.url}
+                description={product.node.description}
+                handle={product.node.handle}
+                lang={lang}
+              />
+            ))}
+          </div>
+        </div>
+      </main>
+    </Layout>
+  </body>
+</html>
+
+<script>
+  class ImageGallery {
+    constructor() {
+      this.mainImage = document.getElementById('mainImage');
+      this.thumbnails = document.querySelectorAll('[data-image-url]');
+      this.prevButton = document.getElementById('prevImage');
+      this.nextButton = document.getElementById('nextImage');
+      this.currentIndex = 0;
+      this.maxIndex = this.thumbnails.length - 1;
+
+      this.init();
+    }
+
+    init() {
+      this.thumbnails.forEach((thumb, index) => {
+        thumb.addEventListener('click', () => {
+          this.setImage(index);
+        });
+      });
+
+      this.prevButton?.addEventListener('click', () => {
+        this.navigate(-1);
+      });
+
+      this.nextButton?.addEventListener('click', () => {
+        this.navigate(1);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          this.navigate(-1);
+        } else if (e.key === 'ArrowRight') {
+          this.navigate(1);
+        }
+      });
+
+      // Add variant image change listener
+      window.addEventListener('variantImageChange', ((event: CustomEvent) => {
+        const { imageUrl, imageId } = event.detail;
+        
+        // Find matching thumbnail index
+        const thumbnailIndex = Array.from(this.thumbnails).findIndex(
+          thumb => thumb.getAttribute('data-image-id') === imageId
+        );
+        
+        if (thumbnailIndex >= 0) {
+          // If found matching thumbnail, switch to it
+          this.setImage(thumbnailIndex);
+        } else if (imageUrl) {
+          // If no matching thumbnail but we have URL, just update main image
+          if (this.mainImage) {
+            this.mainImage.src = imageUrl;
+          }
+        }
+      }) as EventListener);
+    }
+
+    setImage(index) {
+      if (!this.mainImage) return;
+      
+      this.currentIndex = index;
+      const newImageUrl = this.thumbnails[index].getAttribute('data-image-url');
+      if (newImageUrl) {
+        this.mainImage.src = newImageUrl;
+      }
+
+      this.thumbnails.forEach((thumb, i) => {
+        thumb.classList.toggle('ring-2 ring-blue-500', i === index);
+      });
+    }
+
+    navigate(direction) {
+      let newIndex = this.currentIndex + direction;
+
+      if (newIndex < 0) {
+        newIndex = this.maxIndex;
+      } else if (newIndex > this.maxIndex) {
+        newIndex = 0;
+      }
+
+      this.setImage(newIndex);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    new ImageGallery();
+  });
+</script>
+
+<style>
+  /* Add this to your global CSS or in the page */
+  .floating-buttons {
+    z-index: 40; /* Make sure this is lower than the product info section */
+  }
+</style>
+
+<div class="fixed right-4 top-1/2 transform -translate-y-1/2 space-y-4 floating-buttons">
+  <!-- Your floating buttons here -->
+</div>

@@ -1,0 +1,107 @@
+{
+  "en": {
+    "title": "Common Questions",
+    "categories": {
+      "jacket": {
+        "title": "Jacket FAQs",
+        "questions": [
+          {
+            "q": "How does this jacket fit?",
+            "a": "The jacket follows a regular fit design that's true to size. We recommend selecting your usual size for a comfortable fit."
+          },
+          {
+            "q": "Is this jacket machine washable?",
+            "a": "Yes, this jacket is machine washable. Use cold water and tumble dry on low for best results."
+          },
+          {
+            "q": "What's the best way to care for this jacket?",
+            "a": "For optimal longevity, wash in cold water, avoid bleach, and tumble dry on low heat. Remove promptly and hang to prevent wrinkles."
+          }
+        ]
+      },
+      "shoes": {
+        "title": "Footwear FAQs",
+        "questions": [
+          {
+            "q": "How do these shoes fit?",
+            "a": "Our shoes typically run true to size. For the best fit, we recommend measuring your feet and checking our size chart."
+          },
+          {
+            "q": "Are these shoes waterproof?",
+            "a": "While these shoes are water-resistant, they are not fully waterproof. They will protect against light rain and splashes."
+          },
+          {
+            "q": "How do I clean these shoes?",
+            "a": "Clean with a damp cloth and mild soap. Air dry at room temperature, away from direct heat or sunlight."
+          }
+        ]
+      },
+      "helmet": {
+        "title": "Helmet FAQs",
+        "questions": [
+          {
+            "q": "How do I measure for the right helmet size?",
+            "a": "Measure the circumference of your head about one inch above your eyebrows. Use our size chart to find your perfect fit."
+          },
+          {
+            "q": "How often should I replace my helmet?",
+            "a": "Replace your helmet every 3-5 years, or immediately after any impact, even if no damage is visible."
+          }
+        ]
+      },
+      "gloves": {
+        "title": "Gloves FAQs",
+        "questions": [
+          {
+            "q": "Are these gloves touchscreen compatible?",
+            "a": "Yes, these gloves feature touchscreen-compatible fingertips for use with smartphones and other devices."
+          },
+          {
+            "q": "How should I care for these gloves?",
+            "a": "Hand wash in cold water with mild detergent. Air dry naturally away from direct heat."
+          }
+        ]
+      }
+    }
+  },
+  "fr": {
+    "title": "Questions Fréquentes",
+    "categories": {
+      "jacket": {
+        "title": "FAQ Vestes",
+        "questions": [
+          {
+            "q": "Comment taille cette veste ?",
+            "a": "La veste suit une coupe régulière fidèle à la taille. Nous vous recommandons de choisir votre taille habituelle pour un ajustement confortable."
+          },
+          {
+            "q": "Cette veste est-elle lavable en machine ?",
+            "a": "Oui, cette veste est lavable en machine. Utilisez de l'eau froide et séchez à basse température."
+          },
+          {
+            "q": "Quel est le meilleur moyen d'entretenir cette veste ?",
+            "a": "Pour une longévité optimale, lavez à l'eau froide, évitez l'eau de Javel et séchez à basse température. Retirez rapidement et suspendez pour éviter les plis."
+          }
+        ]
+      }
+    }
+  },
+  "de": {
+    "title": "Häufige Fragen",
+    "categories": {
+      "jacket": {
+        "title": "Jacken FAQ",
+        "questions": [
+          {
+            "q": "Wie fällt diese Jacke aus?",
+            "a": "Die Jacke hat eine reguläre Passform, die größengetreu ausfällt. Wir empfehlen Ihre übliche Größe für eine bequeme Passform."
+          },
+          {
+            "q": "Ist diese Jacke maschinenwaschbar?",
+            "a": "Ja, diese Jacke ist maschinenwaschbar. Verwenden Sie kaltes Wasser und trocknen Sie bei niedriger Temperatur."
+          }
+        ]
+      }
+    }
+  }
+} 

@@ -1,0 +1,47 @@
+---
+import specsContent from './content/product-specs.json';
+
+interface Props {
+  productTitle: string;
+  language: string;
+}
+
+const { productTitle, language = 'en' } = Astro.props;
+
+function getProductCategory(title: string): string {
+  const title_lower = title.toLowerCase();
+  
+  if (title_lower.includes('jacket') || title_lower.includes('coat')) {
+    return 'jacket';
+  }
+  if (title_lower.includes('shoe') || title_lower.includes('boot')) {
+    return 'shoes';
+  }
+  if (title_lower.includes('helmet')) {
+    return 'helmet';
+  }
+  
+  return 'jacket'; // default fallback
+}
+
+// Get content for current language or fallback to English
+const content = specsContent[language] || specsContent.en;
+const category = getProductCategory(productTitle);
+
+// Get specs for the category, fallback to English if not available in current language
+const specs = content.categories[category]?.specs || 
+             specsContent.en.categories[category]?.specs || 
+             specsContent.en.categories.jacket.specs; // ultimate fallback
+---
+
+<div class="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
+  <h3 class="text-xl font-bold text-gray-900 mb-4">{content.title}</h3>
+  <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {specs.map((spec) => (
+      <div class="flex items-center gap-2">
+        <dt class="font-medium text-gray-700">{spec.label}:</dt>
+        <dd class="text-gray-600">{spec.value}</dd>
+      </div>
+    ))}
+  </dl>
+</div> 

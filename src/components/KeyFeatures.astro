@@ -1,0 +1,98 @@
+---
+interface Props {
+  productTitle: string;
+  language: string;
+}
+
+const { productTitle, language = 'en' } = Astro.props;
+
+const features = {
+  en: {
+    title: "Key Features",
+    jacket: [
+      "Premium quality materials",
+      "Comfortable classic fit",
+      "Kangaroo-style pocket",
+      "Adjustable hood",
+      "Ribbed cuffs",
+      "Durable stitching"
+    ],
+    shoes: [
+      "Premium leather upper",
+      "Cushioned insole",
+      "Anti-slip rubber sole",
+      "Breathable design",
+      "Reinforced heel",
+      "Water-resistant"
+    ]
+  },
+  fr: {
+    title: "Caractéristiques Principales",
+    jacket: [
+      "Matériaux de qualité premium",
+      "Coupe classique confortable",
+      "Poche kangourou",
+      "Capuche ajustable",
+      "Poignets côtelés",
+      "Coutures durables"
+    ],
+    shoes: [
+      "Dessus en cuir premium",
+      "Semelle intérieure rembourrée",
+      "Semelle antidérapante",
+      "Design respirant",
+      "Talon renforcé",
+      "Résistant à l'eau"
+    ]
+  },
+  de: {
+    title: "Hauptmerkmale",
+    jacket: [
+      "Premium-Qualitätsmaterialien",
+      "Komfortable klassische Passform",
+      "Känguru-Tasche",
+      "Verstellbare Kapuze",
+      "Gerippte Bündchen",
+      "Strapazierfähige Nähte"
+    ],
+    shoes: [
+      "Premium-Leder-Obermaterial",
+      "Gepolsterte Einlegesohle",
+      "Rutschfeste Gummisohle",
+      "Atmungsaktives Design",
+      "Verstärkte Ferse",
+      "Wasserabweisend"
+    ]
+  }
+};
+
+// Get the language content or fallback to English if language doesn't exist
+const currentLang = features[language] || features.en;
+
+// Determine product type
+const getProductType = (title: string) => {
+  const lowerTitle = title.toLowerCase();
+  if (lowerTitle.includes('jacket') || lowerTitle.includes('hoodie') || lowerTitle.includes('veste')) return 'jacket';
+  if (lowerTitle.includes('shoe') || lowerTitle.includes('boot') || lowerTitle.includes('chaussure')) return 'shoes';
+  return 'jacket'; // default fallback
+};
+
+const productType = getProductType(productTitle);
+
+// Get features list in correct language, fallback to English only if the product type doesn't exist in current language
+const featureList = currentLang[productType] || features.en[productType];
+---
+
+<div class="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
+  <h3 class="text-xl font-bold text-gray-900 mb-4">{currentLang.title}</h3>
+  <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {featureList.map((feature) => (
+      <li class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span>{feature}</span>
+      </li>
+    ))}
+  </ul>
+</div> 

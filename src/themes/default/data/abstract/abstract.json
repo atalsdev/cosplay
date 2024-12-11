@@ -1,0 +1,111 @@
+{
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Put Your Headline Here",
+      "description": "Put your welcome message description here to engage your visitors",
+      "blogLinkText": "Read More",
+      "blogLink": "/blog"
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Put Your Banner Headline Here",
+      "description": "Put your banner description here to highlight key features or offerings",
+      "backgroundImage": "/images/banner-bg.jpg",
+      "button1Text": "Primary Action",
+      "button1Link": "/primary",
+      "button2Text": "Secondary Action",
+      "button2Link": "/secondary"
+    },
+    {
+      "type": "categoryGrid",
+      "title": "Put Your Category Title Here",
+      "description": "Put your category grid description here",
+      "categories": [
+        {
+          "id": "category-1",
+          "name": "Category Name",
+          "description": "Category description here",
+          "image": "/images/categories/category-1.jpg",
+          "link": "/category-1"
+        }
+      ]
+    },
+    {
+      "type": "productShowcase",
+      "title": "Put Your Product Showcase Title Here",
+      "description": "Put your product showcase description here",
+      "viewAllLink": "/products",
+      "products": [
+        {
+          "id": "product-1",
+          "name": "Product Name",
+          "description": "Product description here",
+          "price": "99.99",
+          "image": "/images/products/product-1.jpg",
+          "category": "Category"
+        }
+      ]
+    },
+    {
+      "type": "testimonialSlider",
+      "title": "Put Your Testimonial Title Here",
+      "testimonials": [
+        {
+          "id": "1",
+          "author": "Author Name",
+          "role": "Role Title",
+          "content": "Put your testimonial content here",
+          "avatar": "/images/testimonials/avatar-1.jpg"
+        }
+      ]
+    },
+    {
+      "type": "featuredPostsSection",
+      "title": "Put Your Blog Section Title Here",
+      "exploreMoreText": "View All",
+      "exploreMoreLink": "/blog"
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Put Your Newsletter Title Here",
+      "description": "Put your newsletter signup description here",
+      "backgroundImage": "/images/newsletter-bg.jpg",
+      "formAction": "/api/subscribe",
+      "submitText": "Subscribe"
+    },
+    {
+      "type": "faqSection",
+      "title": "Frequently Asked Questions",
+      "description": "Find answers to the most common questions about motorcycles, gear, and maintenance",
+      "faqs": [
+        {
+          "question": "What type of motorcycle is best for beginners?",
+          "answer": "For beginners, we recommend starting with a lightweight motorcycle between 250-400cc. These bikes offer a good balance of power and control, making them ideal for learning."
+        },
+        {
+          "question": "How often should I service my motorcycle?",
+          "answer": "Regular maintenance should be performed every 4,000-6,000 miles or at least once a year. However, always consult your owner's manual for specific maintenance schedules."
+        },
+        {
+          "question": "What safety gear is essential for riding?",
+          "answer": "Essential safety gear includes: DOT-approved helmet, motorcycle jacket with armor, riding pants, boots, and gloves. High-visibility gear is also recommended."
+        },
+        {
+          "question": "How do I choose the right helmet?",
+          "answer": "Choose a DOT-certified helmet that fits snugly but comfortably. Consider factors like helmet type (full-face, modular, etc.), ventilation, and visibility. Always try before buying."
+        }
+      ]
+    },
+    {
+      "type": "videoSection",
+      "headline": "Put Your Video Headline Here",
+      "description": "Put your video description here to engage your visitors",
+      "videoUrl": "https://www.youtube.com/embed/your-video-id",
+      "buttonText": "Watch More",
+      "buttonLink": "/videos",
+      "headlinePosition": "center",
+      "textPosition": "center"
+    }
+  ]
+}

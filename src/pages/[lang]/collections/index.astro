@@ -1,0 +1,81 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ProductCard from '../../../themes/default/components/ProductCard';
+import { getPaginatedTranslatedProducts } from '../../../lib/shopify';
+
+const theme = import.meta.env.THEME || 'default';
+
+// Properly handle dynamic imports with default exports
+const { default: BaseHead } = await import(`../../../themes/${theme}/components/BaseHead.astro`);
+const { default: Header } = await import(`../../../themes/${theme}/components/Header.astro`);
+const { default: Footer } = await import(`../../../themes/${theme}/components/Footer.astro`);
+
+// Get page and locale
+const page = Number(Astro.url.searchParams.get('page')) || 1;
+const PRODUCTS_PER_PAGE = 20;
+const { lang } = Astro.params;
+
+// Use getPaginatedTranslatedProducts for all languages including English
+const { products, pagination } = await getPaginatedTranslatedProducts(page, PRODUCTS_PER_PAGE, lang);
+---
+
+<Layout title="Collections | RidWear">
+  <Header />
+  <main class="max-w-7xl mx-auto px-4 pb-8 pt-[100px]">
+    <h1 class="text-3xl font-bold mb-8">Our Collections</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {products.map((product) => {
+        // Safely access nested properties
+        const price = product.node.variants?.edges?.[0]?.node?.price?.amount || 
+                     product.node.priceRange?.minVariantPrice?.amount || 
+                     '0';
+        const imageUrl = product.node.images?.edges?.[0]?.node?.url || '';
+        
+        return (
+          <ProductCard
+            client:load
+            id={product.node.id}
+            title={product.node.title}
+            price={parseFloat(price)}
+            image={imageUrl}
+            description={product.node.description}
+            handle={product.node.handle}
+            lang={lang}
+          />
+        );
+      })}
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center items-center gap-4 mt-12">
+      {pagination.hasPreviousPage && (
+        <a
+          href={`/${lang}/collections?page=${page - 1}`}
+          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+        >
+          Previous
+        </a>
+      )}
+      
+      <span class="text-gray-600">
+        Page {pagination.currentPage} of {pagination.totalPages}
+      </span>
+      
+      {pagination.hasNextPage && (
+        <a
+          href={`/${lang}/collections?page=${page + 1}`}
+          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+        >
+          Next
+        </a>
+      )}
+    </div>
+
+    <div class="text-center text-sm text-gray-500 mt-4">
+      Showing {(page - 1) * PRODUCTS_PER_PAGE + 1} - {Math.min(page * PRODUCTS_PER_PAGE, pagination.totalProducts)} 
+      of {pagination.totalProducts} products
+    </div>
+  </main>
+  <Footer />
+</Layout>

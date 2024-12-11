@@ -1,0 +1,130 @@
+{
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Fuel Your Passion: Unleash the Ride with RidWear",
+      "description": "Dive into the world of motorcycling with RidWear - your one-stop shop for news, reviews, gear guides, and inspiration. Hit the road with confidence - start exploring today!",
+      "blogLinkText": "Read the Latest Motorcycle News",
+      "blogLink": "/blog"
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Discover Your Perfect Ride",
+      "description": "Expert reviews, buying guides, and maintenance tips - everything you need to make informed decisions about your motorcycle journey.",
+      "backgroundImage": "/images/banner-bg.jpg",
+      "button1Text": "Browse Reviews",
+      "button1Link": "/reviews",
+      "button2Text": "Read Guides",
+      "button2Link": "/guides"
+    },
+    {
+      "type": "categoryGrid",
+      "title": "Shop by Category",
+      "description": "Find the perfect gear for your riding style",
+      "categories": [
+        {
+          "id": "helmets",
+          "name": "Helmets",
+          "description": "Premium protection for every rider",
+          "image": "/images/categories/helmets.jpg",
+          "link": "/shop/helmets"
+        },
+        {
+          "id": "jackets",
+          "name": "Jackets",
+          "description": "Stay safe and stylish on the road",
+          "image": "/images/categories/jackets.jpg",
+          "link": "/shop/jackets"
+        },
+        {
+          "id": "boots",
+          "name": "Boots",
+          "description": "Reliable footwear for every journey",
+          "image": "/images/categories/boots.jpg",
+          "link": "/shop/boots"
+        }
+      ]
+    },
+    {
+      "type": "productShowcase",
+      "title": "Featured Products",
+      "description": "Our most popular motorcycle gear",
+      "viewAllLink": "/shop",
+      "products": [
+        {
+          "id": "helmet-1",
+          "name": "X-1 Pro Racing Helmet",
+          "description": "Professional grade protection",
+          "price": "$599.99",
+          "image": "/images/products/helmet-1.jpg",
+          "category": "Helmets"
+        },
+        {
+          "id": "jacket-1",
+          "name": "Leather Racing Jacket",
+          "description": "Premium leather protection",
+          "price": "$399.99",
+          "image": "/images/products/jacket-1.jpg",
+          "category": "Jackets"
+        },
+        {
+          "id": "boots-1",
+          "name": "Adventure Riding Boots",
+          "description": "All-terrain comfort",
+          "price": "$299.99",
+          "image": "/images/products/boots-1.jpg",
+          "category": "Boots"
+        },
+        {
+          "id": "gloves-1",
+          "name": "Pro Racing Gloves",
+          "description": "Maximum grip and protection",
+          "price": "$89.99",
+          "image": "/images/products/gloves-1.jpg",
+          "category": "Gloves"
+        }
+      ]
+    },
+    {
+      "type": "testimonialSlider",
+      "title": "What Our Riders Say",
+      "testimonials": [
+        {
+          "id": "1",
+          "author": "John Rider",
+          "role": "Professional Racer",
+          "content": "The quality of RidWear's gear is unmatched. I've been using their products for years and they never disappoint.",
+          "avatar": "/images/testimonials/john.jpg"
+        },
+        {
+          "id": "2",
+          "author": "Sarah Thompson",
+          "role": "Adventure Rider",
+          "content": "Found my perfect adventure gear here. The customer service is exceptional and the products are top-notch.",
+          "avatar": "/images/testimonials/sarah.jpg"
+        },
+        {
+          "id": "3",
+          "author": "Mike Chen",
+          "role": "Daily Commuter",
+          "content": "Great selection of comfortable and protective gear for daily riding. Highly recommend!",
+          "avatar": "/images/testimonials/mike.jpg"
+        }
+      ]
+    },
+    {
+      "type": "featuredPostsSection",
+      "title": "Latest From The Blog",
+      "exploreMoreText": "View All Posts",
+      "exploreMoreLink": "/blog"
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Stay in the Loop",
+      "description": "Subscribe to our newsletter for the latest motorcycle news, gear reviews, and exclusive offers.",
+      "backgroundImage": "/images/newsletter-bg.jpg",
+      "formAction": "/api/subscribe",
+      "submitText": "Subscribe Now"
+    }
+  ]
+}

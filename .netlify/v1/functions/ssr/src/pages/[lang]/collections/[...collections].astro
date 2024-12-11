@@ -1,0 +1,281 @@
+---
+import { getCollectionByHandle, getAllCollections } from '../../../lib/shopify';
+import { ArrowRight } from 'lucide-react';
+
+const theme = import.meta.env.THEME || 'default';
+const languages = ['en', 'fr', 'de', 'es', 'it'];
+const baseUrl = import.meta.env.SITE || 'https://ridwear.com';
+const storeName = 'RidWear';
+
+// Properly handle dynamic imports with default exports
+const { default: BaseHead } = await import(`../../../themes/${theme}/components/BaseHead.astro`);
+const { default: Header } = await import(`../../../themes/${theme}/components/Header.astro`);
+const { default: Footer } = await import(`../../../themes/${theme}/components/Footer.astro`);
+
+const { lang, collections: handle } = Astro.params;
+const collection = await getCollectionByHandle(handle, lang?.toUpperCase());
+
+// Generate SEO title and description with fallbacks
+const generateSEOTitle = (collection) => {
+  if (collection.seo?.title) return collection.seo.title;
+  
+  const templates = {
+    en: `Shop ${collection.title} | ${storeName} - Premium Motorcycle Gear`,
+    fr: `Achetez ${collection.title} | ${storeName} - Équipement Moto Premium`,
+    de: `${collection.title} kaufen | ${storeName} - Premium Motorradausrüstung`,
+    es: `Compra ${collection.title} | ${storeName} - Equipo Premium para Motos`,
+    it: `Acquista ${collection.title} | ${storeName} - Abbigliamento Moto Premium`
+  };
+  
+  return templates[lang] || templates.en;
+};
+
+const generateSEODescription = (collection) => {
+  if (collection.seo?.description) return collection.seo.description;
+  
+  const templates = {
+    en: `Discover our premium ${collection.title.toLowerCase()} collection. High-quality motorcycle gear designed for riders who demand the best. Shop now at ${storeName}.`,
+    fr: `Découvrez notre collection premium ${collection.title.toLowerCase()}. Équipement moto de haute qualité conçu pour les motards exigeants. Achetez maintenant chez ${storeName}.`,
+    de: `Entdecken Sie unsere Premium ${collection.title.toLowerCase()} Kollektion. Hochwertige Motorradausrüstung für anspruchsvolle Fahrer. Jetzt bei ${storeName} kaufen.`,
+    es: `Descubre nuestra colección premium de ${collection.title.toLowerCase()}. Equipo de moto de alta calidad diseñado para motociclistas exigentes. Compra ahora en ${storeName}.`,
+    it: `Scopri la nostra collezione premium ${collection.title.toLowerCase()}. Abbigliamento moto di alta qualità progettato per motociclisti esigenti. Acquista ora su ${storeName}.`
+  };
+  
+  return templates[lang] || templates.en;
+};
+
+const seoTitle = generateSEOTitle(collection);
+const seoDescription = generateSEODescription(collection);
+
+// Format price to locale string
+const formatPrice = (amount: string, currencyCode: string) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currencyCode,
+  }).format(parseFloat(amount));
+};
+
+// Generate breadcrumb schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": `${baseUrl}/${lang}`
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Collections",
+      "item": `${baseUrl}/${lang}/catalog`
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": collection.title,
+      "item": `${baseUrl}/${lang}/collections/${handle}`
+    }
+  ]
+};
+
+// Generate collection schema with SEO data
+const collectionSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": collection.title,
+  "description": seoDescription,
+  "image": collection.image?.url,
+  "url": `${baseUrl}/${lang}/collections/${handle}`,
+  "numberOfItems": collection.products.edges.length,
+  "hasPart": collection.products.edges.map(({ node: product }) => ({
+    "@type": "Product",
+    "name": product.title,
+    "description": product.seo?.description || product.description,
+    "image": product.images?.edges[0]?.node?.url,
+    "url": `${baseUrl}/${lang}/products/${product.handle}`,
+    "offers": {
+      "@type": "Offer",
+      "price": product.variants.edges[0]?.node?.price?.amount,
+      "priceCurrency": product.variants.edges[0]?.node?.price?.currencyCode,
+      "availability": "https://schema.org/InStock"
+    }
+  }))
+};
+
+// Generate static paths for all collections in all supported languages
+export async function getStaticPaths() {
+  const paths = [];
+
+  for (const lang of languages) {
+    const collections = await getAllCollections(lang);
+    const collectionPaths = collections.map(({ node }) => ({
+      params: { 
+        lang,
+        collections: node.handle 
+      },
+      props: {
+        collection: node
+      }
+    }));
+    paths.push(...collectionPaths);
+  }
+
+  return paths;
+}
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <BaseHead 
+      title={seoTitle}
+      description={seoDescription}
+      image={collection.image?.url}
+    />
+
+    <!-- Hreflang tags -->
+    {languages.map(language => (
+      <link 
+        rel="alternate" 
+        hreflang={language} 
+        href={`${baseUrl}/${language}/collections/${handle}`}
+      />
+    ))}
+    <link 
+      rel="alternate" 
+      hreflang="x-default" 
+      href={`${baseUrl}/en/collections/${handle}`}
+    />
+
+    <!-- Schema.org markup -->
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(collectionSchema)} />
+  </head>
+  <body>
+    <Header />
+    <div class="min-h-screen bg-gray-50">
+      <main class="max-w-7xl mx-auto px-4 pt-24 pb-16">
+        {/* Visible Breadcrumbs */}
+        <nav class="flex mb-8 text-sm" aria-label="Breadcrumb">
+          <ol class="flex items-center space-x-2">
+            <li>
+              <a href={`/${lang}`} class="text-gray-500 hover:text-gray-700">Home</a>
+            </li>
+            <li class="text-gray-400">/</li>
+            <li>
+              <a href={`/${lang}/catalog`} class="text-gray-500 hover:text-gray-700">Collections</a>
+            </li>
+            <li class="text-gray-400">/</li>
+            <li class="text-gray-900 font-medium">{collection.title}</li>
+          </ol>
+        </nav>
+
+        {/* Collection Header */}
+        <header class="text-center mb-16">
+          {collection.image && (
+            <div class="relative h-[300px] mb-8 rounded-2xl overflow-hidden">
+              <img
+                src={collection.image.url}
+                alt={collection.image.altText || collection.title}
+                class="w-full h-full object-cover"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <h1 class="absolute bottom-8 left-0 right-0 text-4xl font-bold text-white px-4">
+                {collection.title}
+              </h1>
+            </div>
+          )}
+          {!collection.image && (
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">{collection.title}</h1>
+          )}
+          {collection.description && (
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+              {collection.description}
+            </p>
+          )}
+        </header>
+
+        {/* Products Grid */}
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {collection.products.edges.map(({ node: product }) => {
+            const firstVariant = product.variants.edges[0]?.node;
+            const price = firstVariant?.price;
+            
+            return (
+              <a 
+                href={`/${lang}/products/${product.handle}`}
+                class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
+              >
+                <div class="aspect-[3/4] overflow-hidden bg-gray-100">
+                  {product.images?.edges[0]?.node ? (
+                    <img
+                      src={product.images.edges[0].node.url}
+                      alt={product.images.edges[0].node.altText || product.title}
+                      class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div class="w-full h-full flex items-center justify-center bg-gray-50">
+                      <span class="text-gray-400">No image available</span>
+                    </div>
+                  )}
+                </div>
+                
+                <div class="p-4">
+                  <h2 class="text-lg font-medium mb-2 text-gray-900 group-hover:text-blue-600 transition-colors">
+                    {product.title}
+                  </h2>
+                  
+                  <div class="flex items-center justify-between mt-2">
+                    {price && (
+                      <span class="text-sm font-medium text-gray-900">
+                        {formatPrice(price.amount, price.currencyCode)}
+                      </span>
+                    )}
+                    <span class="text-blue-600 group-hover:translate-x-1 transition-transform duration-300">
+                      <ArrowRight className="w-5 h-5" />
+                    </span>
+                  </div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+
+        {/* Empty State */}
+        {collection.products.edges.length === 0 && (
+          <div class="text-center py-16 bg-white rounded-2xl shadow-sm">
+            <div class="max-w-md mx-auto">
+              <h2 class="text-2xl font-semibold text-gray-900 mb-2">No Products Found</h2>
+              <p class="text-gray-600">
+                No products available in this collection at the moment. Please check back soon!
+              </p>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+    <Footer />
+
+    <style>
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Ensure images maintain aspect ratio */
+      img {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Gradient overlay for collection header */
+      .collection-header-gradient {
+        background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 100%);
+      }
+    </style>
+  </body>
+</html> 

@@ -1,0 +1,61 @@
+---
+import { getLangFromUrl, useTranslations, isValidLanguage } from '../../utils/i18n';
+
+const theme = import.meta.env.THEME || 'default';
+const { lang, slug = 'index' } = Astro.params;
+export const prerender = true;
+
+// Validate language and redirect to /en if invalid
+if (!isValidLanguage(lang)) {
+  return Astro.redirect('/en');
+}
+
+// Try to dynamically import the page component from theme
+let ThemePage;
+let name;
+
+const slugParts = slug.split('/');
+console.log('Full slug:', slug);
+console.log('slugParts:', slugParts);
+
+if (slugParts.length > 1) {
+  const pageType = slugParts[0];
+  name = slugParts.slice(1).join('/');
+  
+  // Use a dynamic import with a unique parameter to avoid conflicts
+  const module = await import(
+    `../../themes/${theme}/page/${pageType}/[...${pageType}].astro`
+  );
+  ThemePage = module.default;
+} else {
+  const module = await import(`../../themes/${theme}/page/${slug}.astro`);
+  ThemePage = module.default;
+}
+
+const translations = await useTranslations(lang);
+const jsonData = translations.default;
+
+let posts = [];
+try {
+  posts = await fetchBlogPosts();
+} catch (error) {
+  console.error('Error fetching blog posts:', error);
+}
+
+// Generate static paths for all supported languages and known pages
+export async function getStaticPaths() {
+  const languages = ['en', 'fr', 'es', 'it', 'de', 'nl', 'pt', 'ar'];
+  const pages = ['index', 'about', 'contact']; // Add your page slugs here
+  
+  return languages.flatMap(lang => 
+    pages.map(page => ({
+      params: { 
+        lang,
+        slug: page === 'index' ? undefined : page
+      }
+    }))
+  );
+}
+---
+
+<ThemePage {lang} {jsonData} {posts} {name} /> 

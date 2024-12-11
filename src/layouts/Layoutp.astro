@@ -1,0 +1,45 @@
+---
+import Header from '../themes/default/components/Header';
+
+const theme = import.meta.env.THEME || 'default';
+
+// Properly handle dynamic imports with default exports
+const { default: BaseHead } = await import(`../themes/${theme}/components/BaseHead.astro`);
+const { default: Footer } = await import(`../themes/${theme}/components/Footer.astro`);
+
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <Header client:load />
+    <slot />
+    <Footer />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --accent: 136, 58, 234;
+    --accent-light: 224, 204, 250;
+    --accent-dark: 49, 10, 101;
+  }
+  html {
+    font-family: system-ui, sans-serif;
+    background: #fff;
+    scroll-behavior: smooth;
+  }
+</style>

@@ -1,0 +1,46 @@
+{
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Discover Delicious Recipes",
+      "description": "Explore our collection of mouth-watering recipes, cooking tips, and culinary inspiration. From quick weeknight dinners to gourmet feasts, we've got you covered!",
+      "blogLinkText": "Browse Latest Recipes",
+      "blogLink": "/recipes"
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Featured Collections",
+      "description": "Discover our carefully curated recipe collections",
+      "backgroundImage": "https://source.unsplash.com/random/1920x1080/?cooking",
+      "button1Text": "Quick Meals",
+      "button1Link": "/collections/quick-meals",
+      "button2Text": "Healthy Options",
+      "button2Link": "/collections/healthy"
+    },
+    {
+      "type": "featuredPostsSection",
+      "title": "Popular Recipes",
+      "exploreMoreText": "View All Recipes",
+      "exploreMoreLink": "/recipes"
+    },
+    {
+      "type": "videoSection",
+      "headline": "Master the Art of Cooking",
+      "description": "Watch our expert chefs share their secrets and techniques",
+      "videoUrl": "https://www.youtube.com/embed/your-video-id",
+      "buttonText": "Watch More Videos",
+      "buttonLink": "/tutorials",
+      "headlinePosition": "center",
+      "textPosition": "center",
+      "buttonPosition": "bottom"
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Get Weekly Recipe Updates",
+      "description": "Subscribe to receive new recipes, cooking tips, and exclusive content right in your inbox!",
+      "backgroundImage": "https://source.unsplash.com/random/1920x1080/?ingredients",
+      "formAction": "/api/subscribe",
+      "submitText": "Subscribe Now"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+---
+
+const { lang, name, page } = Astro.params;
+const theme = import.meta.env.THEME || 'default';
+
+// Dynamic import of the theme's bike page component
+const { default: ThemeBikePage } = await import(`../../../themes/${theme}/page/${page}/[...name].astro`);
+---
+
+<ThemeBikePage {...Astro.props} />

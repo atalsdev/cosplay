@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 128 128">
+    <!-- Planet Shape -->
+    <circle cx="64" cy="64" r="32" fill="#000" />
+    
+    <!-- Rings around Planet -->
+    <ellipse cx="64" cy="64" rx="48" ry="12" fill="none" stroke="#FFF" stroke-width="2" />
+    
+    <!-- Motorbike Details -->
+    <path d="M60 68 h20 v-10 h-8 l-4 -8 h-8 l-4 8 h-8 v10 z" fill="#FFF" />
+    <circle cx="55" cy="78" r="8" fill="#000" stroke="#FFF" stroke-width="2"/>
+    <circle cx="73" cy="78" r="8" fill="#000" stroke="#FFF" stroke-width="2"/>
+    
+    <!-- Style for Dark Mode -->
+    <style>
+        circle, path { fill: #000; }
+        ellipse { stroke: #FFF; }
+        @media (prefers-color-scheme: dark) {
+            circle, path { fill: #FFF; }
+            ellipse { stroke: #000; }
+        }
+    </style>
+</svg>

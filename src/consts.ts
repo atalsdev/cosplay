@@ -1,0 +1,2 @@
+export const SITE_TITLE = 'MotoPalnet - Motorcycle Gear & Community';
+export const SITE_DESCRIPTION = 'Your ultimate destination for motorcycle gear, reviews, and community. Find the best gear, read expert reviews, and connect with fellow riders.';

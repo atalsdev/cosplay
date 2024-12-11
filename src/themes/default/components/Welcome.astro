@@ -1,0 +1,32 @@
+---
+import { Button } from './ui/Button';
+import { ArrowRight } from 'lucide-react';
+
+interface Props {
+  title: string;
+  description: string;
+  blogLink: string;
+  blogLinkText: string;
+}
+
+const { title, description, blogLink, blogLinkText } = Astro.props;
+---
+
+<section class="relative min-h-[80vh] flex items-center justify-center px-4 py-20 bg-gradient-to-b from-gray-900 to-gray-800">
+  <div class="absolute inset-0 bg-black/50"></div>
+  <div class="relative max-w-4xl mx-auto text-center text-white">
+    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+      {title}
+    </h1>
+    <p class="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto">
+      {description}
+    </p>
+    <a 
+      href={blogLink}
+      class="inline-flex items-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+    >
+      {blogLinkText}
+      <ArrowRight className="w-5 h-5" />
+    </a>
+  </div>
+</section>

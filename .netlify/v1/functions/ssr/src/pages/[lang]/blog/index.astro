@@ -1,0 +1,72 @@
+---
+import { fetchBlogPosts } from '../../../utils/shopifyAPI';
+import { ArrowRight } from 'lucide-react';
+
+const theme = import.meta.env.THEME || 'default';
+
+const { default: BaseHead } = await import(`../../../themes/${theme}/components/BaseHead.astro`);
+const { default: Header } = await import(`../../../themes/${theme}/components/Header.astro`);
+const { default: Footer } = await import(`../../../themes/${theme}/components/Footer.astro`);
+
+const posts = await fetchBlogPosts();
+
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead 
+      title="Blog | Latest Posts"
+      description="Read our latest articles about motorcycle gear, riding tips, and industry news."
+    />
+  </head>
+  <body>
+    <Header />
+    <main class="pt-20">
+      <div class="max-w-7xl mx-auto px-4 py-12">
+        <h1 class="text-4xl md:text-5xl font-bold mb-12">Latest Posts</h1>
+        
+        {posts.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {posts.map((post) => (
+              <article class="group">
+                <a href={`/blog/${post.handle}`} class="block">
+                  <div class="relative overflow-hidden rounded-lg mb-4">
+                    <img
+                      src={post.image?.src || '/images/placeholder.jpg'}
+                      alt={post.image?.alt || post.title}
+                      class="w-full aspect-[16/9] object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                  <h2 class="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                    {post.title}
+                  </h2>
+                  <div class="flex items-center justify-between">
+                    <time class="text-sm text-gray-500">
+                      {formatDate(post.published_at)}
+                    </time>
+                    <span class="text-primary group-hover:translate-x-1 transition-transform">
+                      <ArrowRight className="w-5 h-5" />
+                    </span>
+                  </div>
+                </a>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="text-center py-12">
+            <p class="text-gray-600">No posts available at the moment. Check back soon!</p>
+          </div>
+        )}
+      </div>
+    </main>
+    <Footer />
+  </body>
+</html>

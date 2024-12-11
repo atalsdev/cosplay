@@ -1,0 +1,26 @@
+{
+    "en": {
+      "addToCart": "Add to Cart",
+      "buyNow": "Buy Now",
+      "processing": "Processing...",
+      "inStock": "In Stock",
+      "outOfStock": "Out of Stock",
+      "secureTransaction": "Secure transaction"
+    },
+    "fr": {
+      "addToCart": "Ajouter au panier",
+      "buyNow": "Acheter maintenant",
+      "processing": "Traitement...",
+      "inStock": "En stock",
+      "outOfStock": "Rupture de stock",
+      "secureTransaction": "Transaction sécurisée"
+    },
+    "de": {
+      "addToCart": "In den Warenkorb",
+      "buyNow": "Jetzt kaufen",
+      "processing": "Verarbeitung...",
+      "inStock": "Auf Lager",
+      "outOfStock": "Nicht auf Lager",
+      "secureTransaction": "Sichere Transaktion"
+    }
+  }

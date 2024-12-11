@@ -1,0 +1,84 @@
+---
+import { fetchBlogPost } from '../../../utils/shopifyAPI';
+import '../../../styles/blog.css';
+
+const theme = import.meta.env.THEME || 'default';
+
+const { default: BaseHead } = await import(`../../../components/${theme}/BaseHead.astro`);
+const { default: Header } = await import(`../../../components/${theme}/Header.astro`);
+const { default: Footer } = await import(`../../../components/${theme}/Footer.astro`);
+
+const { slug } = Astro.params;
+const post = await fetchBlogPost(slug);
+
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+const formattedDate = new Date(post.published_at).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const defaultDescription = post.body_html.replace(/<[^>]*>/g, '').slice(0, 160);
+
+// Use meta title/description if available, fallback to defaults
+const metaTitle = post.metafields?.title_tag || `${post.title} | Blog`;
+const metaDescription = post.metafields?.description_tag || defaultDescription;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead 
+      title={metaTitle}
+      description={metaDescription}
+      image={post.image?.src}
+      article={true}
+      publishedTime={post.published_at}
+    />
+  </head>
+  <body>
+    <Header />
+    <main class="pt-20">
+      <article class="max-w-4xl mx-auto px-4 py-12">
+        {post.image?.src && (
+          <img
+            src={post.image.src}
+            alt={post.image.alt || post.title}
+            class="w-full aspect-[16/9] object-cover rounded-lg mb-8"
+          />
+        )}
+        <header class="mb-8">
+          <h1 class="text-4xl md:text-5xl font-bold mb-4">{post.title}</h1>
+          <div class="flex items-center gap-4 text-gray-600">
+            <time datetime={post.published_at}>{formattedDate}</time>
+            {post.author && (
+              <>
+                <span>•</span>
+                <span>{post.author}</span>
+              </>
+            )}
+          </div>
+        </header>
+        <div 
+          class="prose prose-lg max-w-none"
+          set:html={post.body_html}
+        />
+        {post.tags && post.tags.length > 0 && (
+          <div class="mt-8 pt-8 border-t">
+            <div class="flex flex-wrap gap-2">
+              {post.tags.map(tag => (
+                <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </article>
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,53 @@
+{
+  "en": {
+    "title": "Common Questions",
+    "faqs": [
+      {
+        "q": "How does this product fit?",
+        "a": "Our products follow a regular fit design that's true to size."
+      },
+      {
+        "q": "What's your return policy?",
+        "a": "We offer 30-day returns for unworn items."
+      },
+      {
+        "q": "How long is shipping?",
+        "a": "Standard shipping takes 3-5 business days."
+      }
+    ]
+  },
+  "fr": {
+    "title": "Questions Fréquentes",
+    "faqs": [
+      {
+        "q": "Comment taille ce produit ?",
+        "a": "Nos produits suivent une coupe régulière fidèle à la taille."
+      },
+      {
+        "q": "Quelle est votre politique de retour ?",
+        "a": "Nous offrons des retours sous 30 jours."
+      },
+      {
+        "q": "Combien de temps pour la livraison ?",
+        "a": "La livraison standard prend 3-5 jours."
+      }
+    ]
+  },
+  "de": {
+    "title": "Häufige Fragen",
+    "faqs": [
+      {
+        "q": "Wie fällt dieses Produkt aus?",
+        "a": "Unsere Produkte haben eine reguläre Passform, die größengetreu ausfällt."
+      },
+      {
+        "q": "Wie ist Ihre Rückgabepolitik?",
+        "a": "Wir bieten 30 Tage Rückgaberecht für ungetragene Artikel."
+      },
+      {
+        "q": "Wie lange dauert der Versand?",
+        "a": "Die Standardlieferung dauert 3-5 Werktage."
+      }
+    ]
+  }
+} 

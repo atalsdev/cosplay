@@ -1,0 +1,77 @@
+{
+  "en": {
+    "title": "Key Features",
+    "categories": {
+      "jacket": {
+        "features": [
+          "Premium quality materials",
+          "Comfortable classic fit",
+          "Kangaroo-style pocket",
+          "Adjustable hood",
+          "Ribbed cuffs",
+          "Durable stitching"
+        ]
+      },
+      "shoes": {
+        "features": [
+          "Premium leather upper",
+          "Cushioned insole",
+          "Anti-slip rubber sole",
+          "Breathable design",
+          "Reinforced heel",
+          "Water-resistant"
+        ]
+      },
+      "helmet": {
+        "features": [
+          "Advanced impact protection",
+          "Ventilation system",
+          "Quick-release buckle",
+          "Removable liner",
+          "UV-resistant shell",
+          "DOT certified"
+        ]
+      }
+    }
+  },
+  "fr": {
+    "title": "Caractéristiques Principales",
+    "categories": {
+      "jacket": {
+        "features": [
+          "Matériaux de qualité premium",
+          "Coupe classique confortable",
+          "Poche kangourou",
+          "Capuche ajustable",
+          "Poignets côtelés",
+          "Coutures durables"
+        ]
+      },
+      "shoes": {
+        "features": [
+          "Dessus en cuir premium",
+          "Semelle intérieure rembourrée",
+          "Semelle antidérapante",
+          "Design respirant",
+          "Talon renforcé",
+          "Résistant à l'eau"
+        ]
+      }
+    }
+  },
+  "de": {
+    "title": "Hauptmerkmale",
+    "categories": {
+      "jacket": {
+        "features": [
+          "Premium-Qualitätsmaterialien",
+          "Komfortable klassische Passform",
+          "Känguru-Tasche",
+          "Verstellbare Kapuze",
+          "Gerippte Bündchen",
+          "Strapazierfähige Nähte"
+        ]
+      }
+    }
+  }
+} 

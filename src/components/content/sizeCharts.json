@@ -1,0 +1,76 @@
+{
+  "en": {
+    "title": "Size Chart for",
+    "measurementTips": "Measurement Tips",
+    "charts": {
+      "clothing": {
+        "headers": ["Size", "Chest (A)", "Width (B)", "Length (C)"],
+        "tips": [
+          "Chest: Measure around the fullest part of your chest",
+          "Width: Measure across the shoulders from arm to arm",
+          "Length: Measure from the highest point of the shoulder to the bottom hem"
+        ]
+      },
+      "shoes": {
+        "headers": ["US", "UK", "EU", "CM"],
+        "tips": [
+          "Measure your foot length in the evening (feet swell during the day)",
+          "Stand while measuring for accurate sizing",
+          "Add 0.5cm for comfort fit"
+        ]
+      },
+      "gloves": {
+        "headers": ["Size", "Palm Width", "Length", "Circumference"],
+        "tips": [
+          "Measure around your palm at its widest point",
+          "Measure from wrist to tip of middle finger",
+          "Choose larger size if between sizes"
+        ]
+      },
+      "helmets": {
+        "headers": ["Size", "Head Circumference", "Hat Size"],
+        "tips": [
+          "Measure around your head about 1 inch above your eyebrows",
+          "Take multiple measurements for accuracy",
+          "Consider hair volume when measuring"
+        ]
+      }
+    }
+  },
+  "fr": {
+    "title": "Guide des tailles pour",
+    "measurementTips": "Conseils de mesure",
+    "charts": {
+      "clothing": {
+        "headers": ["Taille", "Poitrine (A)", "Largeur (B)", "Longueur (C)"],
+        "tips": [
+          "Poitrine : Mesurez autour de la partie la plus large de votre poitrine",
+          "Largeur : Mesurez d'une épaule à l'autre",
+          "Longueur : Mesurez du point le plus haut de l'épaule jusqu'au bas"
+        ]
+      },
+      "shoes": {
+        "headers": ["US", "UK", "EU", "CM"],
+        "tips": [
+          "Mesurez vos pieds le soir (les pieds gonflent pendant la journée)",
+          "Restez debout pendant la mesure",
+          "Ajoutez 0,5 cm pour plus de confort"
+        ]
+      }
+    }
+  },
+  "de": {
+    "title": "Größentabelle für",
+    "measurementTips": "Messhinweise",
+    "charts": {
+      "clothing": {
+        "headers": ["Größe", "Brust (A)", "Breite (B)", "Länge (C)"],
+        "tips": [
+          "Brust: Messen Sie um den breitesten Teil Ihrer Brust",
+          "Breite: Messen Sie von Schulter zu Schulter",
+          "Länge: Messen Sie vom höchsten Punkt der Schulter bis zum Saum"
+        ]
+      }
+    }
+  }
+} 

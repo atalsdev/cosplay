@@ -1,0 +1,65 @@
+{
+  "en": {
+    "title": "Product Details",
+    "categories": {
+      "jacket": {
+        "specs": [
+          { "label": "Material", "value": "50% cotton/50% polyester" },
+          { "label": "Weight", "value": "7.8 oz (midweight)" },
+          { "label": "Origin", "value": "Made in U.S.A." },
+          { "label": "Care", "value": "Machine washable" }
+        ]
+      },
+      "shoes": {
+        "specs": [
+          { "label": "Upper Material", "value": "Premium leather" },
+          { "label": "Sole", "value": "Rubber outsole" },
+          { "label": "Origin", "value": "Made in Italy" },
+          { "label": "Care", "value": "Clean with leather cleaner" }
+        ]
+      },
+      "helmet": {
+        "specs": [
+          { "label": "Shell Material", "value": "Polycarbonate" },
+          { "label": "Safety Rating", "value": "DOT/ECE certified" },
+          { "label": "Weight", "value": "1500g ±50g" },
+          { "label": "Ventilation", "value": "Advanced airflow system" }
+        ]
+      }
+    }
+  },
+  "fr": {
+    "title": "Détails du Produit",
+    "categories": {
+      "jacket": {
+        "specs": [
+          { "label": "Matériau", "value": "50% coton/50% polyester" },
+          { "label": "Poids", "value": "220g (poids moyen)" },
+          { "label": "Origine", "value": "Fabriqué aux États-Unis" },
+          { "label": "Entretien", "value": "Lavable en machine" }
+        ]
+      },
+      "shoes": {
+        "specs": [
+          { "label": "Matériau Supérieur", "value": "Cuir premium" },
+          { "label": "Semelle", "value": "Caoutchouc" },
+          { "label": "Origine", "value": "Fabriqué en Italie" },
+          { "label": "Entretien", "value": "Nettoyer avec un nettoyant pour cuir" }
+        ]
+      }
+    }
+  },
+  "de": {
+    "title": "Produktdetails",
+    "categories": {
+      "jacket": {
+        "specs": [
+          { "label": "Material", "value": "50% Baumwolle/50% Polyester" },
+          { "label": "Gewicht", "value": "220g (mittelgewicht)" },
+          { "label": "Herkunft", "value": "Hergestellt in USA" },
+          { "label": "Pflege", "value": "Maschinenwaschbar" }
+        ]
+      }
+    }
+  }
+} 

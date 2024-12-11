@@ -1,0 +1,156 @@
+---
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { fetchBlogPosts } from '../../../utils/shopifyAPI';
+import { getLangFromUrl, useTranslations, isValidLanguage } from '../../../utils/i18n';
+
+const theme = import.meta.env.THEME || 'default';
+
+// Properly handle dynamic imports with default exports
+const { default: BaseHead } = await import(`../components/BaseHead.astro`);
+const { default: Header } = await import(`../components/Header.astro`);
+const { default: Footer } = await import(`../components/Footer.astro`);
+const { default: Welcome } = await import(`../components/Welcome.astro`);
+const { default: Banner } = await import(`../components/Banner.astro`);
+const { default: FeaturedPosts } = await import(`../components/FeaturedPosts.astro`);
+const { default: EmailSignup } = await import(`../components/EmailSignup.astro`);
+const { default: CategoryGrid } = await import(`../components/CategoryGrid.astro`);
+const { default: ProductShowcase } = await import(`../components/ProductShowcase.astro`);
+const { default: TestimonialSlider } = await import(`../components/TestimonialSlider.astro`);
+const { default: FAQ } = await import(`../components/FaqSection.astro`);
+const { default: Video } = await import(`../components/Video.astro`);
+
+// Get the language parameter from the URL
+const { lang } = Astro.params;
+
+// Validate language and redirect to /en if invalid
+if (!isValidLanguage(lang)) {
+  return Astro.redirect('/en');
+}
+
+const translations = await useTranslations(lang);
+const jsonData = translations.default;
+
+const blogId = '82152357935';
+let posts = [];
+
+try {
+  posts = await fetchBlogPosts();
+} catch (error) {
+  console.error('Error fetching blog posts:', error);
+}
+
+// Generate static paths for all supported languages
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } },
+    { params: { lang: 'es' } },
+    { params: { lang: 'it' } },
+    { params: { lang: 'de' } },
+    { params: { lang: 'nl' } },
+    { params: { lang: 'pt' } },
+  ];
+}
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <BaseHead title={jsonData.siteTitle || SITE_TITLE} description={jsonData.siteDescription || SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      {jsonData.sections?.map((section) => {
+        return (
+          <>
+            {section.type === 'welcomeSection' && (
+              <Welcome
+                title={section.title}
+                description={section.description}
+                blogLink={`/${lang}${section.blogLink}`}
+                blogLinkText={section.blogLinkText}
+              />
+            )}
+            
+            {section.type === 'bannerSection' && (
+              <Banner
+                headline={section.headline}
+                description={section.description}
+                backgroundImage={section.backgroundImage}
+                button1Text={section.button1Text}
+                button1Link={`/${lang}${section.button1Link}`}
+                button2Text={section.button2Text}
+                button2Link={`/${lang}${section.button2Link}`}
+              />
+            )}
+            
+            {section.type === 'categoryGrid' && (
+              <CategoryGrid
+                title={section.title}
+                description={section.description}
+                categories={section.categories}
+              />
+            )}
+            
+            {section.type === 'productShowcase' && (
+              <ProductShowcase
+                title={section.title}
+                description={section.description}
+                products={section.products}
+                viewAllLink={`/${lang}${section.viewAllLink}`}
+              />
+            )}
+            
+            {section.type === 'testimonialSlider' && (
+              <TestimonialSlider
+                title={section.title}
+                testimonials={section.testimonials}
+              />
+            )}
+            
+            {section.type === 'featuredPostsSection' && (
+              <FeaturedPosts
+                title={section.title}
+                posts={posts}
+                exploreMoreLink={`/${lang}${section.exploreMoreLink}`}
+                exploreMoreText={section.exploreMoreText}
+              />
+            )}
+            
+            {section.type === 'emailSignupSection' && (
+              <EmailSignup
+                title={section.title}
+                description={section.description}
+                backgroundImage={section.backgroundImage}
+                formAction={section.formAction}
+                buttonText={section.submitText}
+              />
+            )}
+
+            {section.type === 'faqSection' && (
+              <FAQ
+                title={section.title}
+                description={section.description}
+                faqs={section.faqs}
+              />
+            )}
+
+            {section.type === 'videoSection' && (
+              <Video
+                headline={section.headline}
+                description={section.description}
+                videoUrl={section.videoUrl}
+                buttonText={section.buttonText}
+                buttonLink={`/${lang}${section.buttonLink}`}
+                headlinePosition={section.headlinePosition}
+                textPosition={section.textPosition}
+              />
+            )}
+          </>
+        );
+      })}
+    </main>
+    <Footer />
+  </body>
+</html>

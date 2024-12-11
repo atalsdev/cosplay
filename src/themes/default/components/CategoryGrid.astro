@@ -1,0 +1,45 @@
+---
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  link: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  categories: Category[];
+}
+
+const { title, description, categories } = Astro.props;
+---
+
+<section class="py-20 px-4">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">{description}</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {categories.map((category) => (
+        <a
+          href={category.link}
+          class="group relative overflow-hidden rounded-xl aspect-[4/3]"
+        >
+          <img
+            src={category.image}
+            alt={category.name}
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/0 flex flex-col justify-end p-6 text-white">
+            <h3 class="text-xl font-bold mb-2">{category.name}</h3>
+            <p class="text-sm text-gray-200">{category.description}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
