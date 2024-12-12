@@ -1,0 +1,53 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  loading?: 'lazy' | 'eager';
+  className?: string;
+  fetchpriority?: 'high' | 'low' | 'auto';
+  id?: string;
+  dataImageUrl?: string;
+  dataImageId?: string;
+}
+
+const { 
+  src, 
+  alt, 
+  width = 800, 
+  height = 800, 
+  loading = 'lazy',
+  className = '',
+  fetchpriority = 'auto',
+  id = '',
+  dataImageUrl = '',
+  dataImageId = ''
+} = Astro.props;
+
+// Convert Shopify URL to support responsive images
+const optimizedSrc = src.replace(/\.(jpg|jpeg|png|gif|webp)/i, '_${width}x.$1');
+
+// Generate srcset for responsive images
+const sizes = [400, 600, 800, 1200];
+const srcset = sizes
+  .map(size => `${src.replace(/\.(jpg|jpeg|png|gif|webp)/i, `_${size}x.$1`)} ${size}w`)
+  .join(', ');
+---
+
+<img
+  src={optimizedSrc}
+  alt={alt}
+  width={width}
+  height={height}
+  loading={loading}
+  fetchpriority={fetchpriority}
+  class={className}
+  srcset={srcset}
+  sizes="(max-width: 640px) 400px, (max-width: 768px) 600px, (max-width: 1024px) 800px, 1200px"
+  decoding="async"
+  id={id}
+  data-image-url={dataImageUrl || src}
+  data-image-id={dataImageId}
+  onerror="this.onerror=null; this.src=this.src.replace(/_(400|600|800|1200)x/, '');"
+/> 

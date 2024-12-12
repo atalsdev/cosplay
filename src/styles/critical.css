@@ -1,0 +1,22 @@
+/* Critical CSS for above-the-fold content */
+.product-image {
+  aspect-ratio: 1;
+  width: 100%;
+  height: auto;
+}
+
+.product-title {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.product-price {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Add other critical styles */ 

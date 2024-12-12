@@ -1,5 +1,5 @@
 ---
-import Layout from '@layouts/LayoutP.astro';
+import Layout from '@layouts/Layoutp.astro';
 import { getTranslatedProductByHandle } from '@libs/shopify';
 import AddToCart from '@themes/default/components/AddToCart';
 import SizeChart from '@components/SizeChart.astro';
@@ -322,7 +322,7 @@ console.log('Processed product data:', {
                       id="mainImage"
                       src={product.processedImages[0].url}
                       alt={product.processedImages[0].altText}
-                      class="w-full h-full object-contain"
+                      class="w-full h-full object-contain transition-opacity duration-200"
                       loading="eager"
                       fetchpriority="high"
                       decoding="async"
@@ -332,10 +332,13 @@ console.log('Processed product data:', {
                   </div>
                   
                   {product.processedImages.length > 1 && (
-                    <div class="flex gap-2 overflow-x-auto pb-2">
+                    <div class="flex gap-2 overflow-x-auto pb-2 mt-4">
                       {product.processedImages.map((image, index) => (
                         <button 
-                          class="flex-none w-20 aspect-square rounded-lg overflow-hidden bg-gray-50 hover:opacity-75 transition-opacity"
+                          class:list={[
+                            "flex-none w-20 aspect-square rounded-lg overflow-hidden bg-gray-50 hover:opacity-75 transition-opacity",
+                            { "ring-2 ring-blue-500": index === 0 }
+                          ]}
                           data-image-url={image.url}
                           data-image-id={image.id}
                           data-image-index={index}
@@ -652,91 +655,61 @@ console.log('Processed product data:', {
 
 <script>
   class ImageGallery {
-    constructor() {
-      this.mainImage = document.getElementById('mainImage');
-      this.thumbnails = document.querySelectorAll('[data-image-url]');
-      this.prevButton = document.getElementById('prevImage');
-      this.nextButton = document.getElementById('nextImage');
-      this.currentIndex = 0;
-      this.maxIndex = this.thumbnails.length - 1;
+    mainImage;
+    thumbnails;
+    currentIndex = 0;
 
+    constructor() {
       this.init();
     }
 
     init() {
+      // Get elements
+      this.mainImage = document.getElementById('mainImage');
+      this.thumbnails = document.querySelectorAll('[data-image-url]');
+      
+      // Add click handlers
       this.thumbnails.forEach((thumb, index) => {
-        thumb.addEventListener('click', () => {
-          this.setImage(index);
-        });
+        thumb.addEventListener('click', () => this.setImage(index));
       });
 
-      this.prevButton?.addEventListener('click', () => {
-        this.navigate(-1);
-      });
-
-      this.nextButton?.addEventListener('click', () => {
-        this.navigate(1);
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-          this.navigate(-1);
-        } else if (e.key === 'ArrowRight') {
-          this.navigate(1);
-        }
-      });
-
-      // Add variant image change listener
-      window.addEventListener('variantImageChange', ((event: CustomEvent) => {
+      // Listen for variant changes
+      window.addEventListener('variantImageChange', (event) => {
         const { imageUrl, imageId } = event.detail;
-        
-        // Find matching thumbnail index
-        const thumbnailIndex = Array.from(this.thumbnails).findIndex(
-          thumb => thumb.getAttribute('data-image-id') === imageId
-        );
-        
-        if (thumbnailIndex >= 0) {
-          // If found matching thumbnail, switch to it
-          this.setImage(thumbnailIndex);
-        } else if (imageUrl) {
-          // If no matching thumbnail but we have URL, just update main image
-          if (this.mainImage) {
-            this.mainImage.src = imageUrl;
-          }
+        const matchingThumb = Array.from(this.thumbnails)
+          .find(thumb => thumb.dataset.imageId === imageId);
+
+        if (matchingThumb) {
+          const index = parseInt(matchingThumb.dataset.imageIndex);
+          this.setImage(index);
+        } else if (imageUrl && this.mainImage) {
+          this.mainImage.src = imageUrl;
         }
-      }) as EventListener);
+      });
     }
 
     setImage(index) {
       if (!this.mainImage) return;
       
+      // Update current index
       this.currentIndex = index;
-      const newImageUrl = this.thumbnails[index].getAttribute('data-image-url');
-      if (newImageUrl) {
-        this.mainImage.src = newImageUrl;
+      
+      // Update main image
+      const newUrl = this.thumbnails[index].dataset.imageUrl;
+      if (newUrl) {
+        this.mainImage.src = newUrl;
       }
 
+      // Update thumbnail states
       this.thumbnails.forEach((thumb, i) => {
-        thumb.classList.toggle('ring-2 ring-blue-500', i === index);
+        thumb.classList.toggle('ring-2', i === index);
+        thumb.classList.toggle('ring-blue-500', i === index);
       });
-    }
-
-    navigate(direction) {
-      let newIndex = this.currentIndex + direction;
-
-      if (newIndex < 0) {
-        newIndex = this.maxIndex;
-      } else if (newIndex > this.maxIndex) {
-        newIndex = 0;
-      }
-
-      this.setImage(newIndex);
     }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    new ImageGallery();
-  });
+  // Initialize
+  new ImageGallery();
 </script>
 
 <style>
