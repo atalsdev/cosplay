@@ -14,7 +14,7 @@ export default defineConfig({
   output: 'server',
   integrations: [tailwind(), react()],
   adapter: node({
-    mode: 'standalone'
+    mode: 'standalone',
   }),
   vite: {
     envPrefix: 'SHOPIFY_',
@@ -26,8 +26,8 @@ export default defineConfig({
         '@layouts': path.resolve(__dirname, './src/layouts'),
         '@components': path.resolve(__dirname, './src/components'),
         '@libs': path.resolve(__dirname, './src/lib'),
-        '@themes': path.resolve(__dirname, './src/themes')
-      }
+        '@themes': path.resolve(__dirname, './src/themes'),
+      },
     },
     build: {
       cssMinify: true,
@@ -35,30 +35,41 @@ export default defineConfig({
       terserOptions: {
         compress: {
           drop_console: true,
-          drop_debugger: true
-        }
+          drop_debugger: true,
+        },
       },
       rollupOptions: {
         output: {
           manualChunks: {
-            'vendor': [
+            vendor: [
               'react',
               'react-dom',
-              '@astrojs/react'
+              '@astrojs/react',
             ],
-            'product': [
+            product: [
               './src/components/AddToCart',
-              './src/components/ProductCard'
-            ]
-          }
-        }
-      }
+              './src/components/ProductCard',
+            ],
+          },
+        },
+      },
     },
     ssr: {
-      noExternal: ['@astrojs/*']
+      noExternal: ['@astrojs/*'],
     },
     optimizeDeps: {
-      include: ['react', 'react-dom']
-    }
+      include: ['react', 'react-dom'],
+    },
+    plugins: [
+      {
+        name: 'remove-dev-attributes',
+        transformIndexHtml(html, { mode }) {
+          if (mode === 'production') {
+            return html.replace(/ data-astro-source-[^=]+="[^"]+"/g, '');
+          }
+          return html;
+        },
+      },
+    ],
   },
 });
