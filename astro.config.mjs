@@ -28,6 +28,27 @@ export default defineConfig({
         '@libs': path.resolve(__dirname, './src/lib'),
         '@themes': path.resolve(__dirname, './src/themes')
       }
-    }
+    },
+    build: {
+      cssMinify: true,
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+        },
+      },
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              return 'vendor';
+            }
+          },
+        },
+      },
+    },
+    ssr: {
+      noExternal: ['@astrojs/*'],
+    },
   },
 });

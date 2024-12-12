@@ -10,10 +10,10 @@ import ProductCard from '@themes/default/components/ProductCard';
 import BaseHead from '@themes/default/components/BaseHead.astro';
 import ProductSpecs from '@components/ProductSpecs.astro';
 import KeyFeatures from '@components/KeyFeatures.astro';
+import ProductLoading from '@components/ProductLoading.astro';
 
 const { lang, handle } = Astro.params;
 const supportedLanguages = ['en', 'fr', 'de', 'es', 'it'];
-
 let product;
 let relatedProducts;
 let error;
@@ -227,6 +227,35 @@ console.log('Processed product data:', {
       article={false}
     />
     
+    <!-- Resource Hints -->
+    <link rel="preconnect" href="https://cdn.shopify.com" />
+    <link rel="dns-prefetch" href="https://cdn.shopify.com" />
+    
+    <!-- Preload critical assets -->
+    <link 
+      rel="preload" 
+      as="image" 
+      href={product.processedImages[0].url}
+      fetchpriority="high"
+    />
+    
+    <!-- Preload critical fonts -->
+    <link
+      rel="preload"
+      href="/fonts/inter-var.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    
+    <!-- Defer non-critical CSS -->
+    <link 
+      rel="stylesheet" 
+      href="/styles/non-critical.css"
+      media="print" 
+      onload="this.media='all'"
+    />
+    
     <!-- Additional SEO Meta Tags -->
     <meta name="robots" content="index, follow" />
     <meta name="format-detection" content="telephone=no" />
@@ -260,261 +289,363 @@ console.log('Processed product data:', {
   </head>
   <body>
     <Layout title={`${product.title} | RidWear`}>
-      <!-- Breadcrumb Navigation -->
-      <nav aria-label="Breadcrumb" class="max-w-7xl mx-auto px-4 py-4">
-        <ol class="flex items-center space-x-2 text-sm text-gray-600">
-          <li>
-            <a href={`/${lang}`} class="hover:text-blue-600">Home</a>
-          </li>
-          <li>
-            <span class="mx-2">/</span>
-            <a href={`/${lang}/products`} class="hover:text-blue-600">Products</a>
-          </li>
-          <li>
-            <span class="mx-2">/</span>
-            <span class="text-gray-900">{product.title}</span>
-          </li>
-        </ol>
-      </nav>
+      <div id="product-wrapper" class="relative">
+        <div 
+          id="product-content" 
+          class="opacity-100 transition-opacity duration-300"
+          data-handle={handle}
+        >
+          <!-- Breadcrumb Navigation -->
+          <nav aria-label="Breadcrumb" class="max-w-7xl mx-auto px-4 py-4">
+            <ol class="flex items-center space-x-2 text-sm text-gray-600">
+              <li>
+                <a href={`/${lang}`} class="hover:text-blue-600">Home</a>
+              </li>
+              <li>
+                <span class="mx-2">/</span>
+                <a href={`/${lang}/products`} class="hover:text-blue-600">Products</a>
+              </li>
+              <li>
+                <span class="mx-2">/</span>
+                <span class="text-gray-900">{product.title}</span>
+              </li>
+            </ol>
+          </nav>
 
-      <main class="max-w-7xl mx-auto px-4 py-12">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <!-- Image Gallery -->
-          <div class="space-y-4 lg:sticky lg:top-24 lg:self-start">
-            <div class="relative bg-gray-50 rounded-2xl overflow-hidden">
-              <div class="aspect-square">
-                <img
-                  id="mainImage"
-                  src={product.processedImages[0].url}
-                  alt={product.processedImages[0].altText}
-                  class="w-full h-full object-contain"
-                />
-              </div>
-              {product.processedImages.length > 1 && (
-                <>
-                  <button 
-                    id="prevImage"
-                    class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
-                    aria-label="Previous image"
-                  >
-                    <ChevronLeft size={24} />
-                  </button>
-                  <button 
-                    id="nextImage"
-                    class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
-                    aria-label="Next image"
-                  >
-                    <ChevronRight size={24} />
-                  </button>
-                </>
-              )}
-            </div>
-            
-            {product.processedImages.length > 1 && (
-              <div class="flex gap-2 overflow-x-auto pb-2">
-                {product.processedImages.map((image, index) => (
-                  <button 
-                    class="flex-none w-20 aspect-square rounded-lg overflow-hidden bg-gray-50 hover:opacity-75 transition-opacity"
-                    data-image-url={image.url}
-                    data-image-id={image.id}
-                    data-image-index={index}
-                  >
+          <main class="max-w-7xl mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <!-- Image Gallery -->
+              <div class="space-y-4 lg:sticky lg:top-24 lg:self-start">
+                <div class="relative bg-gray-50 rounded-2xl overflow-hidden">
+                  <div class="aspect-square">
                     <img
-                      src={image.url}
-                      alt={image.altText}
-                      class="w-full h-full object-cover"
+                      id="mainImage"
+                      src={product.processedImages[0].url}
+                      alt={product.processedImages[0].altText}
+                      class="w-full h-full object-contain"
+                      loading="eager"
+                      fetchpriority="high"
+                      decoding="async"
+                      width="600"
+                      height="600"
                     />
-                  </button>
+                  </div>
+                  
+                  {product.processedImages.length > 1 && (
+                    <div class="flex gap-2 overflow-x-auto pb-2">
+                      {product.processedImages.map((image, index) => (
+                        <button 
+                          class="flex-none w-20 aspect-square rounded-lg overflow-hidden bg-gray-50 hover:opacity-75 transition-opacity"
+                          data-image-url={image.url}
+                          data-image-id={image.id}
+                          data-image-index={index}
+                        >
+                          <img
+                            src={image.url}
+                            alt={image.altText}
+                            class="w-full h-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                            width="80"
+                            height="80"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <!-- Product Info -->
+              <div class="space-y-8 relative" style="z-index: 50;">
+                <div>
+                  <h1 class="text-3xl font-bold mb-2">{product.title}</h1>
+                  <div class="flex items-center gap-2 text-sm text-gray-600">
+                    <div class="flex items-center">
+                      ★★★★☆
+                      <span class="ml-1">4.0</span>
+                    </div>
+                    <span>•</span>
+                    <a href="#reviews" class="hover:text-blue-500">42 Reviews</a>
+                  </div>
+                </div>
+
+                <AddToCart
+                  client:load
+                  product={processedProduct}
+                  language={lang}
+                />
+
+                <!-- Add debug output in development -->
+                {import.meta.env.DEV && (
+                  <script define:vars={{ debug: processedProduct }}>
+                    console.log('Product data passed to AddToCart:', debug);
+                  </script>
+                )}
+
+                <!-- Product Description - Optimized for Dynamic Content -->
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 shadow-sm">
+                  <h2 class="text-2xl font-bold mb-4 text-gray-900 flex items-center gap-2">
+                    <Info className="w-6 h-6 text-blue-600" />
+                    Product Details
+                  </h2>
+                  <div 
+                    set:html={product.descriptionHtml} 
+                    class="
+                      text-gray-700 
+                      [&>p]:mb-6 
+                      [&>p]:leading-relaxed 
+                      [&>p]:text-base
+
+                      [&>h2]:text-xl 
+                      [&>h2]:font-bold 
+                      [&>h2]:text-gray-900 
+                      [&>h2]:mt-10 
+                      [&>h2]:mb-6
+                      [&>h2]:pb-2
+                      [&>h2]:border-b
+                      [&>h2]:border-gray-200
+
+                      [&>h3]:text-xl 
+                      [&>h3]:font-semibold 
+                      [&>h3]:text-gray-800 
+                      [&>h3]:mt-8 
+                      [&>h3]:mb-4
+                      [&>h3]:flex
+                      [&>h3]:items-center
+                      [&>h3]:gap-2
+
+                      [&>h4]:text-lg 
+                      [&>h4]:font-semibold 
+                      [&>h4]:text-gray-800 
+                      [&>h4]:mt-6 
+                      [&>h4]:mb-3
+
+                      [&>ul]:list-disc 
+                      [&>ul]:ml-6 
+                      [&>ul]:mb-6 
+                      [&>ul>li]:mb-2
+                      [&>ul>li]:text-gray-700
+
+                      [&>ol]:list-decimal 
+                      [&>ol]:ml-6 
+                      [&>ol]:mb-6 
+                      [&>ol>li]:mb-2
+                      [&>ol>li]:text-gray-700
+
+                      [&>strong]:font-bold
+                      [&>strong]:text-gray-900
+
+                      [&>em]:italic
+                      
+                      [&>a]:text-blue-600 
+                      [&>a]:underline 
+                      [&>a]:font-medium
+                      [&>a:hover]:text-blue-800
+
+                      [&>blockquote]:pl-4 
+                      [&>blockquote]:border-l-4 
+                      [&>blockquote]:border-gray-200 
+                      [&>blockquote]:italic
+                      [&>blockquote]:text-gray-600
+                      [&>blockquote]:my-6
+
+                      [&>img]:rounded-lg
+                      [&>img]:shadow-md
+                      [&>img]:my-4
+
+                      [&>table]:w-full
+                      [&>table]:border-collapse
+                      [&>table]:mb-6
+                      [&>table]:bg-white
+                      [&>table]:shadow-sm
+                      [&>table]:rounded-lg
+                      [&>table]:overflow-hidden
+                      [&>table]:border
+                      [&>table]:border-gray-200
+
+                      [&>table>thead]:bg-gray-50
+                      [&>table>thead>tr]:border-b
+                      [&>table>thead>tr]:border-gray-200
+
+                      [&>table>thead>tr>th]:px-6
+                      [&>table>thead>tr>th]:py-3
+                      [&>table>thead>tr>th]:text-left
+                      [&>table>thead>tr>th]:font-semibold
+                      [&>table>thead>tr>th]:text-gray-900
+                      [&>table>thead>tr>th]:text-sm
+                      [&>table>thead>tr>th]:uppercase
+                      [&>table>thead>tr>th]:tracking-wider
+
+                      [&>table>tbody>tr]:border-b
+                      [&>table>tbody>tr]:border-gray-200
+                      [&>table>tbody>tr]:last:border-b-0
+                      [&>table>tbody>tr:hover]:bg-gray-50
+
+                      [&>table>tbody>tr>td]:px-6
+                      [&>table>tbody>tr>td]:py-4
+                      [&>table>tbody>tr>td]:text-sm
+                      [&>table>tbody>tr>td]:text-gray-700
+                      [&>table>tbody>tr>td]:whitespace-normal
+
+                      [&>table>tbody>tr>td:first-child]:font-medium
+                      [&>table>tbody>tr>td:first-child]:text-gray-900
+
+                      [&>table>tfoot]:bg-gray-50
+                      [&>table>tfoot>tr]:border-t
+                      [&>table>tfoot>tr]:border-gray-200
+                      [&>table>tfoot>tr>td]:px-6
+                      [&>table>tfoot>tr>td]:py-3
+                      [&>table>tfoot>tr>td]:text-sm
+                      [&>table>tfoot>tr>td]:font-semibold
+
+                      [&>*:first-child]:mt-0
+                      [&>*:last-child]:mb-0
+                    "
+                  />
+                </div>
+
+                <!-- Key Features List -->
+                <KeyFeatures productTitle={product.title} language={lang} />
+
+                <!-- Product Specifications -->
+                <ProductSpecs productTitle={product.title} language={lang} />
+
+                <!-- Size Chart Component -->
+                <SizeChart productTitle={product.title} language={lang} />
+
+                <!-- Reviews Component -->
+                <Reviews language={lang} />
+
+                <!-- Product FAQ Component -->
+                <ProductFAQ productTitle={product.title} language={lang} />
+              </div>
+            </div>
+
+            <!-- Related Products -->
+            <div class="mt-16 border-t pt-16">
+              <h2 class="text-2xl font-bold mb-8">Related Products</h2>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {relatedProducts.map((product) => (
+                  <ProductCard
+                    client:load
+                    id={product.node.id}
+                    title={product.node.title}
+                    price={parseFloat(product.node.priceRange.minVariantPrice.amount)}
+                    image={product.node.images.edges[0]?.node.url}
+                    description={product.node.description}
+                    handle={product.node.handle}
+                    lang={lang}
+                  />
                 ))}
               </div>
-            )}
-          </div>
-
-          <!-- Product Info -->
-          <div class="space-y-8 relative" style="z-index: 50;">
-            <div>
-              <h1 class="text-3xl font-bold mb-2">{product.title}</h1>
-              <div class="flex items-center gap-2 text-sm text-gray-600">
-                <div class="flex items-center">
-                  ★★★★☆
-                  <span class="ml-1">4.0</span>
-                </div>
-                <span>•</span>
-                <a href="#reviews" class="hover:text-blue-500">42 Reviews</a>
-              </div>
             </div>
-
-            <AddToCart
-              client:load
-              product={processedProduct}
-              language={lang}
-            />
-
-            <!-- Add debug output in development -->
-            {import.meta.env.DEV && (
-              <script define:vars={{ debug: processedProduct }}>
-                console.log('Product data passed to AddToCart:', debug);
-              </script>
-            )}
-
-            <!-- Product Description - Optimized for Dynamic Content -->
-            <div class="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 shadow-sm">
-              <h2 class="text-2xl font-bold mb-4 text-gray-900 flex items-center gap-2">
-                <Info className="w-6 h-6 text-blue-600" />
-                Product Details
-              </h2>
-              <div 
-                set:html={product.descriptionHtml} 
-                class="
-                  text-gray-700 
-                  [&>p]:mb-6 
-                  [&>p]:leading-relaxed 
-                  [&>p]:text-base
-
-                  [&>h2]:text-xl 
-                  [&>h2]:font-bold 
-                  [&>h2]:text-gray-900 
-                  [&>h2]:mt-10 
-                  [&>h2]:mb-6
-                  [&>h2]:pb-2
-                  [&>h2]:border-b
-                  [&>h2]:border-gray-200
-
-                  [&>h3]:text-xl 
-                  [&>h3]:font-semibold 
-                  [&>h3]:text-gray-800 
-                  [&>h3]:mt-8 
-                  [&>h3]:mb-4
-                  [&>h3]:flex
-                  [&>h3]:items-center
-                  [&>h3]:gap-2
-
-                  [&>h4]:text-lg 
-                  [&>h4]:font-semibold 
-                  [&>h4]:text-gray-800 
-                  [&>h4]:mt-6 
-                  [&>h4]:mb-3
-
-                  [&>ul]:list-disc 
-                  [&>ul]:ml-6 
-                  [&>ul]:mb-6 
-                  [&>ul>li]:mb-2
-                  [&>ul>li]:text-gray-700
-
-                  [&>ol]:list-decimal 
-                  [&>ol]:ml-6 
-                  [&>ol]:mb-6 
-                  [&>ol>li]:mb-2
-                  [&>ol>li]:text-gray-700
-
-                  [&>strong]:font-bold
-                  [&>strong]:text-gray-900
-
-                  [&>em]:italic
-                  
-                  [&>a]:text-blue-600 
-                  [&>a]:underline 
-                  [&>a]:font-medium
-                  [&>a:hover]:text-blue-800
-
-                  [&>blockquote]:pl-4 
-                  [&>blockquote]:border-l-4 
-                  [&>blockquote]:border-gray-200 
-                  [&>blockquote]:italic
-                  [&>blockquote]:text-gray-600
-                  [&>blockquote]:my-6
-
-                  [&>img]:rounded-lg
-                  [&>img]:shadow-md
-                  [&>img]:my-4
-
-                  [&>table]:w-full
-                  [&>table]:border-collapse
-                  [&>table]:mb-6
-                  [&>table]:bg-white
-                  [&>table]:shadow-sm
-                  [&>table]:rounded-lg
-                  [&>table]:overflow-hidden
-                  [&>table]:border
-                  [&>table]:border-gray-200
-
-                  [&>table>thead]:bg-gray-50
-                  [&>table>thead>tr]:border-b
-                  [&>table>thead>tr]:border-gray-200
-
-                  [&>table>thead>tr>th]:px-6
-                  [&>table>thead>tr>th]:py-3
-                  [&>table>thead>tr>th]:text-left
-                  [&>table>thead>tr>th]:font-semibold
-                  [&>table>thead>tr>th]:text-gray-900
-                  [&>table>thead>tr>th]:text-sm
-                  [&>table>thead>tr>th]:uppercase
-                  [&>table>thead>tr>th]:tracking-wider
-
-                  [&>table>tbody>tr]:border-b
-                  [&>table>tbody>tr]:border-gray-200
-                  [&>table>tbody>tr]:last:border-b-0
-                  [&>table>tbody>tr:hover]:bg-gray-50
-
-                  [&>table>tbody>tr>td]:px-6
-                  [&>table>tbody>tr>td]:py-4
-                  [&>table>tbody>tr>td]:text-sm
-                  [&>table>tbody>tr>td]:text-gray-700
-                  [&>table>tbody>tr>td]:whitespace-normal
-
-                  [&>table>tbody>tr>td:first-child]:font-medium
-                  [&>table>tbody>tr>td:first-child]:text-gray-900
-
-                  [&>table>tfoot]:bg-gray-50
-                  [&>table>tfoot>tr]:border-t
-                  [&>table>tfoot>tr]:border-gray-200
-                  [&>table>tfoot>tr>td]:px-6
-                  [&>table>tfoot>tr>td]:py-3
-                  [&>table>tfoot>tr>td]:text-sm
-                  [&>table>tfoot>tr>td]:font-semibold
-
-                  [&>*:first-child]:mt-0
-                  [&>*:last-child]:mb-0
-                "
-              />
-            </div>
-
-            <!-- Key Features List -->
-            <KeyFeatures productTitle={product.title} language={lang} />
-
-            <!-- Product Specifications -->
-            <ProductSpecs productTitle={product.title} language={lang} />
-
-            <!-- Size Chart Component -->
-            <SizeChart productTitle={product.title} language={lang} />
-
-            <!-- Reviews Component -->
-            <Reviews language={lang} />
-
-            <!-- Product FAQ Component -->
-            <ProductFAQ productTitle={product.title} language={lang} />
-          </div>
+          </main>
         </div>
-
-        <!-- Related Products -->
-        <div class="mt-16 border-t pt-16">
-          <h2 class="text-2xl font-bold mb-8">Related Products</h2>
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {relatedProducts.map((product) => (
-              <ProductCard
-                client:load
-                id={product.node.id}
-                title={product.node.title}
-                price={parseFloat(product.node.priceRange.minVariantPrice.amount)}
-                image={product.node.images.edges[0]?.node.url}
-                description={product.node.description}
-                handle={product.node.handle}
-                lang={lang}
-              />
-            ))}
-          </div>
+        
+        <div 
+          id="loading-skeleton" 
+          class="hidden"
+          aria-hidden="true"
+        >
+          <ProductLoading />
         </div>
-      </main>
+      </div>
+      
+      <script>
+        class ProductPageManager {
+          constructor() {
+            this.content = document.getElementById('product-content');
+            this.loading = document.getElementById('loading-skeleton');
+            this.currentPath = window.location.pathname;
+            this.isTransitioning = false;
+            this.init();
+          }
+
+          init() {
+            // Force content visible and loading hidden on init
+            if (this.content && this.loading) {
+              this.content.style.opacity = '1';
+              this.content.style.display = 'block';
+              this.loading.style.display = 'none';
+            }
+
+            // Only handle actual page navigation
+            document.addEventListener('astro:before-preparation', (event) => {
+              if (!event.to?.url) return;
+              
+              const newPath = new URL(event.to.url).pathname;
+              if (newPath === this.currentPath) return;
+              
+              // Only show loading for product page navigation
+              if (newPath.includes('/products/') && !this.isTransitioning) {
+                this.isTransitioning = true;
+                this.handleNavigation();
+              }
+            });
+
+            // Reset after navigation
+            document.addEventListener('astro:after-preparation', () => {
+              if (this.isTransitioning) {
+                this.isTransitioning = false;
+                this.currentPath = window.location.pathname;
+                this.showContent();
+              }
+            });
+
+            // Prevent any scroll-based transitions
+            window.addEventListener('scroll', (e) => {
+              e.stopPropagation();
+            }, { passive: true });
+
+            // Clean up scroll listeners
+            const cleanup = () => {
+              window.removeEventListener('scroll', this.handleScroll);
+            };
+            document.addEventListener('astro:unmount', cleanup);
+          }
+
+          handleNavigation() {
+            if (!this.isTransitioning) return;
+            
+            // Save scroll position
+            sessionStorage.setItem('scrollPosition', window.scrollY.toString());
+            
+            this.content.style.opacity = '0';
+            this.content.style.pointerEvents = 'none';
+            
+            requestAnimationFrame(() => {
+              this.loading.style.display = 'block';
+              this.loading.style.opacity = '1';
+            });
+          }
+
+          showContent() {
+            if (!this.content || !this.loading) return;
+            
+            this.loading.style.opacity = '0';
+            this.loading.style.display = 'none';
+            
+            requestAnimationFrame(() => {
+              this.content.style.opacity = '1';
+              this.content.style.pointerEvents = 'auto';
+              
+              // Restore scroll position if exists
+              const savedPosition = sessionStorage.getItem('scrollPosition');
+              if (savedPosition) {
+                window.scrollTo(0, parseInt(savedPosition));
+                sessionStorage.removeItem('scrollPosition');
+              }
+            });
+          }
+        }
+
+        // Initialize only once
+        let pageManager;
+        if (!window.productPageManager) {
+          window.productPageManager = new ProductPageManager();
+        }
+      </script>
     </Layout>
   </body>
 </html>
@@ -618,3 +749,46 @@ console.log('Processed product data:', {
 <div class="fixed right-4 top-1/2 transform -translate-y-1/2 space-y-4 floating-buttons">
   <!-- Your floating buttons here -->
 </div>
+
+<style is:inline>
+  /* Critical CSS */
+  .aspect-square {
+    aspect-ratio: 1 / 1;
+  }
+  .object-contain {
+    object-fit: contain;
+  }
+  .rounded-2xl {
+    border-radius: 1rem;
+  }
+  /* Add other critical styles */
+</style>
+
+<style>
+  #product-wrapper {
+    min-height: 100vh;
+    isolation: isolate;
+  }
+  
+  #loading-skeleton {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: white;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  #product-content {
+    position: relative;
+    z-index: 1;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  /* Prevent any transition triggers from scroll */
+  html, body {
+    scroll-behavior: smooth;
+    overscroll-behavior: none;
+  }
+</style>
