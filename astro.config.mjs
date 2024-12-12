@@ -8,6 +8,8 @@ import 'dotenv/config';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOMAINE = import.meta.env.DOMAINE || 'https://perfectmotoride.com';
+const PORT = process.env.PORT || 4321;
+const HOST = process.env.HOST || '0.0.0.0';
 
 export default defineConfig({
   site: DOMAINE,
@@ -15,6 +17,8 @@ export default defineConfig({
   integrations: [tailwind(), react()],
   adapter: node({
     mode: 'standalone',
+    host: HOST,
+    port: PORT
   }),
   vite: {
     envPrefix: 'SHOPIFY_',
