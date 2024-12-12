@@ -39,5 +39,8 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.3",
     "zustand": "^5.0.1"
+  },
+  "devDependencies": {
+    "terser": "^5.37.0"
   }
 }

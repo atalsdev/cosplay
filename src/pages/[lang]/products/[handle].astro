@@ -328,6 +328,7 @@ console.log('Processed product data:', {
                       decoding="async"
                       width="600"
                       height="600"
+                      data-testid="product-main-image"
                     />
                   </div>
                   
@@ -342,6 +343,8 @@ console.log('Processed product data:', {
                           data-image-url={image.url}
                           data-image-id={image.id}
                           data-image-index={index}
+                          data-testid={`thumbnail-${index}`}
+                          aria-label={`View ${image.altText}`}
                         >
                           <img
                             src={image.url}

@@ -50,7 +50,8 @@ export default defineConfig({
               './src/components/AddToCart',
               './src/components/ProductCard'
             ]
-          }
+          },
+          banner: 'document.documentElement.dataset.astroSourceFile = undefined;',
         }
       }
     },
