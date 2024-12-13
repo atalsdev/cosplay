@@ -23,6 +23,12 @@ if (!fs.existsSync(storeDir)) {
   fs.mkdirSync(storeDir, { recursive: true });
 }
 
+// Create temp directory for the store
+const tmpDir = path.join(storeDir, 'tmp');
+if (!fs.existsSync(tmpDir)) {
+  fs.mkdirSync(tmpDir, { recursive: true });
+}
+
 console.log(`Deploying ${storeName}...`);
 console.log(`Using env file: ${envFile}`);
 
