@@ -10,9 +10,9 @@ module.exports = {
         }
       },
       {
-        name: "drivi-cars",
+        name: "digivast",
         script: "npm",
-        args: "run start:store cars",
+        args: "run start:store digivast",
         env: {
           NODE_ENV: "production",
           PORT: 4322
