@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "node -r dotenv/config ./dist/server/entry.mjs",
+    "start:store": "node scripts/start-store.js",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"

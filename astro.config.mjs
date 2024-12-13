@@ -4,7 +4,20 @@ import react from '@astrojs/react';
 import node from '@astrojs/node';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
+
+
+// Helper function to load environment variables
+const loadEnvironment = (envFile = '.env') => {
+  dotenv.config({ 
+    path: path.resolve(process.cwd(), envFile),
+    override: true 
+  });
+};
+
+// Determine the environment file to use
+const envFile = process.env.ENV_FILE || '.env';
+loadEnvironment(envFile);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOMAINE = import.meta.env.DOMAINE || 'https://perfectmotoride.com';
