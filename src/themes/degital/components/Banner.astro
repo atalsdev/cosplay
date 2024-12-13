@@ -1,0 +1,56 @@
+---
+import { Button } from './ui/Button';
+
+interface Props {
+  headline: string;
+  description: string;
+  backgroundImage: string;
+  button1Text: string;
+  button1Link: string;
+  button2Text?: string;
+  button2Link?: string;
+}
+
+const { 
+  headline, 
+  description, 
+  backgroundImage,
+  button1Text,
+  button1Link,
+  button2Text,
+  button2Link
+} = Astro.props;
+---
+
+<section 
+  class="relative py-24 px-4 md:px-8 overflow-hidden"
+  style={`background-image: url(${backgroundImage}); background-size: cover; background-position: center;`}
+>
+  <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-slate-900/80 backdrop-blur-sm"></div>
+  <div class="relative max-w-4xl mx-auto">
+    <div class="max-w-2xl">
+      <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">
+        {headline}
+      </h2>
+      <p class="text-lg md:text-xl text-gray-200 mb-8">
+        {description}
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a 
+          href={button1Link}
+          class="inline-block bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+        >
+          {button1Text}
+        </a>
+        {button2Text && button2Link && (
+          <a 
+            href={button2Link}
+            class="inline-block bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/20 transition-colors"
+          >
+            {button2Text}
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+</section>

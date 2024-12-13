@@ -1,0 +1,51 @@
+---
+import { Button } from './ui/Button';
+import { ArrowRight } from 'lucide-react';
+
+interface Props {
+  title: string;
+  description: string;
+  blogLink: string;
+  blogLinkText: string;
+}
+
+const { title, description, blogLink, blogLinkText } = Astro.props;
+---
+
+<section class="relative min-h-[80vh] flex items-center justify-center px-4 py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+  <div class="absolute inset-0">
+    <div class="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-20"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+  </div>
+  
+  <div class="relative max-w-4xl mx-auto text-center text-white">
+    <div class="mb-4">
+      <span class="px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-blue-300 border border-blue-500/20">
+        Digital Products Store
+      </span>
+    </div>
+    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+      {title}
+      <span class="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">Store</span>
+    </h1>
+    <p class="text-xl md:text-2xl mb-8 text-gray-300/90 max-w-2xl mx-auto">
+      {description}
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a 
+        href={blogLink}
+        class="inline-flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-blue-500/25"
+      >
+        {blogLinkText}
+        <ArrowRight className="w-5 h-5" />
+      </a>
+      <a 
+        href="#featured-products"
+        class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300"
+      >
+        Browse Products
+        <ArrowRight className="w-5 h-5" />
+      </a>
+    </div>
+  </div>
+</section>

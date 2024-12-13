@@ -5,7 +5,8 @@ module.exports = {
         script: "npm",
         args: "run start:store bikes",
         env: {
-          NODE_ENV: "production"
+          NODE_ENV: "production",
+          PORT: 4321
         }
       },
       {
@@ -13,8 +14,9 @@ module.exports = {
         script: "npm",
         args: "run start:store cars",
         env: {
-          NODE_ENV: "production"
+          NODE_ENV: "production",
+          PORT: 4322
         }
       }
     ]
-  };
+};

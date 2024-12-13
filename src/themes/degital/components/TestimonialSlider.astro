@@ -1,0 +1,41 @@
+---
+interface Testimonial {
+  id: string;
+  author: string;
+  role: string;
+  content: string;
+  avatar: string;
+}
+
+interface Props {
+  title: string;
+  testimonials: Testimonial[];
+}
+
+const { title, testimonials } = Astro.props;
+---
+
+<section class="py-20 px-4 bg-white">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">{title}</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {testimonials.map((testimonial) => (
+        <div class="bg-gray-50 p-6 rounded-xl">
+          <div class="flex items-center gap-4 mb-4">
+            <img
+              src={testimonial.avatar}
+              alt={testimonial.author}
+              class="w-12 h-12 rounded-full object-cover"
+            />
+            <div>
+              <h3 class="font-semibold">{testimonial.author}</h3>
+              <p class="text-sm text-gray-600">{testimonial.role}</p>
+            </div>
+          </div>
+          <p class="text-gray-700">{testimonial.content}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
