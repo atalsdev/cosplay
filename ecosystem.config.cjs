@@ -1,22 +1,24 @@
 module.exports = {
     apps: [
       {
-        name: "drivi-bikes",
-        script: "npm",
-        args: "run start:store bikes",
+        name: "bikes-store",
+        script: "dist/server/entry.mjs",
         env: {
           NODE_ENV: "production",
-          PORT: 4321
-        }
+          PORT: 4321,
+          ENV_FILE: ".env"
+        },
+        cwd: "./stores/bikes"
       },
       {
-        name: "digivast",
-        script: "npm",
-        args: "run start:store digivast",
+        name: "digivast-store",
+        script: "dist/server/entry.mjs",
         env: {
           NODE_ENV: "production",
-          PORT: 4322
-        }
+          PORT: 4322,
+          ENV_FILE: ".env"
+        },
+        cwd: "./stores/digivast"
       }
     ]
 };

@@ -9,7 +9,13 @@
     "start:store": "node scripts/start-store.js",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "deploy:bikes": "node scripts/deploy-store.js bikes",
+    "deploy:digivast": "node scripts/deploy-store.js digivast",
+    "deploy:all": "npm run deploy:bikes && npm run deploy:digivast",
+    "start:all": "pm2 start ecosystem.config.cjs",
+    "stop:all": "pm2 stop all",
+    "restart:all": "pm2 restart all"
   },
   "dependencies": {
     "@astrojs/node": "^9.0.0",
