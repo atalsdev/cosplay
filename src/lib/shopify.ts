@@ -5,6 +5,12 @@ import { connectToDatabase } from './mongodb';
 const domain = import.meta.env.PUBLIC_SHOPIFY_SHOP;
 const storefrontAccessToken = import.meta.env.PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 
+// Add store identifier to Redis key prefix
+const getStorePrefix = () => {
+  const domain = import.meta.env.PUBLIC_SHOPIFY_SHOP?.split('.')[0] || '';
+  return `store_${domain}_`;
+};
+
 // Add new background sync function at the top of the file
 async function backgroundSyncProducts() {
   console.log('🔄 [BACKGROUND] Starting products sync');
@@ -53,11 +59,13 @@ function shouldRefreshCache(lastUpdated: Date): boolean {
   return lastUpdateDay !== currentDay && now.getUTCHours() >= 0;
 }
 
-// Add new helper function
+// Update the Redis helper function to include store prefix
 async function fetchFromShopifyWithRedis(redisKey: string, fetchFunction: () => Promise<any>, cacheDuration = 3600) {
   try {
-    // Try Redis first
-    const redisCache = await getRedisData(redisKey);
+    const prefixedKey = `${getStorePrefix()}${redisKey}`;
+    
+    // Try Redis first with prefixed key
+    const redisCache = await getRedisData(prefixedKey);
     if (redisCache) {
       console.log('🚀 [REDIS CACHE HIT] Data retrieved');
       return redisCache;
@@ -67,9 +75,9 @@ async function fetchFromShopifyWithRedis(redisKey: string, fetchFunction: () => 
     console.log('🔄 [SHOPIFY API] Direct fetch');
     const data = await fetchFunction();
     
-    // Cache in Redis
+    // Cache in Redis with prefixed key
     console.log('💾 [REDIS] Caching Shopify response');
-    await setRedisData(redisKey, data, cacheDuration);
+    await setRedisData(prefixedKey, data, cacheDuration);
     
     return data;
   } catch (error) {
@@ -78,10 +86,9 @@ async function fetchFromShopifyWithRedis(redisKey: string, fetchFunction: () => 
   }
 }
 
-// Update getAllProducts with fallback
+// Update getAllProducts to use store prefix
 export async function getAllProducts() {
-  // Try Redis first
-  const redisKey = 'shopify_all_products';
+  const redisKey = `${getStorePrefix()}shopify_all_products`;
   const redisCache = await getRedisData(redisKey);
   
   if (redisCache) {
@@ -370,11 +377,10 @@ const PRODUCT_BY_HANDLE_QUERY = `
   }
 `;
 
-// Update getProductByHandle with consistent image handling
+// Update getProductByHandle to use store prefix
 export async function getProductByHandle(handle: string) {
   try {
-    // Try Redis first
-    const redisKey = `shopify_product_${handle}`;
+    const redisKey = `${getStorePrefix()}shopify_product_${handle}`;
     const redisCache = await getRedisData(redisKey);
     
     if (redisCache) {
@@ -566,7 +572,7 @@ export async function createIndexes() {
 
 // Update getPaginatedProducts with fallback
 export async function getPaginatedProducts(page: number = 1, limit: number = 20) {
-  const redisKey = `shopify_paginated_products_${page}_${limit}`;
+  const redisKey = `${getStorePrefix()}shopify_paginated_products_${page}_${limit}`;
   
   try {
     // Try Redis first
@@ -721,7 +727,7 @@ export async function getPaginatedProducts(page: number = 1, limit: number = 20)
 // Add new function to fetch translated products
 export async function getPaginatedTranslatedProducts(page: number = 1, limit: number = 20, language: string = 'EN') {
   try {
-    const redisKey = `translated_products_${language.toLowerCase()}_page_${page}_limit_${limit}`;
+    const redisKey = `${getStorePrefix()}translated_products_${language.toLowerCase()}_page_${page}_limit_${limit}`;
     console.log(`🔄 Starting product fetch for language: ${language}, page: ${page}`);
     
     // Try Redis first
@@ -1083,9 +1089,10 @@ const TRANSLATED_PRODUCT_QUERY = `
   }
 `;
 
+// Update getTranslatedProductByHandle to use store prefix
 export async function getTranslatedProductByHandle(handle: string, language: string = 'EN') {
   try {
-    const redisKey = `product_${language.toLowerCase()}_${handle}`;
+    const redisKey = `${getStorePrefix()}product_${language.toLowerCase()}_${handle}`;
     console.log(`🔍 [REDIS] Checking cache for ${redisKey}`);
 
     // Try Redis first
@@ -1174,7 +1181,7 @@ export async function getTranslatedProductByHandle(handle: string, language: str
 export async function getAllCollections(language: string = 'EN') {
   try {
     // Define Redis key for this specific language
-    const redisKey = `shopify_collections_${language.toLowerCase()}`;
+    const redisKey = `${getStorePrefix()}shopify_collections_${language.toLowerCase()}`;
     
     // Try Redis first
     const redisCache = await getRedisData(redisKey);
@@ -1302,7 +1309,7 @@ export async function getCollectionByHandle(handle: string, language: string = '
     `;
 
     // Try Redis first
-    const redisKey = `collection_${handle}_${language.toLowerCase()}`;
+    const redisKey = `${getStorePrefix()}collection_${handle}_${language.toLowerCase()}`;
     const cachedData = await getRedisData(redisKey);
     
     if (cachedData) {
@@ -1338,7 +1345,7 @@ export async function getCollectionByHandle(handle: string, language: string = '
 
 export async function getAllTranslatedProducts(language: string = 'EN') {
   try {
-    const redisKey = `all_translated_products_${language.toLowerCase()}`;
+    const redisKey = `${getStorePrefix()}all_translated_products_${language.toLowerCase()}`;
     console.log(`🔄 Starting product fetch for language: ${language}`);
     
     // Try Redis first
