@@ -2,7 +2,8 @@ module.exports = {
     apps: [
       {
         name: "bikes-store",
-        script: "dist/server/entry.mjs",
+        script: "node",
+        args: "-r dotenv/config ./dist/server/entry.mjs",
         env: {
           NODE_ENV: "production",
           PORT: 4321,
@@ -12,7 +13,8 @@ module.exports = {
       },
       {
         name: "digivast-store",
-        script: "dist/server/entry.mjs",
+        script: "node",
+        args: "-r dotenv/config ./dist/server/entry.mjs",
         env: {
           NODE_ENV: "production",
           PORT: 4322,

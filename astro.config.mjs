@@ -70,6 +70,8 @@ export default defineConfig({
             ],
           },
         },
+        external: [],
+        preserveEntrySignatures: 'strict'
       },
     },
     ssr: {
