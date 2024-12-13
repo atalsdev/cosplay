@@ -1,6 +1,13 @@
 import { MongoClient } from 'mongodb';
 
-const MONGODB_URI = process.env.MONGODB_URI || '';
+const getEnvVar = (key: string) => {
+  if (typeof window !== 'undefined' && (window as any).__ENV) {
+    return (window as any).__ENV[key];
+  }
+  return import.meta.env[key] || process.env[key];
+};
+
+const MONGODB_URI = getEnvVar('MONGODB_URI');
 
 let client: MongoClient | null = null;
 
@@ -11,7 +18,6 @@ export async function connectToDatabase() {
 
   try {
     if (client) {
-      // Test the connection by making a simple command
       await client.db().command({ ping: 1 });
       return client;
     }
@@ -29,7 +35,6 @@ export async function connectToDatabase() {
     return client;
   } catch (error) {
     console.error('❌ MongoDB connection error:', error);
-    // If there's an error with existing client, create a new one
     client = new MongoClient(MONGODB_URI, {
       maxPoolSize: 10,
       minPoolSize: 5,

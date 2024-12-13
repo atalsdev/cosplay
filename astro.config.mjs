@@ -37,6 +37,7 @@ export default defineConfig({
     envPrefix: 'SHOPIFY_',
     define: {
       'import.meta.env.GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.GOOGLE_MAPS_API_KEY),
+      '__ENV.PUBLIC_SITE_NAME': JSON.stringify(process.env.PUBLIC_SITE_NAME),
     },
     resolve: {
       alias: {
@@ -85,6 +86,19 @@ export default defineConfig({
             return html.replace(/ data-astro-source-[^=]+="[^"]+"/g, '');
           }
           return html;
+        },
+      },
+      {
+        name: 'inject-env',
+        transformIndexHtml(html) {
+          const envScript = `
+            <script>
+              window.__ENV = {
+                PUBLIC_SITE_NAME: '${process.env.PUBLIC_SITE_NAME}'
+              };
+            </script>
+          `;
+          return html.replace('</head>', `${envScript}</head>`);
         },
       },
     ],

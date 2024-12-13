@@ -3,9 +3,12 @@ import { ShoppingCart } from 'lucide-react';
 import Cart from './Cart';
 import { useCartStore } from '../../../store/cart';
 
-export default function Header() {
+interface HeaderProps {
+  siteName: string;
+}
+
+export default function Header({ siteName }: HeaderProps) {
   const { isOpen, setIsOpen, items } = useCartStore();
-  const siteName = import.meta.env.PUBLIC_SITE_NAME || 'Drivi';
 
   // Hydrate the store after mount
   useEffect(() => {

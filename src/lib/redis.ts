@@ -1,7 +1,16 @@
 import { createClient } from 'redis';
 
+const getEnvVar = (key: string) => {
+  if (typeof window !== 'undefined' && (window as any).__ENV) {
+    return (window as any).__ENV[key];
+  }
+  return import.meta.env[key] || process.env[key];
+};
+
+const REDIS_URL = getEnvVar('REDIS_URL');
+
 const client = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
+  url: REDIS_URL || 'redis://localhost:6379'
 });
 
 client.on('error', err => console.error('Redis Client Error', err));

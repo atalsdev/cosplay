@@ -2,11 +2,11 @@
 import Header from '../../../themes/default/components/Header';
 
 const theme = import.meta.env.THEME || 'default';
+const siteName = import.meta.env.PUBLIC_SITE_NAME || 'Store';
 
 // Properly handle dynamic imports with default exports
 const { default: BaseHead } = await import(`../../../themes/${theme}/components/BaseHead.astro`);
 const { default: Footer } = await import(`../../../themes/${theme}/components/Footer.astro`);
-
 
 interface Props {
   title: string;
@@ -25,7 +25,7 @@ const { title } = Astro.props;
     <meta name="generator" content={Astro.generator} />
   </head>
   <body class="min-h-screen flex flex-col">
-    <Header client:load />
+    <Header client:load siteName={siteName} />
     <slot />
     <Footer />
   </body>
