@@ -1,0 +1,106 @@
+{
+  "siteTitle": "CosplayVerse - Negozio Premium di Cosplay Anime & Gaming",
+  "siteDescription": "La tua destinazione definitiva per costumi, accessori e props cosplay premium dai tuoi anime e videogiochi preferiti. Creato da cosplayer, per cosplayer.",
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Benvenuti su CosplayVerse: La Tua Destinazione Cosplay Definitiva",
+      "description": "Scopri costumi cosplay premium, accessori e props dai tuoi anime, videogiochi e cultura pop preferiti. Creato da cosplayer, per cosplayer.",
+      "blogLinkText": "Esplora le Guide Cosplay",
+      "blogLink": "/blog"
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Da Vita ai Tuoi Personaggi Preferiti",
+      "description": "Dai costumi dettagliati alle parrucche premium, dai props autentici agli accessori esperti - tutto ciò di cui hai bisogno per la tua prossima convention o servizio fotografico.",
+      "backgroundImage": "/images/cosplay-banner.jpg",
+      "button1Text": "Sfoglia le Collezioni",
+      "button1Link": "/products",
+      "button2Text": "Diventa Creatore",
+      "button2Link": "/become-creator"
+    },
+    {
+      "type": "categoryGrid",
+      "title": "Esplora per Universo",
+      "description": "Trova il costume perfetto dalla tua serie preferita",
+      "categories": [
+        {
+          "id": "anime-cosplay",
+          "name": "Cosplay Anime",
+          "description": "Dalle serie anime classiche alle attuali",
+          "image": "https://images.unsplash.com/photo-1612036782180-6f0822045d23?q=80&w=2670&auto=format&fit=crop",
+          "link": "/collections/anime-cosplay"
+        },
+        {
+          "id": "gaming-cosplay",
+          "name": "Cosplay Gaming",
+          "description": "I tuoi personaggi dei videogiochi preferiti",
+          "image": "https://images.unsplash.com/photo-1609139003551-ee5552a8d1f5?q=80&w=2670&auto=format&fit=crop",
+          "link": "/collections/gaming-cosplay"
+        },
+        {
+          "id": "accessories",
+          "name": "Accessori & Props",
+          "description": "Parrucche, armi e accessori essenziali",
+          "image": "https://images.unsplash.com/photo-1608889825205-eebdb9fc5806?q=80&w=2670&auto=format&fit=crop",
+          "link": "/collections/accessories"
+        }
+      ]
+    },
+    {
+      "type": "productShowcase",
+      "title": "Costumi in Evidenza",
+      "description": "I set cosplay più popolari di questa stagione",
+      "viewAllLink": "/catalog",
+      "products": [
+        {
+          "id": "cosplay-1",
+          "name": "Demon Slayer: Set Completo Nezuko",
+          "description": "Costume completo con parrucca e props",
+          "price": "299.99",
+          "image": "/images/products/nezuko-costume.jpg",
+          "category": "Cosplay Anime"
+        },
+        {
+          "id": "cosplay-2",
+          "name": "Genshin Impact: Costume Keqing",
+          "description": "Costume da gioco di qualità premium",
+          "price": "259.99",
+          "image": "/images/products/keqing-costume.jpg",
+          "category": "Cosplay Gaming"
+        },
+        {
+          "id": "accessory-1",
+          "name": "Collezione Parrucche Premium",
+          "description": "Parrucche stilizzate resistenti al calore",
+          "price": "89.99",
+          "image": "/images/products/cosplay-wigs.jpg",
+          "category": "Accessori"
+        },
+        {
+          "id": "prop-1",
+          "name": "Props Armi LED",
+          "description": "Props personalizzati approvati convention",
+          "price": "149.99",
+          "image": "/images/products/light-props.jpg",
+          "category": "Props"
+        }
+      ]
+    },
+    {
+      "type": "featuredPostsSection",
+      "title": "Guide alla Creazione Cosplay",
+      "description": "Suggerimenti, tutorial e dietro le quinte delle incredibili trasformazioni cosplay",
+      "exploreMoreText": "Vedi Tutte le Guide",
+      "exploreMoreLink": "/blog"
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Unisciti alla Community CosplayVerse",
+      "description": "Ricevi drop di costumi esclusivi, aggiornamenti sulle convention e tutorial cosplay nella tua casella di posta",
+      "backgroundImage": "/images/cosplay-community.jpg",
+      "formAction": "/api/subscribe",
+      "submitText": "Unisciti alla Community"
+    }
+  ]
+}

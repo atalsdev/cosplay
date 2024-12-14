@@ -1,0 +1,106 @@
+{
+  "siteTitle": "CosplayVerse - Boutique Premium de Cosplay Anime & Gaming",
+  "siteDescription": "Votre destination ultime pour les costumes, accessoires et props de cosplay premium de vos anime et jeux vidéo préférés. Créé par des cosplayers, pour des cosplayers.",
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Bienvenue sur CosplayVerse : Votre Destination Cosplay Ultime",
+      "description": "Découvrez des costumes de cosplay premium, des accessoires et des accessoires de vos animes, jeux vidéo et culture pop préférés. Créé par des cosplayers, pour des cosplayers.",
+      "blogLinkText": "Explorer les Guides Cosplay",
+      "blogLink": "/blog"
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Donnez Vie à Vos Personnages Préférés",
+      "description": "Des costumes détaillés aux perruques premium, des accessoires authentiques aux accessoires experts - tout ce dont vous avez besoin pour votre prochaine convention ou séance photo.",
+      "backgroundImage": "/images/cosplay-banner.jpg",
+      "button1Text": "Parcourir les Collections",
+      "button1Link": "/products",
+      "button2Text": "Devenir Créateur",
+      "button2Link": "/become-creator"
+    },
+    {
+      "type": "categoryGrid",
+      "title": "Explorer par Univers",
+      "description": "Trouvez le costume parfait de votre série préférée",
+      "categories": [
+        {
+          "id": "anime-cosplay",
+          "name": "Cosplay Anime",
+          "description": "Des séries anime classiques aux actuelles",
+          "image": "https://images.unsplash.com/photo-1612036782180-6f0822045d23?q=80&w=2670&auto=format&fit=crop",
+          "link": "/collections/anime-cosplay"
+        },
+        {
+          "id": "gaming-cosplay",
+          "name": "Cosplay Gaming",
+          "description": "Vos personnages de jeux vidéo préférés",
+          "image": "https://images.unsplash.com/photo-1609139003551-ee5552a8d1f5?q=80&w=2670&auto=format&fit=crop",
+          "link": "/collections/gaming-cosplay"
+        },
+        {
+          "id": "accessories",
+          "name": "Accessoires & Props",
+          "description": "Perruques, armes et accessoires essentiels",
+          "image": "https://images.unsplash.com/photo-1608889825205-eebdb9fc5806?q=80&w=2670&auto=format&fit=crop",
+          "link": "/collections/accessories"
+        }
+      ]
+    },
+    {
+      "type": "productShowcase",
+      "title": "Costumes en Vedette",
+      "description": "Les ensembles cosplay les plus populaires de la saison",
+      "viewAllLink": "/catalog",
+      "products": [
+        {
+          "id": "cosplay-1",
+          "name": "Demon Slayer : Ensemble Nezuko Complet",
+          "description": "Costume complet avec perruque et accessoires",
+          "price": "299.99",
+          "image": "/images/products/nezuko-costume.jpg",
+          "category": "Cosplay Anime"
+        },
+        {
+          "id": "cosplay-2",
+          "name": "Genshin Impact : Costume Keqing",
+          "description": "Costume de jeu de qualité premium",
+          "price": "259.99",
+          "image": "/images/products/keqing-costume.jpg",
+          "category": "Cosplay Gaming"
+        },
+        {
+          "id": "accessory-1",
+          "name": "Collection de Perruques Premium",
+          "description": "Perruques stylées résistantes à la chaleur",
+          "price": "89.99",
+          "image": "/images/products/cosplay-wigs.jpg",
+          "category": "Accessoires"
+        },
+        {
+          "id": "prop-1",
+          "name": "Props d'Armes LED",
+          "description": "Props personnalisés approuvés convention",
+          "price": "149.99",
+          "image": "/images/products/light-props.jpg",
+          "category": "Props"
+        }
+      ]
+    },
+    {
+      "type": "featuredPostsSection",
+      "title": "Guides de Création Cosplay",
+      "description": "Astuces, tutoriels et coulisses des transformations cosplay incroyables",
+      "exploreMoreText": "Voir Tous les Guides",
+      "exploreMoreLink": "/blog"
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Rejoignez la Communauté CosplayVerse",
+      "description": "Recevez des drops de costumes exclusifs, des mises à jour de conventions et des tutoriels cosplay dans votre boîte mail",
+      "backgroundImage": "/images/cosplay-community.jpg",
+      "formAction": "/api/subscribe",
+      "submitText": "Rejoindre la Communauté"
+    }
+  ]
+}

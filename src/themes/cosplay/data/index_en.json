@@ -1,0 +1,106 @@
+{
+  "siteTitle": "CosplayVerse - Premium Anime & Gaming Cosplay Store",
+  "siteDescription": "Your ultimate destination for premium cosplay costumes, accessories, and props from your favorite anime and video games. Created by cosplayers, for cosplayers.",
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Welcome to CosplayVerse: Your Ultimate Cosplay Destination",
+      "description": "Discover premium cosplay costumes, accessories, and props from your favorite anime, video games, and pop culture. Created by cosplayers, for cosplayers.",
+      "blogLinkText": "Explore Cosplay Guides",
+      "blogLink": "/blog"
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Bring Your Favorite Characters to Life",
+      "description": "From detailed costumes to premium wigs, authentic props to expert accessories - everything you need for your next convention or photoshoot.",
+      "backgroundImage": "/images/cosplay-banner.jpg",
+      "button1Text": "Shop Collections",
+      "button1Link": "/products",
+      "button2Text": "Join Creator Program",
+      "button2Link": "/become-creator"
+    },
+    {
+      "type": "categoryGrid",
+      "title": "Shop by Universe",
+      "description": "Find the perfect costume from your favorite series",
+      "categories": [
+        {
+          "id": "anime-cosplay",
+          "name": "Anime Cosplay",
+          "description": "From classic to current anime series",
+          "image": "https://images.unsplash.com/photo-1612036782180-6f0822045d23?q=80&w=2670&auto=format&fit=crop",
+          "link": "/collections/anime-cosplay"
+        },
+        {
+          "id": "gaming-cosplay",
+          "name": "Gaming Cosplay",
+          "description": "Your favorite video game characters",
+          "image": "https://images.unsplash.com/photo-1609139003551-ee5552a8d1f5?q=80&w=2670&auto=format&fit=crop",
+          "link": "/collections/gaming-cosplay"
+        },
+        {
+          "id": "accessories",
+          "name": "Props & Accessories",
+          "description": "Wigs, weapons, and essential extras",
+          "image": "https://images.unsplash.com/photo-1608889825205-eebdb9fc5806?q=80&w=2670&auto=format&fit=crop",
+          "link": "/collections/accessories"
+        }
+      ]
+    },
+    {
+      "type": "productShowcase",
+      "title": "Featured Costumes",
+      "description": "Most popular cosplay sets this season",
+      "viewAllLink": "/catalog",
+      "products": [
+        {
+          "id": "cosplay-1",
+          "name": "Demon Slayer: Nezuko Complete Set",
+          "description": "Full costume with wig and props",
+          "price": "299.99",
+          "image": "/images/products/nezuko-costume.jpg",
+          "category": "Anime Cosplay"
+        },
+        {
+          "id": "cosplay-2",
+          "name": "Genshin Impact: Keqing Costume",
+          "description": "Premium quality game costume",
+          "price": "259.99",
+          "image": "/images/products/keqing-costume.jpg",
+          "category": "Gaming Cosplay"
+        },
+        {
+          "id": "accessory-1",
+          "name": "Premium Cosplay Wig Collection",
+          "description": "Heat-resistant, styled wigs",
+          "price": "89.99",
+          "image": "/images/products/cosplay-wigs.jpg",
+          "category": "Accessories"
+        },
+        {
+          "id": "prop-1",
+          "name": "LED Light-up Weapon Props",
+          "description": "Convention-safe custom props",
+          "price": "149.99",
+          "image": "/images/products/light-props.jpg",
+          "category": "Props"
+        }
+      ]
+    },
+    {
+      "type": "featuredPostsSection",
+      "title": "Cosplay Creation Guides",
+      "description": "Tips, tutorials, and behind-the-scenes looks at amazing cosplay transformations",
+      "exploreMoreText": "View All Guides",
+      "exploreMoreLink": "/blog"
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Join the CosplayVerse Community",
+      "description": "Get exclusive costume drops, convention updates, and cosplay tutorials delivered to your inbox",
+      "backgroundImage": "/images/cosplay-community.jpg",
+      "formAction": "/api/subscribe",
+      "submitText": "Join Community"
+    }
+  ]
+}

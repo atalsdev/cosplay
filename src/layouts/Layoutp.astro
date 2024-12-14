@@ -3,17 +3,84 @@ import Header from '../themes/default/components/Header';
 
 const theme = import.meta.env.THEME || 'default';
 const siteName = import.meta.env.PUBLIC_SITE_NAME || 'Drivi';
+const PROJECT_TYPE = import.meta.env.PROJECT_TYPE || 'default';
 
 // Properly handle dynamic imports with default exports
 const { default: BaseHead } = await import(`../themes/${theme}/components/BaseHead.astro`);
 const { default: Footer } = await import(`../themes/${theme}/components/Footer.astro`);
 
+// Menu configuration with language-prefixed paths
+const menuConfig = {
+  en: {
+    default: {
+      items: [
+        { label: "Collections", href: "/en/collections" },
+        { label: "Helmets", href: "/en/helmets" },
+        { label: "Jackets", href: "/en/jackets" },
+        { label: "Accessories", href: "/en/accessories" }
+      ]
+    },
+    degital: {
+      items: [
+        { label: "Templates", href: "/en/templates" },
+        { label: "Plugins", href: "/en/plugins" },
+        { label: "Scripts", href: "/en/scripts" },
+        { label: "Resources", href: "/en/resources" }
+      ]
+    }
+  },
+  fr: {
+    default: {
+      items: [
+        { label: "Collections", href: "/fr/collections" },
+        { label: "Casques", href: "/fr/helmets" },
+        { label: "Vestes", href: "/fr/jackets" },
+        { label: "Accessoires", href: "/fr/accessories" }
+      ]
+    },
+    degital: {
+      items: [
+        { label: "Modèles", href: "/fr/templates" },
+        { label: "Extensions", href: "/fr/plugins" },
+        { label: "Scripts", href: "/fr/scripts" },
+        { label: "Ressources", href: "/fr/resources" }
+      ]
+    }
+  },
+  de: {
+    default: {
+      items: [
+        { label: "Kollektionen", href: "/de/collections" },
+        { label: "Helme", href: "/de/helmets" },
+        { label: "Jacken", href: "/de/jackets" },
+        { label: "Zubehör", href: "/de/accessories" }
+      ]
+    },
+    degital: {
+      items: [
+        { label: "Vorlagen", href: "/de/templates" },
+        { label: "Plugins", href: "/de/plugins" },
+        { label: "Skripte", href: "/de/scripts" },
+        { label: "Ressourcen", href: "/de/resources" }
+      ]
+    }
+  }
+};
+
+const languages = {
+  en: "English",
+  fr: "Français",
+  de: "Deutsch"
+};
 
 interface Props {
   title: string;
 }
 
 const { title } = Astro.props;
+
+// Get current path for language switching
+const currentPath = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -26,7 +93,14 @@ const { title } = Astro.props;
     <meta name="generator" content={Astro.generator} />
   </head>
   <body class="min-h-screen flex flex-col">
-    <Header client:load siteName={siteName} />
+    <Header 
+      client:load 
+      siteName={siteName}
+      menuConfig={menuConfig}
+      languages={languages}
+      projectType={PROJECT_TYPE}
+      currentPath={currentPath}
+    />
     <slot />
     <Footer />
   </body>

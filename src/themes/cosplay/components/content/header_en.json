@@ -1,0 +1,11 @@
+{
+  "navigation": [
+    { "name": "Home", "href": "/" },
+    { "name": "Products", "href": "/collections" },
+    { "name": "Categories", "href": "/categories" },
+    { "name": "Documentation", "href": "/docs" },
+    { "name": "Support", "href": "/support" }
+  ],
+  "signIn": "Sign In",
+  "menuLabel": "Open menu"
+}

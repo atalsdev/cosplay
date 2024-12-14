@@ -1,0 +1,32 @@
+{
+  "description": "Ihre ultimative Anlaufstelle für Motorradausrüstung, Bewertungen und Community.",
+  "sections": {
+    "shop": {
+      "title": "Shop",
+      "links": [
+        { "name": "Helme", "href": "/helmets" },
+        { "name": "Jacken", "href": "/jackets" },
+        { "name": "Stiefel", "href": "/boots" },
+        { "name": "Zubehör", "href": "/accessories" }
+      ]
+    },
+    "company": {
+      "title": "Unternehmen",
+      "links": [
+        { "name": "Über uns", "href": "/about" },
+        { "name": "Blog", "href": "/blog" },
+        { "name": "Kontakt", "href": "/contact" },
+        { "name": "Karriere", "href": "/careers" }
+      ]
+    },
+    "legal": {
+      "title": "Rechtliches",
+      "links": [
+        { "name": "Datenschutz", "href": "/privacy" },
+        { "name": "AGB", "href": "/terms" },
+        { "name": "Cookie-Richtlinie", "href": "/cookies" }
+      ]
+    }
+  },
+  "copyright": "Alle Rechte vorbehalten."
+} 

@@ -1,0 +1,86 @@
+---
+import { Button } from './ui/Button';
+import { ArrowRight } from 'lucide-react';
+
+interface Props {
+  title: string;
+  description: string;
+  blogLink: string;
+  blogLinkText: string;
+}
+
+const { title, description, blogLink, blogLinkText } = Astro.props;
+---
+
+<section class="relative min-h-[85vh] flex items-center justify-center px-4 py-20 bg-gradient-to-br from-purple-900 via-pink-800 to-purple-900">
+  <div class="absolute inset-0">
+    <div class="absolute inset-0 bg-[url('/sparkle-pattern.svg')] opacity-20 animate-twinkle"></div>
+    <div class="absolute inset-0 bg-[url('/geometric-pattern.svg')] opacity-10 animate-float"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+  </div>
+  
+  <div class="relative max-w-4xl mx-auto text-center text-white">
+    <div class="mb-6 animate-float">
+      <span class="px-6 py-2 rounded-full text-sm font-medium bg-pink-500/20 text-pink-300 border border-pink-500/30 backdrop-blur-sm">
+        Premium Cosplay Store
+      </span>
+    </div>
+    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+      {title}
+      <span class="bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-300 bg-clip-text text-transparent animate-gradient">
+        Universe
+      </span>
+    </h1>
+    <p class="text-xl md:text-2xl mb-10 text-gray-200/95 max-w-2xl mx-auto leading-relaxed backdrop-blur-sm">
+      {description}
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a 
+        href={blogLink}
+        class="inline-flex items-center justify-center gap-2 bg-pink-600 hover:bg-pink-500 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-pink-500/25 transform hover:-translate-y-1"
+      >
+        {blogLinkText}
+        <ArrowRight className="w-5 h-5" />
+      </a>
+      <a 
+        href="#featured-products"
+        class="inline-flex items-center justify-center gap-2 bg-purple-700/40 hover:bg-purple-600/50 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 backdrop-blur-sm border border-purple-500/30 transform hover:-translate-y-1"
+      >
+        Explore Costumes
+        <ArrowRight className="w-5 h-5" />
+      </a>
+    </div>
+    <div class="absolute -bottom-10 left-1/2 transform -translate-x-1/2 w-full max-w-4xl h-20 bg-gradient-to-t from-transparent to-pink-500/10 blur-2xl"></div>
+  </div>
+</section>
+
+<style>
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.3; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .animate-twinkle {
+    animation: twinkle 4s ease-in-out infinite;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-gradient {
+    background-size: 200% auto;
+    animation: gradient 3s linear infinite;
+  }
+</style>

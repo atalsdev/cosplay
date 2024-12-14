@@ -1,0 +1,32 @@
+{
+  "description": "Votre destination ultime pour l'équipement moto, les avis et la communauté.",
+  "sections": {
+    "shop": {
+      "title": "Boutique",
+      "links": [
+        { "name": "Casques", "href": "/helmets" },
+        { "name": "Vestes", "href": "/jackets" },
+        { "name": "Bottes", "href": "/boots" },
+        { "name": "Accessoires", "href": "/accessories" }
+      ]
+    },
+    "company": {
+      "title": "Entreprise",
+      "links": [
+        { "name": "À propos", "href": "/about" },
+        { "name": "Blog", "href": "/blog" },
+        { "name": "Contact", "href": "/contact" },
+        { "name": "Carrières", "href": "/careers" }
+      ]
+    },
+    "legal": {
+      "title": "Mentions légales",
+      "links": [
+        { "name": "Confidentialité", "href": "/privacy" },
+        { "name": "Conditions", "href": "/terms" },
+        { "name": "Politique de cookies", "href": "/cookies" }
+      ]
+    }
+  },
+  "copyright": "Tous droits réservés."
+} 

@@ -1,0 +1,32 @@
+{
+  "description": "La tua destinazione definitiva per l'equipaggiamento moto, recensioni e community.",
+  "sections": {
+    "shop": {
+      "title": "Negozio",
+      "links": [
+        { "name": "Caschi", "href": "/helmets" },
+        { "name": "Giacche", "href": "/jackets" },
+        { "name": "Stivali", "href": "/boots" },
+        { "name": "Accessori", "href": "/accessories" }
+      ]
+    },
+    "company": {
+      "title": "Azienda",
+      "links": [
+        { "name": "Chi siamo", "href": "/about" },
+        { "name": "Blog", "href": "/blog" },
+        { "name": "Contatti", "href": "/contact" },
+        { "name": "Lavora con noi", "href": "/careers" }
+      ]
+    },
+    "legal": {
+      "title": "Legale",
+      "links": [
+        { "name": "Privacy", "href": "/privacy" },
+        { "name": "Termini", "href": "/terms" },
+        { "name": "Politica dei cookie", "href": "/cookies" }
+      ]
+    }
+  },
+  "copyright": "Tutti i diritti riservati."
+} 

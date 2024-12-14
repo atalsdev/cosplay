@@ -1,0 +1,56 @@
+{
+  "en": {
+    "default": {
+      "items": [
+        { "label": "Collections", "href": "/collections" },
+        { "label": "Helmets", "href": "/helmets" },
+        { "label": "Jackets", "href": "/jackets" },
+        { "label": "Accessories", "href": "/accessories" }
+      ]
+    },
+    "degital": {
+      "items": [
+        { "label": "Templates", "href": "/templates" },
+        { "label": "Plugins", "href": "/plugins" },
+        { "label": "Scripts", "href": "/scripts" },
+        { "label": "Resources", "href": "/resources" }
+      ]
+    }
+  },
+  "fr": {
+    "default": {
+      "items": [
+        { "label": "Collections", "href": "/collections" },
+        { "label": "Casques", "href": "/helmets" },
+        { "label": "Vestes", "href": "/jackets" },
+        { "label": "Accessoires", "href": "/accessories" }
+      ]
+    },
+    "degital": {
+      "items": [
+        { "label": "Modèles", "href": "/templates" },
+        { "label": "Extensions", "href": "/plugins" },
+        { "label": "Scripts", "href": "/scripts" },
+        { "label": "Ressources", "href": "/resources" }
+      ]
+    }
+  },
+  "de": {
+    "default": {
+      "items": [
+        { "label": "Kollektionen", "href": "/collections" },
+        { "label": "Helme", "href": "/helmets" },
+        { "label": "Jacken", "href": "/jackets" },
+        { "label": "Zubehör", "href": "/accessories" }
+      ]
+    },
+    "degital": {
+      "items": [
+        { "label": "Vorlagen", "href": "/templates" },
+        { "label": "Plugins", "href": "/plugins" },
+        { "label": "Skripte", "href": "/scripts" },
+        { "label": "Ressourcen", "href": "/resources" }
+      ]
+    }
+  }
+}

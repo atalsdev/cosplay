@@ -1,0 +1,32 @@
+{
+  "description": "Your ultimate destination for motorcycle gear, reviews, and community.",
+  "sections": {
+    "shop": {
+      "title": "Shop",
+      "links": [
+        { "name": "Helmets", "href": "/helmets" },
+        { "name": "Jackets", "href": "/jackets" },
+        { "name": "Boots", "href": "/boots" },
+        { "name": "Accessories", "href": "/accessories" }
+      ]
+    },
+    "company": {
+      "title": "Company",
+      "links": [
+        { "name": "About us", "href": "/about" },
+        { "name": "Blog", "href": "/blog" },
+        { "name": "Contact", "href": "/contact" },
+        { "name": "Careers", "href": "/careers" }
+      ]
+    },
+    "legal": {
+      "title": "Legal",
+      "links": [
+        { "name": "Privacy", "href": "/privacy" },
+        { "name": "Terms", "href": "/terms" },
+        { "name": "Cookie Policy", "href": "/cookies" }
+      ]
+    }
+  },
+  "copyright": "All rights reserved."
+} 

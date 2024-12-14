@@ -1,0 +1,125 @@
+---
+import { Button } from './ui/Button';
+
+interface Props {
+  headline: string;
+  description: string;
+  backgroundImage: string;
+  button1Text: string;
+  button1Link: string;
+  button2Text?: string;
+  button2Link?: string;
+}
+
+const { 
+  headline, 
+  description, 
+  backgroundImage,
+  button1Text,
+  button1Link,
+  button2Text,
+  button2Link
+} = Astro.props;
+---
+
+<section 
+  class="relative py-32 px-4 md:px-8 overflow-hidden"
+  style={`background-image: url(${backgroundImage}); background-size: cover; background-position: center;`}
+>
+  <!-- Layered background effects -->
+  <div class="absolute inset-0 bg-gradient-to-r from-purple-900/95 via-pink-800/90 to-purple-900/95 backdrop-blur-sm"></div>
+  <div class="absolute inset-0 bg-[url('/hexagon-pattern.svg')] opacity-10 animate-slide"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+
+  <!-- Main content -->
+  <div class="relative max-w-4xl mx-auto">
+    <div class="max-w-2xl">
+      <!-- Decorative element -->
+      <div class="w-20 h-1 bg-gradient-to-r from-pink-500 to-purple-500 mb-8 rounded-full"></div>
+
+      <!-- Headline with gradient border -->
+      <div class="relative">
+        <h2 class="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+          {headline}
+          <span class="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-pink-500 to-purple-500 rounded-full"></span>
+        </h2>
+      </div>
+
+      <!-- Description with enhanced styling -->
+      <p class="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
+        {description}
+      </p>
+
+      <!-- Action buttons with anime-inspired styling -->
+      <div class="flex flex-wrap gap-4">
+        <a 
+          href={button1Link}
+          class="group inline-flex items-center gap-2 bg-pink-600 text-white px-8 py-3 rounded-lg font-semibold 
+                 hover:bg-pink-500 transition-all duration-300 shadow-lg hover:shadow-pink-500/25 
+                 transform hover:-translate-y-1"
+        >
+          {button1Text}
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </a>
+
+        {button2Text && button2Link && (
+          <a 
+            href={button2Link}
+            class="group inline-flex items-center gap-2 bg-purple-700/40 backdrop-blur-sm text-white px-8 py-3 
+                   rounded-lg font-semibold hover:bg-purple-600/50 transition-all duration-300 
+                   border border-purple-500/30 transform hover:-translate-y-1"
+          >
+            {button2Text}
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
+        )}
+      </div>
+
+      <!-- Decorative corner elements -->
+      <div class="absolute -top-4 -left-4 w-8 h-8 border-t-2 border-l-2 border-pink-500/50"></div>
+      <div class="absolute -bottom-4 -right-4 w-8 h-8 border-b-2 border-r-2 border-purple-500/50"></div>
+    </div>
+  </div>
+
+  <!-- Animated side decoration -->
+  <div class="absolute top-0 right-0 w-1/3 h-full opacity-20">
+    <div class="absolute inset-0 bg-gradient-to-l from-pink-500/30 to-transparent animate-pulse"></div>
+  </div>
+</section>
+
+<style>
+  @keyframes slide {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 100%; }
+  }
+
+  .animate-slide {
+    animation: slide 20s linear infinite;
+    background-size: 200% 200%;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.3; }
+  }
+
+  .animate-pulse {
+    animation: pulse 3s ease-in-out infinite;
+  }
+</style>

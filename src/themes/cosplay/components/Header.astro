@@ -1,0 +1,127 @@
+---
+// Header.astro
+import { Menu, Globe } from 'lucide-react';
+import { getLangFromUrl, getLocalizedPath } from '../../../utils/i18n';
+
+const languages = [
+  { code: 'en', name: 'English' },
+  { code: 'fr', name: 'Français' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'it', name: 'Italiano' }
+];
+
+const currentPath = Astro.url.pathname;
+const currentLang = getLangFromUrl(Astro.url);
+const siteName = import.meta.env.PUBLIC_SITE_NAME || 'MotoPalnet';
+
+// Import the language-specific content
+const headerContent = await import(`./content/header_${currentLang}.json`).catch(() => {
+  // Fallback to English if translation doesn't exist
+  return import('./content/header_en.json');
+});
+
+// Localize navigation links
+const localizedNavigation = headerContent.navigation.map(item => ({
+  ...item,
+  href: `/${currentLang}${item.href === '/' ? '' : item.href}`
+}));
+---
+
+<header class="fixed w-full top-0 z-50 bg-gradient-to-r from-purple-900 via-pink-600 to-purple-900 border-b border-pink-500">
+  <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
+    <div class="flex h-16 items-center justify-between">
+      <div class="flex items-center">
+        <a href={`/${currentLang}`} class="flex items-center">
+          <span class="text-xl font-bold text-white">{siteName}</span>
+        </a>
+      </div>
+      
+      <div class="hidden md:flex items-center space-x-8">
+        {localizedNavigation.map((item) => (
+          <a
+            href={item.href}
+            class="text-base font-medium text-purple-200 hover:text-white transition-colors"
+          >
+            {item.name}
+          </a>
+        ))}
+      </div>
+
+      <div class="flex items-center gap-4">
+        <!-- Language Switcher -->
+        <div class="relative group">
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 text-purple-200 hover:text-white"
+          >
+            <Globe className="h-5 w-5" />
+            <span class="hidden md:inline-block">{languages.find(lang => lang.code === currentLang)?.name}</span>
+          </button>
+          
+          <div class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-blue-950 ring-1 ring-blue-800 ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <div class="py-1" role="menu" aria-orientation="vertical">
+              {languages.map((lang) => (
+                <a
+                  href={getLocalizedPath(currentPath, lang.code)}
+                  class={`block px-4 py-2 text-sm ${currentLang === lang.code ? 'bg-blue-900 text-white' : 'text-blue-200'} hover:bg-blue-900`}
+                  role="menuitem"
+                >
+                  {lang.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <a
+          href={`/${currentLang}/account`}
+          class="hidden md:inline-flex items-center justify-center px-4 py-2 border border-purple-400 text-sm font-medium rounded-md text-white hover:bg-purple-800 transition-colors"
+        >
+          {headerContent.signIn}
+        </a>
+        
+        <!-- Mobile menu button -->
+        <div class="relative md:hidden group">
+          <button
+            type="button"
+            id="mobile-menu-button"
+            class="inline-flex items-center justify-center p-2 rounded-md text-purple-200 hover:text-white hover:bg-purple-800"
+            aria-expanded="false"
+          >
+            <span class="sr-only">{headerContent.menuLabel}</span>
+            <Menu className="h-6 w-6" aria-hidden="true" />
+          </button>
+          <div 
+            id="mobile-menu-dropdown"
+            class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-blue-950 ring-1 ring-blue-800 ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
+          >
+            <div class="py-1" role="menu" aria-orientation="vertical">
+              {localizedNavigation.map((item) => (
+                <a
+                  href={item.href}
+                  class="block px-4 py-2 text-sm text-purple-200 hover:bg-blue-900 hover:text-white"
+                  role="menuitem"
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
+
+  mobileMenuButton?.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+    mobileMenuButton.setAttribute('aria-expanded', (!isExpanded).toString());
+    mobileMenuDropdown?.classList.toggle('opacity-0');
+    mobileMenuDropdown?.classList.toggle('invisible');
+  });
+</script>

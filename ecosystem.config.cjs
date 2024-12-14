@@ -35,6 +35,24 @@ module.exports = {
         namespace: "digivast",
         instances: 1,
         exec_mode: "fork"
+      },
+      {
+        name: "cosplayverse-store",
+        script: "node",
+        args: "-r dotenv/config ./dist/server/entry.mjs",
+        env: {
+          NODE_ENV: "production",
+          PORT: 4323,
+          ENV_FILE: ".env",
+          TEMP: "./tmp",
+          TMPDIR: "./tmp",
+          SESSION_SECRET: "cosplayverse-secret-456",
+          STORE_ID: "cosplayverse"
+        },
+        cwd: "./stores/cosplayverse",
+        namespace: "cosplayverse",
+        instances: 1,
+        exec_mode: "fork"
       }
     ]
 };

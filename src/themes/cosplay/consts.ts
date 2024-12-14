@@ -1,0 +1,2 @@
+export const SITE_TITLE = 'CosplayVerse - Premium Anime & Gaming Cosplay Store';
+export const SITE_DESCRIPTION = 'Your ultimate destination for premium cosplay costumes, accessories, and props from your favorite anime and video games. Created by cosplayers, for cosplayers. Find high-quality costumes, wigs, props, and expert cosplay guides.';

@@ -1,0 +1,394 @@
+---
+import Layout from '../../../layouts/LayoutP.astro';
+import { shopifyFetch } from '../../../lib/shopify';
+import AddToCart from '../../../themes/default/components/AddToCart';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import ProductCard from '../../../themes/default/components/ProductCard';
+
+
+const { handle } = Astro.params;
+
+const query = `
+  query ProductByHandle($handle: String!) {
+    product(handle: $handle) {
+      id
+      title
+      description
+      descriptionHtml
+      images(first: 10) {
+        edges {
+          node {
+            url
+            altText
+          }
+        }
+      }
+      variants(first: 100) {
+        edges {
+          node {
+            id
+            title
+            selectedOptions {
+              name
+              value
+            }
+            price {
+              amount
+              currencyCode
+            }
+            compareAtPrice {
+              amount
+              currencyCode
+            }
+            availableForSale
+          }
+        }
+      }
+      options {
+        name
+        values
+      }
+    }
+    products(first: 4) {
+      edges {
+        node {
+          id
+          title
+          handle
+          description
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          images(first: 1) {
+            edges {
+              node {
+                url
+                altText
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+let product;
+let relatedProducts;
+let error;
+
+try {
+  const response = await shopifyFetch({ 
+    query, 
+    variables: { handle } 
+  });
+
+  product = response?.body?.data?.product;
+  relatedProducts = response?.body?.data?.products?.edges || [];
+  
+  if (!product) {
+    error = 'Product not found';
+  }
+} catch (e) {
+  console.error('Error fetching product:', e);
+  error = 'Error loading product';
+}
+
+if (error) {
+  return new Response(null, {
+    status: 404,
+    statusText: 'Not found'
+  });
+}
+
+const images = product?.images?.edges?.map(edge => edge.node) || [];
+const variants = product?.variants?.edges?.map(edge => ({
+  ...edge.node,
+  availableForSale: true
+})) || [];
+const options = product?.options || [];
+
+if (!product || images.length === 0 || variants.length === 0) {
+  return new Response(null, {
+    status: 404,
+    statusText: 'Not found'
+  });
+}
+---
+
+<Layout title={`${product.title} | RidWear`}>
+  <main class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <!-- Image Gallery -->
+      <div class="space-y-4 lg:sticky lg:top-24 lg:self-start">
+        <div class="relative bg-gray-50 rounded-2xl overflow-hidden">
+          <div class="aspect-square">
+            <img
+              id="mainImage"
+              src={images[0].url}
+              alt={images[0].altText}
+              class="w-full h-full object-contain"
+            />
+          </div>
+          {images.length > 1 && (
+            <>
+              <button 
+                id="prevImage"
+                class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <button 
+                id="nextImage"
+                class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
+                aria-label="Next image"
+              >
+                <ChevronRight size={24} />
+              </button>
+            </>
+          )}
+        </div>
+        
+        {images.length > 1 && (
+          <div class="flex gap-2 overflow-x-auto pb-2">
+            {images.map((image, index) => (
+              <button 
+                class="flex-none w-20 aspect-square rounded-lg overflow-hidden bg-gray-50 hover:opacity-75 transition-opacity"
+                data-image-url={image.url}
+                data-image-index={index}
+              >
+                <img
+                  src={image.url}
+                  alt={image.altText}
+                  class="w-full h-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- Product Info -->
+      <div class="space-y-8">
+        <div>
+          <h1 class="text-3xl font-bold mb-2">{product.title}</h1>
+          <div class="flex items-center gap-2 text-sm text-gray-600">
+            <div class="flex items-center">
+              ★★★★☆
+              <span class="ml-1">4.0</span>
+            </div>
+            <span>•</span>
+            <a href="#reviews" class="hover:text-blue-500">42 Reviews</a>
+          </div>
+        </div>
+
+        <AddToCart
+          client:load
+          product={{
+            id: product.id,
+            title: product.title,
+            variants: variants,
+            options: options,
+            image: images[0].url,
+          }}
+        />
+
+        <!-- Product Description -->
+        <div class="border-t pt-8">
+          <div class="prose prose-lg max-w-none">
+            <h2 class="text-2xl font-bold mb-6">Product Description</h2>
+            <div class="bg-gray-50 rounded-xl p-6 space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 class="font-semibold text-gray-900 mb-2">Features</h3>
+                  <ul class="list-disc list-inside space-y-2 text-gray-700">
+                    <li>Premium quality materials</li>
+                    <li>Comfortable classic fit</li>
+                    <li>Kangaroo-style front pocket</li>
+                    <li>Adjustable drawstring hood</li>
+                    <li>Ribbed cuffs and waist hem</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-gray-900 mb-2">Specifications</h3>
+                  <ul class="space-y-2 text-gray-700">
+                    <li><span class="font-medium">Brand:</span> Hanes</li>
+                    <li><span class="font-medium">Material:</span> 50% cotton/50% polyester</li>
+                    <li><span class="font-medium">Weight:</span> 7.8 oz (midweight)</li>
+                    <li><span class="font-medium">Origin:</span> Made in U.S.A.</li>
+                  </ul>
+                </div>
+              </div>
+              <div set:html={product.descriptionHtml} />
+            </div>
+          </div>
+        </div>
+
+        <!-- Size Chart -->
+        <div class="border-t pt-8">
+          <h2 class="text-2xl font-bold mb-6">Size Chart</h2>
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chest (A)</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Width (B)</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Length (C)</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                {[
+                  ['S', '26.5 inch', '20 inch', '23.98 inch'],
+                  ['M', '27.48 inch', '21.97 inch', '24.29 inch'],
+                  ['L', '28.46 inch', '23.98 inch', '24.37 inch'],
+                  ['XL', '29.53 inch', '24.99 inch', '24.80 inch'],
+                  ['2XL', '30 inch', '27.95 inch', '25 inch'],
+                ].map(([size, chest, width, length]) => (
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{size}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{chest}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{width}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{length}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="border-t pt-8" id="reviews">
+          <h2 class="text-2xl font-bold mb-6">Customer Reviews</h2>
+          <div class="space-y-6">
+            {[
+              { name: 'Sarah M.', rating: 5, date: '1 month ago', verified: true },
+              { name: 'Michael R.', rating: 4, date: '2 months ago', verified: true },
+              { name: 'David K.', rating: 5, date: '3 months ago', verified: true },
+            ].map((review) => (
+              <div class="bg-gray-50 rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span class="text-blue-600 font-semibold">{review.name[0]}</span>
+                    </div>
+                    <div>
+                      <div class="font-medium text-gray-900">{review.name}</div>
+                      <div class="text-sm text-gray-500 flex items-center gap-2">
+                        {review.date}
+                        {review.verified && (
+                          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                            Verified Purchase
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex text-yellow-400">
+                    {'★'.repeat(review.rating)}
+                    {'☆'.repeat(5 - review.rating)}
+                  </div>
+                </div>
+                <p class="text-gray-700">
+                  Great product! The quality is excellent and it fits perfectly. The material is comfortable
+                  and the design is exactly as shown in the pictures. Would definitely recommend!
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="mt-16 border-t pt-16">
+      <h2 class="text-2xl font-bold mb-8">Related Products</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {relatedProducts.map((product) => (
+          <ProductCard
+            client:load
+            id={product.node.id}
+            title={product.node.title}
+            price={parseFloat(product.node.priceRange.minVariantPrice.amount)}
+            image={product.node.images.edges[0]?.node.url}
+            description={product.node.description}
+            handle={product.node.handle}
+          />
+        ))}
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  class ImageGallery {
+    constructor() {
+      this.mainImage = document.getElementById('mainImage');
+      this.thumbnails = document.querySelectorAll('[data-image-url]');
+      this.prevButton = document.getElementById('prevImage');
+      this.nextButton = document.getElementById('nextImage');
+      this.currentIndex = 0;
+      this.maxIndex = this.thumbnails.length - 1;
+
+      this.init();
+    }
+
+    init() {
+      this.thumbnails.forEach((thumb, index) => {
+        thumb.addEventListener('click', () => {
+          this.setImage(index);
+        });
+      });
+
+      this.prevButton?.addEventListener('click', () => {
+        this.navigate(-1);
+      });
+
+      this.nextButton?.addEventListener('click', () => {
+        this.navigate(1);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          this.navigate(-1);
+        } else if (e.key === 'ArrowRight') {
+          this.navigate(1);
+        }
+      });
+    }
+
+    setImage(index) {
+      if (!this.mainImage) return;
+      
+      this.currentIndex = index;
+      const newImageUrl = this.thumbnails[index].getAttribute('data-image-url');
+      if (newImageUrl) {
+        this.mainImage.src = newImageUrl;
+      }
+
+      this.thumbnails.forEach((thumb, i) => {
+        thumb.classList.toggle('ring-2 ring-blue-500', i === index);
+      });
+    }
+
+    navigate(direction) {
+      let newIndex = this.currentIndex + direction;
+
+      if (newIndex < 0) {
+        newIndex = this.maxIndex;
+      } else if (newIndex > this.maxIndex) {
+        newIndex = 0;
+      }
+
+      this.setImage(newIndex);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    new ImageGallery();
+  });
+</script>
