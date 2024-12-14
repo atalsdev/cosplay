@@ -1,0 +1,104 @@
+{
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Willkommen bei Digivast: Ihr digitaler Marktplatz",
+      "description": "Entdecken Sie Premium-Digitalprodukte von vertrauenswürdigen Entwicklern. Von Software bis zu Vorlagen, digitalen Assets bis hin zu Kursen - finden Sie alles, was Sie für Ihre digitalen Projekte benötigen.",
+      "blogLinkText": "Lesen Sie unsere neuesten Updates",
+      "blogLink": "/blog"
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Premium-Digitalprodukte auf Knopfdruck",
+      "description": "Durchstöbern Sie unsere kuratierte Sammlung hochwertiger Digitalprodukte. Verifizierte Entwickler, sichere Käufe, sofortige Downloads.",
+      "backgroundImage": "/images/banner-bg.jpg",
+      "button1Text": "Produkte durchsuchen",
+      "button1Link": "/products",
+      "button2Text": "Bei Digivast verkaufen",
+      "button2Link": "/become-seller"
+    },
+    {
+      "type": "categoryGrid",
+      "title": "Nach Kategorie durchsuchen",
+      "description": "Finden Sie die perfekten digitalen Produkte für Ihre Bed��rfnisse",
+      "categories": [
+        {
+          "id": "software",
+          "name": "Software",
+          "description": "Premium-Tools und Anwendungen",
+          "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2672&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          "link": "/collections/software"
+        },
+        {
+          "id": "templates",
+          "name": "Vorlagen",
+          "description": "Sofort einsetzbare Design-Ressourcen",
+          "image": "https://images.unsplash.com/photo-1623276527153-fa38c1616b05?q=80&w=2669&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          "link": "/collections/templates"
+        },
+        {
+          "id": "digital-assets",
+          "name": "Digitale Assets",
+          "description": "Grafiken, Schriftarten und Medienressourcen",
+          "image": "https://plus.unsplash.com/premium_photo-1663047324456-edcf322077b0?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          "link": "/collections/digital-assets"
+        }
+      ]
+    },
+    {
+      "type": "productShowcase",
+      "title": "Trendprodukte",
+      "description": "Die beliebtesten digitalen Produkte dieser Woche",
+      "viewAllLink": "/catalog",
+      "products": [
+        {
+          "id": "software-1",
+          "name": "Projektmanagement Pro",
+          "description": "Komplette Projektmanagement-Lösung",
+          "price": "99.99",
+          "image": "/images/products/pm-software.jpg",
+          "category": "Software"
+        },
+        {
+          "id": "template-1",
+          "name": "E-Commerce Starter Kit",
+          "description": "Komplette Online-Shop-Vorlage",
+          "price": "59.99",
+          "image": "/images/products/ecommerce-template.jpg",
+          "category": "Vorlagen"
+        },
+        {
+          "id": "asset-1",
+          "name": "Icon Master Collection",
+          "description": "5000+ Premium-Vektor-Icons",
+          "price": "39.99",
+          "image": "/images/products/icon-pack.jpg",
+          "category": "Digitale Assets"
+        },
+        {
+          "id": "software-2",
+          "name": "SEO Toolkit Plus",
+          "description": "Erweiterte SEO-Analyse-Suite",
+          "price": "129.99",
+          "image": "/images/products/seo-toolkit.jpg",
+          "category": "Software"
+        }
+      ]
+    },
+    {
+      "type": "featuredPostsSection",
+      "title": "Einblicke in digitale Produkte",
+      "description": "Neueste Nachrichten, Tutorials und Tipps aus der digitalen Produktwelt",
+      "exploreMoreText": "Alle Beiträge ansehen",
+      "exploreMoreLink": "/blog"
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Werden Sie Teil der Digivast-Community",
+      "description": "Erhalten Sie exklusive Angebote, Benachrichtigungen zu neuen Produkten und Entwicklertipps direkt in Ihrem Posteingang",
+      "backgroundImage": "/images/newsletter-bg.jpg",
+      "formAction": "/api/subscribe",
+      "submitText": "Jetzt abonnieren"
+    }
+  ]
+}

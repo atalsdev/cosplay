@@ -20,7 +20,7 @@ const envFile = process.env.ENV_FILE || '.env';
 loadEnvironment(envFile);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DOMAINE = import.meta.env.DOMAINE || 'https://perfectmotoride.com';
+const DOMAINE = process.env.DOMAINE || 'https://perfectmotoride.com';
 const PORT = process.env.PORT || 4321;
 const HOST = process.env.HOST || '0.0.0.0';
 

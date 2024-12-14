@@ -1,28 +1,18 @@
 ---
+import { getLangFromUrl } from '../../../utils/i18n';
 import socialData from './social.json';
+
 const currentYear = new Date().getFullYear();
 const siteName = import.meta.env.PUBLIC_SITE_NAME;
+const currentLang = getLangFromUrl(Astro.url);
 
-const footerNavigation = {
-  shop: [
-    { name: 'Helmets', href: '#' },
-    { name: 'Jackets', href: '#' },
-    { name: 'Boots', href: '#' },
-    { name: 'Accessories', href: '#' },
-  ],
-  company: [
-    { name: 'About us', href: '/about' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Contact', href: '/contact' },
-    { name: 'Careers', href: '/careers' },
-  ],
-  legal: [
-    { name: 'Privacy', href: '/privacy' },
-    { name: 'Terms', href: '/terms' },
-    { name: 'Cookie Policy', href: '/cookies' },
-  ],
-  social: socialData.social
-};
+// Import the language-specific content
+const footerContent = await import(`./content/footer_${currentLang}.json`).catch(() => {
+  // Fallback to English if translation doesn't exist
+  return import('./content/footer_en.json');
+});
+
+const { description, sections, copyright } = footerContent;
 ---
 
 <footer class="bg-gray-900" aria-labelledby="footer-heading">
@@ -32,10 +22,10 @@ const footerNavigation = {
       <div class="space-y-8">
         <span class="text-2xl font-bold text-white">{siteName}</span>
         <p class="text-sm leading-6 text-gray-300">
-          Your ultimate destination for motorcycle gear, reviews, and community.
+          {description}
         </p>
         <div class="flex space-x-6">
-          {footerNavigation.social.map((item) => (
+          {socialData.social.map((item) => (
             <a href={item.href} class="text-gray-500 hover:text-gray-400">
               <span class="sr-only">{item.name}</span>
               <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -48,11 +38,11 @@ const footerNavigation = {
       <div class="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
         <div class="md:grid md:grid-cols-2 md:gap-8">
           <div>
-            <h3 class="text-sm font-semibold leading-6 text-white">Shop</h3>
+            <h3 class="text-sm font-semibold leading-6 text-white">{sections.shop.title}</h3>
             <ul role="list" class="mt-6 space-y-4">
-              {footerNavigation.shop.map((item) => (
+              {sections.shop.links.map((item) => (
                 <li>
-                  <a href={item.href} class="text-sm leading-6 text-gray-300 hover:text-white">
+                  <a href={`/${currentLang}${item.href}`} class="text-sm leading-6 text-gray-300 hover:text-white">
                     {item.name}
                   </a>
                 </li>
@@ -60,11 +50,11 @@ const footerNavigation = {
             </ul>
           </div>
           <div class="mt-10 md:mt-0">
-            <h3 class="text-sm font-semibold leading-6 text-white">Company</h3>
+            <h3 class="text-sm font-semibold leading-6 text-white">{sections.company.title}</h3>
             <ul role="list" class="mt-6 space-y-4">
-              {footerNavigation.company.map((item) => (
+              {sections.company.links.map((item) => (
                 <li>
-                  <a href={item.href} class="text-sm leading-6 text-gray-300 hover:text-white">
+                  <a href={`/${currentLang}${item.href}`} class="text-sm leading-6 text-gray-300 hover:text-white">
                     {item.name}
                   </a>
                 </li>
@@ -74,11 +64,11 @@ const footerNavigation = {
         </div>
         <div class="md:grid md:grid-cols-2 md:gap-8">
           <div>
-            <h3 class="text-sm font-semibold leading-6 text-white">Legal</h3>
+            <h3 class="text-sm font-semibold leading-6 text-white">{sections.legal.title}</h3>
             <ul role="list" class="mt-6 space-y-4">
-              {footerNavigation.legal.map((item) => (
+              {sections.legal.links.map((item) => (
                 <li>
-                  <a href={item.href} class="text-sm leading-6 text-gray-300 hover:text-white">
+                  <a href={`/${currentLang}${item.href}`} class="text-sm leading-6 text-gray-300 hover:text-white">
                     {item.name}
                   </a>
                 </li>
@@ -90,7 +80,7 @@ const footerNavigation = {
     </div>
     <div class="mt-16 border-t border-white/10 pt-8 sm:mt-20 lg:mt-24">
       <p class="text-xs leading-5 text-gray-400">
-        &copy; {currentYear} {siteName}. All rights reserved.
+        &copy; {currentYear} {siteName}. {copyright}
       </p>
     </div>
   </div>

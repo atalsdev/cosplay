@@ -1,0 +1,104 @@
+{
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Benvenuti su Digivast: Il tuo marketplace digitale",
+      "description": "Scopri prodotti digitali premium da creatori fidati. Dal software ai modelli, dalle risorse digitali ai corsi - trova tutto ciò di cui hai bisogno per i tuoi progetti digitali.",
+      "blogLinkText": "Leggi i nostri ultimi aggiornamenti",
+      "blogLink": "/blog"
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Prodotti digitali premium a portata di mano",
+      "description": "Sfoglia la nostra collezione curata di prodotti digitali di alta qualità. Creatori verificati, acquisti sicuri, download istantanei.",
+      "backgroundImage": "/images/banner-bg.jpg",
+      "button1Text": "Sfoglia Prodotti",
+      "button1Link": "/products",
+      "button2Text": "Vendi su Digivast",
+      "button2Link": "/become-seller"
+    },
+    {
+      "type": "categoryGrid",
+      "title": "Sfoglia per categoria",
+      "description": "Trova i prodotti digitali perfetti per le tue esigenze",
+      "categories": [
+        {
+          "id": "software",
+          "name": "Software",
+          "description": "Strumenti e applicazioni premium",
+          "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2672&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          "link": "/collections/software"
+        },
+        {
+          "id": "templates",
+          "name": "Modelli",
+          "description": "Risorse di design pronte all'uso",
+          "image": "https://images.unsplash.com/photo-1623276527153-fa38c1616b05?q=80&w=2669&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          "link": "/collections/templates"
+        },
+        {
+          "id": "digital-assets",
+          "name": "Risorse Digitali",
+          "description": "Grafiche, font e risorse multimediali",
+          "image": "https://plus.unsplash.com/premium_photo-1663047324456-edcf322077b0?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          "link": "/collections/digital-assets"
+        }
+      ]
+    },
+    {
+      "type": "productShowcase",
+      "title": "Prodotti di Tendenza",
+      "description": "I prodotti digitali più popolari questa settimana",
+      "viewAllLink": "/catalog",
+      "products": [
+        {
+          "id": "software-1",
+          "name": "Project Management Pro",
+          "description": "Soluzione completa per la gestione progetti",
+          "price": "99.99",
+          "image": "/images/products/pm-software.jpg",
+          "category": "Software"
+        },
+        {
+          "id": "template-1",
+          "name": "Kit Iniziale E-commerce",
+          "description": "Template completo per negozio online",
+          "price": "59.99",
+          "image": "/images/products/ecommerce-template.jpg",
+          "category": "Modelli"
+        },
+        {
+          "id": "asset-1",
+          "name": "Collezione Master di Icone",
+          "description": "5000+ icone vettoriali premium",
+          "price": "39.99",
+          "image": "/images/products/icon-pack.jpg",
+          "category": "Risorse Digitali"
+        },
+        {
+          "id": "software-2",
+          "name": "SEO Toolkit Plus",
+          "description": "Suite avanzata di analisi SEO",
+          "price": "129.99",
+          "image": "/images/products/seo-toolkit.jpg",
+          "category": "Software"
+        }
+      ]
+    },
+    {
+      "type": "featuredPostsSection",
+      "title": "Approfondimenti sui Prodotti Digitali",
+      "description": "Ultime novità, tutorial e consigli dal mondo dei prodotti digitali",
+      "exploreMoreText": "Visualizza tutti i post",
+      "exploreMoreLink": "/blog"
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Unisciti alla Community Digivast",
+      "description": "Ricevi offerte esclusive, avvisi sui nuovi prodotti e suggerimenti dei creatori direttamente nella tua casella di posta",
+      "backgroundImage": "/images/newsletter-bg.jpg",
+      "formAction": "/api/subscribe",
+      "submitText": "Iscriviti Ora"
+    }
+  ]
+}
