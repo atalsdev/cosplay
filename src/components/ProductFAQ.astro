@@ -1,20 +1,60 @@
 ---
-import faqContent from './content/faq-content.json';
+import faqContent from './content/faqs.json';
 
 interface Props {
   productTitle: string;
   language: string;
 }
 
-const { productTitle, language } = Astro.props;
+const { productTitle, language = 'en' } = Astro.props;
 
+// Get PROJECT_TYPE from environment variables
+const PROJECT_TYPE = import.meta.env.PROJECT_TYPE || 'default';
+
+function getProductCategory(title: string): string {
+  const title_lower = title.toLowerCase();
+  
+  if (PROJECT_TYPE === 'degital') {
+    if (title_lower.includes('template') || title_lower.includes('theme')) {
+      return 'template';
+    }
+    if (title_lower.includes('plugin') || title_lower.includes('extension')) {
+      return 'plugin';
+    }
+    if (title_lower.includes('script') || title_lower.includes('code')) {
+      return 'script';
+    }
+    return 'digital'; // default digital fallback
+  }
+  
+  // Original physical product categories
+  if (title_lower.includes('jacket') || title_lower.includes('coat')) {
+    return 'jacket';
+  }
+  if (title_lower.includes('shoe') || title_lower.includes('boot')) {
+    return 'shoes';
+  }
+  if (title_lower.includes('helmet')) {
+    return 'helmet';
+  }
+  
+  return PROJECT_TYPE === 'degital' ? 'digital' : 'jacket'; // default fallback
+}
+
+// Get content for current language or fallback to English
 const content = faqContent[language] || faqContent.en;
+const category = getProductCategory(productTitle);
+
+// Get FAQs for the category, fallback to English if not available in current language
+const faqs = content.categories[category]?.questions || 
+            faqContent.en.categories[category]?.questions || 
+            faqContent.en.categories[PROJECT_TYPE === 'degital' ? 'digital' : 'jacket'].questions; // ultimate fallback
 ---
 
 <div class="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
   <h3 class="text-xl font-bold text-gray-900 mb-4">{content.title}</h3>
   <div class="space-y-4">
-    {content.faqs.map((faq) => (
+    {faqs.map((faq) => (
       <div class="border-b border-gray-100 last:border-0 pb-4 last:pb-0">
         <h4 class="font-medium text-gray-900 mb-2">{faq.q}</h4>
         <p class="text-gray-600">{faq.a}</p>

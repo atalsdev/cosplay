@@ -2,6 +2,74 @@
   "en": {
     "title": "Common Questions",
     "categories": {
+      "digital": {
+        "title": "Digital Product FAQs",
+        "questions": [
+          {
+            "q": "How do I download my purchase?",
+            "a": "After purchase, you'll receive an email with download instructions. You can also access your downloads from your account dashboard."
+          },
+          {
+            "q": "How long do I have access to updates?",
+            "a": "You get lifetime access to all updates for this product. We regularly release improvements and new features."
+          },
+          {
+            "q": "What if I need technical support?",
+            "a": "We offer 6 months of technical support with your purchase. You can extend support through our support plans."
+          }
+        ]
+      },
+      "template": {
+        "title": "Template FAQs",
+        "questions": [
+          {
+            "q": "What's included in the template package?",
+            "a": "You'll receive all source files, documentation, and demo content. Plus free updates and 6 months support."
+          },
+          {
+            "q": "Do I need coding knowledge?",
+            "a": "Basic HTML/CSS knowledge is helpful but not required. We provide detailed documentation for setup."
+          },
+          {
+            "q": "Can I use this for client projects?",
+            "a": "Yes, our standard license allows usage in both personal and client projects."
+          }
+        ]
+      },
+      "plugin": {
+        "title": "Plugin FAQs",
+        "questions": [
+          {
+            "q": "Is this compatible with the latest version?",
+            "a": "Yes, we maintain regular updates to ensure compatibility with the latest platform versions."
+          },
+          {
+            "q": "How do I install the plugin?",
+            "a": "Installation is simple - just upload through your admin panel or follow our step-by-step guide."
+          },
+          {
+            "q": "Can I use this on multiple sites?",
+            "a": "This depends on your license type. Single-site licenses are for one installation, while developer licenses allow multiple sites."
+          }
+        ]
+      },
+      "script": {
+        "title": "Script FAQs",
+        "questions": [
+          {
+            "q": "What are the system requirements?",
+            "a": "Requirements vary by script. Check the technical specifications tab for detailed requirements."
+          },
+          {
+            "q": "Do you offer customization?",
+            "a": "Yes, we can provide customization services. Contact our support team for a quote."
+          },
+          {
+            "q": "Is documentation included?",
+            "a": "Yes, comprehensive documentation is included with installation and usage instructions."
+          }
+        ]
+      },
       "jacket": {
         "title": "Jacket FAQs",
         "questions": [
@@ -67,20 +135,20 @@
   "fr": {
     "title": "Questions Fréquentes",
     "categories": {
-      "jacket": {
-        "title": "FAQ Vestes",
+      "digital": {
+        "title": "FAQ Produits Numériques",
         "questions": [
           {
-            "q": "Comment taille cette veste ?",
-            "a": "La veste suit une coupe régulière fidèle à la taille. Nous vous recommandons de choisir votre taille habituelle pour un ajustement confortable."
+            "q": "Comment télécharger mon achat ?",
+            "a": "Après l'achat, vous recevrez un email avec les instructions de téléchargement. Vous pouvez également accéder à vos téléchargements depuis votre tableau de bord."
           },
           {
-            "q": "Cette veste est-elle lavable en machine ?",
-            "a": "Oui, cette veste est lavable en machine. Utilisez de l'eau froide et séchez à basse température."
+            "q": "Combien de temps ai-je accès aux mises à jour ?",
+            "a": "Vous bénéficiez d'un accès à vie à toutes les mises à jour de ce produit."
           },
           {
-            "q": "Quel est le meilleur moyen d'entretenir cette veste ?",
-            "a": "Pour une longévité optimale, lavez à l'eau froide, évitez l'eau de Javel et séchez à basse température. Retirez rapidement et suspendez pour éviter les plis."
+            "q": "Que faire si j'ai besoin d'assistance technique ?",
+            "a": "Nous offrons 6 mois de support technique avec votre achat. Vous pouvez prolonger le support via nos plans d'assistance."
           }
         ]
       }
