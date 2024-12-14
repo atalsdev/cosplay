@@ -5,9 +5,10 @@ interface Props {
   title: string;
   description: string;
   viewAllLink: string;
+  lang: string;
 }
 
-const { title, description, viewAllLink } = Astro.props;
+const { title, description, viewAllLink, lang } = Astro.props;
 
 // Fetch products from Shopify and limit to 4
 const productsData = await getAllProducts();
@@ -39,7 +40,7 @@ const products = productsData
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       {products.map((product) => (
         <a 
-          href={`/products/${product.handle}`} 
+          href={`/${lang}/products/${product.handle}`} 
           class="block group bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
         >
           <div class="relative overflow-hidden rounded-lg mb-4">

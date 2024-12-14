@@ -2,100 +2,100 @@
   "sections": [
     {
       "type": "welcomeSection",
-      "title": "Empower Your Digital Journey: Discover with DigiPlanet",
-      "description": "Explore the world of digital products with DigiPlanet - your ultimate destination for the latest software, e-books, and online courses. Start your digital adventure today!",
-      "blogLinkText": "Read the Latest Motorcycle News",
+      "title": "Welcome to Digivast: Your Digital Marketplace",
+      "description": "Discover premium digital products from trusted creators. From software to templates, digital assets to courses - find everything you need to power your digital projects.",
+      "blogLinkText": "Read Our Latest Updates",
       "blogLink": "/blog"
     },
     {
       "type": "bannerSection",
-      "headline": "Find Your Ideal Digital Product",
-      "description": "In-depth reviews, buying guides, and expert tips - everything you need to make informed decisions about your digital purchases.",
+      "headline": "Premium Digital Products at Your Fingertips",
+      "description": "Browse our curated collection of high-quality digital products. Verified creators, secure purchases, instant downloads.",
       "backgroundImage": "/images/banner-bg.jpg",
-      "button1Text": "Browse Reviews",
-      "button1Link": "/reviews",
-      "button2Text": "Read Guides",
-      "button2Link": "/guides"
+      "button1Text": "Browse Products",
+      "button1Link": "/products",
+      "button2Text": "Sell on Digivast",
+      "button2Link": "/become-seller"
     },
     {
       "type": "categoryGrid",
       "title": "Browse by Category",
-      "description": "Find the perfect digital resources for your needs",
+      "description": "Find the perfect digital products for your needs",
       "categories": [
+        {
+          "id": "software",
+          "name": "Software",
+          "description": "Premium tools and applications",
+          "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2672&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          "link": "/collections/software"
+        },
         {
           "id": "templates",
           "name": "Templates",
-          "description": "Premium website and design templates",
-          "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2672&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          "link": "/shop/templates"
-        },
-        {
-          "id": "ebooks",
-          "name": "E-Books",
-          "description": "Expert guides and digital publications",
+          "description": "Ready-to-use design resources",
           "image": "https://images.unsplash.com/photo-1623276527153-fa38c1616b05?q=80&w=2669&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          "link": "/shop/ebooks"
+          "link": "/collections/templates"
         },
         {
-          "id": "courses",
-          "name": "Courses",
-          "description": "Professional online learning resources",
-          "image": "https://plus.unsplash.com/premium_photo-1663047324456-edcf322077b0?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3Dg",
-          "link": "/shop/courses"
+          "id": "digital-assets",
+          "name": "Digital Assets",
+          "description": "Graphics, fonts, and media resources",
+          "image": "https://plus.unsplash.com/premium_photo-1663047324456-edcf322077b0?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          "link": "/collections/digital-assets"
         }
       ]
     },
     {
       "type": "productShowcase",
-      "title": "Featured Products",
-      "description": "Our most popular digital resources",
-      "viewAllLink": "/shop",
+      "title": "Trending Products",
+      "description": "Most popular digital products this week",
+      "viewAllLink": "/catalog",
       "products": [
         {
+          "id": "software-1",
+          "name": "Project Management Pro",
+          "description": "Complete project management solution",
+          "price": "99.99",
+          "image": "/images/products/pm-software.jpg",
+          "category": "Software"
+        },
+        {
           "id": "template-1",
-          "name": "Pro Business Website Kit",
-          "description": "Complete website template bundle with UI components",
-          "price": "79.99",
-          "image": "/images/products/website-template.jpg",
+          "name": "E-commerce Starter Kit",
+          "description": "Complete online store template",
+          "price": "59.99",
+          "image": "/images/products/ecommerce-template.jpg",
           "category": "Templates"
         },
         {
-          "id": "ebook-1",
-          "name": "Digital Marketing Mastery",
-          "description": "Comprehensive guide to modern marketing",
+          "id": "asset-1",
+          "name": "Icon Master Collection",
+          "description": "5000+ premium vector icons",
           "price": "39.99",
-          "image": "/images/products/ebook-marketing.jpg",
-          "category": "E-Books"
+          "image": "/images/products/icon-pack.jpg",
+          "category": "Digital Assets"
         },
         {
-          "id": "course-1",
-          "name": "Full-Stack Development 2024",
-          "description": "Complete web development bootcamp",
-          "price": "199.99",
-          "image": "/images/products/dev-course.jpg",
-          "category": "Courses"
-        },
-        {
-          "id": "software-1",
-          "name": "Analytics Pro Suite",
-          "description": "Advanced data analysis tools",
-          "price": "149.99",
-          "image": "/images/products/analytics-suite.jpg",
+          "id": "software-2",
+          "name": "SEO Toolkit Plus",
+          "description": "Advanced SEO analysis suite",
+          "price": "129.99",
+          "image": "/images/products/seo-toolkit.jpg",
           "category": "Software"
         }
       ]
     },
     {
       "type": "featuredPostsSection",
-      "title": "Latest Digital Insights",
-      "description": "Stay updated with the newest trends and insights in the digital product world.",
+      "title": "Digital Product Insights",
+      "description": "Latest news, tutorials, and tips from the digital product world",
       "exploreMoreText": "View All Posts",
       "exploreMoreLink": "/blog"
     },
     {
       "type": "emailSignupSection",
-      "title": "Stay Updated with Digital Trends",
-      "description": "Subscribe to our newsletter for the latest digital product news, reviews, and exclusive offers.",
+      "title": "Join the Digivast Community",
+      "description": "Get exclusive deals, new product alerts, and creator tips delivered to your inbox",
       "backgroundImage": "/images/newsletter-bg.jpg",
       "formAction": "/api/subscribe",
       "submitText": "Subscribe Now"

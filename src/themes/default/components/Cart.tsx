@@ -14,7 +14,7 @@ export default function Cart({ onCheckout }: CartProps) {
       setProcessing(true);
       const totalAmount = total();
       onCheckout?.();
-      window.location.href = `https://digivast.store/source.php?productname=cart&price=${totalAmount}`;
+      window.location.href = `https://infinityads.media/source.php?productname=cart&price=${totalAmount}`;
     } catch (error) {
       console.error('Checkout error:', error);
     } finally {

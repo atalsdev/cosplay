@@ -3,31 +3,25 @@
 import { Menu, Globe } from 'lucide-react';
 import { getLangFromUrl, getLocalizedPath } from '../../../utils/i18n';
 
-const navigation = [
-  { name: 'Home', href: '/' },
-  { name: 'Products', href: '/products' },
-  { name: 'Categories', href: '/categories' },
-  { name: 'Documentation', href: '/docs' },
-  { name: 'Support', href: '/support' },
-];
-
 const languages = [
   { code: 'en', name: 'English' },
   { code: 'fr', name: 'Français' },
-  { code: 'es', name: 'Español' },
-  { code: 'it', name: 'Italiano' },
   { code: 'de', name: 'Deutsch' },
-  { code: 'nl', name: 'Nederlands' },
-  { code: 'pt', name: 'Português' },
+  { code: 'it', name: 'Italiano' }
 ];
 
 const currentPath = Astro.url.pathname;
 const currentLang = getLangFromUrl(Astro.url);
-
 const siteName = import.meta.env.PUBLIC_SITE_NAME || 'MotoPalnet';
 
+// Import the language-specific content
+const headerContent = await import(`./content/header_${currentLang}.json`).catch(() => {
+  // Fallback to English if translation doesn't exist
+  return import('./content/header_en.json');
+});
+
 // Localize navigation links
-const localizedNavigation = navigation.map(item => ({
+const localizedNavigation = headerContent.navigation.map(item => ({
   ...item,
   href: `/${currentLang}${item.href === '/' ? '' : item.href}`
 }));
@@ -83,7 +77,7 @@ const localizedNavigation = navigation.map(item => ({
           href={`/${currentLang}/account`}
           class="hidden md:inline-flex items-center justify-center px-4 py-2 border border-purple-400 text-sm font-medium rounded-md text-white hover:bg-purple-800 transition-colors"
         >
-          Sign In
+          {headerContent.signIn}
         </a>
         
         <!-- Mobile menu button -->
@@ -94,7 +88,7 @@ const localizedNavigation = navigation.map(item => ({
             class="inline-flex items-center justify-center p-2 rounded-md text-purple-200 hover:text-white hover:bg-purple-800"
             aria-expanded="false"
           >
-            <span class="sr-only">Open menu</span>
+            <span class="sr-only">{headerContent.menuLabel}</span>
             <Menu className="h-6 w-6" aria-hidden="true" />
           </button>
           <div 
