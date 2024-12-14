@@ -2,6 +2,46 @@
   "en": {
     "title": "Key Features",
     "categories": {
+      "digital": {
+        "features": [
+          "Instant digital delivery",
+          "Lifetime updates",
+          "Technical documentation",
+          "Premium support",
+          "Easy integration",
+          "Regular maintenance"
+        ]
+      },
+      "template": {
+        "features": [
+          "Responsive design",
+          "Cross-browser compatible",
+          "SEO optimized",
+          "Clean code structure",
+          "Easy customization",
+          "Modern UI/UX"
+        ]
+      },
+      "plugin": {
+        "features": [
+          "Easy installation",
+          "Regular updates",
+          "Performance optimized",
+          "Security focused",
+          "API integration",
+          "Extensive documentation"
+        ]
+      },
+      "script": {
+        "features": [
+          "Optimized performance",
+          "Well-documented code",
+          "Easy customization",
+          "Cross-platform support",
+          "Regular updates",
+          "Technical support"
+        ]
+      },
       "jacket": {
         "features": [
           "Premium quality materials",
@@ -21,22 +61,32 @@
           "Reinforced heel",
           "Water-resistant"
         ]
-      },
-      "helmet": {
-        "features": [
-          "Advanced impact protection",
-          "Ventilation system",
-          "Quick-release buckle",
-          "Removable liner",
-          "UV-resistant shell",
-          "DOT certified"
-        ]
       }
     }
   },
   "fr": {
     "title": "Caractéristiques Principales",
     "categories": {
+      "digital": {
+        "features": [
+          "Livraison numérique instantanée",
+          "Mises à jour à vie",
+          "Documentation technique",
+          "Support premium",
+          "Intégration facile",
+          "Maintenance régulière"
+        ]
+      },
+      "template": {
+        "features": [
+          "Design responsive",
+          "Compatible multi-navigateurs",
+          "Optimisé SEO",
+          "Structure de code propre",
+          "Personnalisation facile",
+          "UI/UX moderne"
+        ]
+      },
       "jacket": {
         "features": [
           "Matériaux de qualité premium",

@@ -2,6 +2,38 @@
   "en": {
     "title": "Product Details",
     "categories": {
+      "digital": {
+        "specs": [
+          { "label": "File Format", "value": "Multiple formats included" },
+          { "label": "Compatibility", "value": "All major platforms" },
+          { "label": "License", "value": "Standard license" },
+          { "label": "Support", "value": "6 months included" }
+        ]
+      },
+      "template": {
+        "specs": [
+          { "label": "Framework", "value": "Latest version" },
+          { "label": "Responsive", "value": "Yes - All devices" },
+          { "label": "Documentation", "value": "Included" },
+          { "label": "Updates", "value": "Free lifetime updates" }
+        ]
+      },
+      "plugin": {
+        "specs": [
+          { "label": "Version", "value": "Latest stable release" },
+          { "label": "Compatibility", "value": "WordPress 5.0+" },
+          { "label": "Support", "value": "6 months included" },
+          { "label": "Updates", "value": "1 year included" }
+        ]
+      },
+      "script": {
+        "specs": [
+          { "label": "Language", "value": "JavaScript/PHP" },
+          { "label": "Dependencies", "value": "Minimal" },
+          { "label": "Documentation", "value": "Included" },
+          { "label": "Support", "value": "Basic support included" }
+        ]
+      },
       "jacket": {
         "specs": [
           { "label": "Material", "value": "50% cotton/50% polyester" },
@@ -31,6 +63,38 @@
   "fr": {
     "title": "Détails du Produit",
     "categories": {
+      "digital": {
+        "specs": [
+          { "label": "Format de Fichier", "value": "Formats multiples inclus" },
+          { "label": "Compatibilité", "value": "Toutes plateformes majeures" },
+          { "label": "Licence", "value": "Licence standard" },
+          { "label": "Support", "value": "6 mois inclus" }
+        ]
+      },
+      "template": {
+        "specs": [
+          { "label": "Framework", "value": "Version la plus récente" },
+          { "label": "Responsive", "value": "Oui - Tous les appareils" },
+          { "label": "Documentation", "value": "Inclus" },
+          { "label": "Mises à jour", "value": "Mises à jour gratuites pour toute la vie" }
+        ]
+      },
+      "plugin": {
+        "specs": [
+          { "label": "Version", "value": "Dernière version stable" },
+          { "label": "Compatibilité", "value": "WordPress 5.0+" },
+          { "label": "Support", "value": "6 mois inclus" },
+          { "label": "Mises à jour", "value": "1 an inclus" }
+        ]
+      },
+      "script": {
+        "specs": [
+          { "label": "Langage", "value": "JavaScript/PHP" },
+          { "label": "Dépendances", "value": "Minimal" },
+          { "label": "Documentation", "value": "Inclus" },
+          { "label": "Support", "value": "Support de base inclus" }
+        ]
+      },
       "jacket": {
         "specs": [
           { "label": "Matériau", "value": "50% coton/50% polyester" },
@@ -52,6 +116,38 @@
   "de": {
     "title": "Produktdetails",
     "categories": {
+      "digital": {
+        "specs": [
+          { "label": "Dateiformat", "value": "Mehrere Formate enthalten" },
+          { "label": "Kompatibilität", "value": "Alle großen Plattformen" },
+          { "label": "Lizenz", "value": "Standardlizenz" },
+          { "label": "Support", "value": "6 Monate enthalten" }
+        ]
+      },
+      "template": {
+        "specs": [
+          { "label": "Framework", "value": "Neueste Version" },
+          { "label": "Responsive", "value": "Ja - Alle Geräte" },
+          { "label": "Dokumentation", "value": "Enthalten" },
+          { "label": "Updates", "value": "Kostenlose lebenslange Updates" }
+        ]
+      },
+      "plugin": {
+        "specs": [
+          { "label": "Version", "value": "Neueste stabile Version" },
+          { "label": "Kompatibilität", "value": "WordPress 5.0+" },
+          { "label": "Support", "value": "6 Monate enthalten" },
+          { "label": "Updates", "value": "1 Jahr enthalten" }
+        ]
+      },
+      "script": {
+        "specs": [
+          { "label": "Sprache", "value": "JavaScript/PHP" },
+          { "label": "Abhängigkeiten", "value": "Minimal" },
+          { "label": "Dokumentation", "value": "Enthalten" },
+          { "label": "Support", "value": "Grundlegenden Support enthalten" }
+        ]
+      },
       "jacket": {
         "specs": [
           { "label": "Material", "value": "50% Baumwolle/50% Polyester" },

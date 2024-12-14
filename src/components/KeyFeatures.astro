@@ -1,4 +1,6 @@
 ---
+import featuresContent from './content/key-features.json';
+
 interface Props {
   productTitle: string;
   language: string;
@@ -6,87 +8,50 @@ interface Props {
 
 const { productTitle, language = 'en' } = Astro.props;
 
-const features = {
-  en: {
-    title: "Key Features",
-    jacket: [
-      "Premium quality materials",
-      "Comfortable classic fit",
-      "Kangaroo-style pocket",
-      "Adjustable hood",
-      "Ribbed cuffs",
-      "Durable stitching"
-    ],
-    shoes: [
-      "Premium leather upper",
-      "Cushioned insole",
-      "Anti-slip rubber sole",
-      "Breathable design",
-      "Reinforced heel",
-      "Water-resistant"
-    ]
-  },
-  fr: {
-    title: "Caractéristiques Principales",
-    jacket: [
-      "Matériaux de qualité premium",
-      "Coupe classique confortable",
-      "Poche kangourou",
-      "Capuche ajustable",
-      "Poignets côtelés",
-      "Coutures durables"
-    ],
-    shoes: [
-      "Dessus en cuir premium",
-      "Semelle intérieure rembourrée",
-      "Semelle antidérapante",
-      "Design respirant",
-      "Talon renforcé",
-      "Résistant à l'eau"
-    ]
-  },
-  de: {
-    title: "Hauptmerkmale",
-    jacket: [
-      "Premium-Qualitätsmaterialien",
-      "Komfortable klassische Passform",
-      "Känguru-Tasche",
-      "Verstellbare Kapuze",
-      "Gerippte Bündchen",
-      "Strapazierfähige Nähte"
-    ],
-    shoes: [
-      "Premium-Leder-Obermaterial",
-      "Gepolsterte Einlegesohle",
-      "Rutschfeste Gummisohle",
-      "Atmungsaktives Design",
-      "Verstärkte Ferse",
-      "Wasserabweisend"
-    ]
+// Get PROJECT_TYPE from environment variables
+const PROJECT_TYPE = import.meta.env.PROJECT_TYPE || 'default';
+
+function getProductCategory(title: string): string {
+  const title_lower = title.toLowerCase();
+  
+  if (PROJECT_TYPE === 'degital') {
+    if (title_lower.includes('template') || title_lower.includes('theme')) {
+      return 'template';
+    }
+    if (title_lower.includes('plugin') || title_lower.includes('extension')) {
+      return 'plugin';
+    }
+    if (title_lower.includes('script') || title_lower.includes('code')) {
+      return 'script';
+    }
+    return 'digital'; // default digital fallback
   }
-};
+  
+  // Original physical product categories
+  if (title_lower.includes('jacket') || title_lower.includes('coat')) {
+    return 'jacket';
+  }
+  if (title_lower.includes('shoe') || title_lower.includes('boot')) {
+    return 'shoes';
+  }
+  
+  return PROJECT_TYPE === 'degital' ? 'digital' : 'jacket'; // default fallback
+}
 
-// Get the language content or fallback to English if language doesn't exist
-const currentLang = features[language] || features.en;
+// Get content for current language or fallback to English
+const content = featuresContent[language] || featuresContent.en;
+const category = getProductCategory(productTitle);
 
-// Determine product type
-const getProductType = (title: string) => {
-  const lowerTitle = title.toLowerCase();
-  if (lowerTitle.includes('jacket') || lowerTitle.includes('hoodie') || lowerTitle.includes('veste')) return 'jacket';
-  if (lowerTitle.includes('shoe') || lowerTitle.includes('boot') || lowerTitle.includes('chaussure')) return 'shoes';
-  return 'jacket'; // default fallback
-};
-
-const productType = getProductType(productTitle);
-
-// Get features list in correct language, fallback to English only if the product type doesn't exist in current language
-const featureList = currentLang[productType] || features.en[productType];
+// Get features for the category, fallback to English if not available in current language
+const features = content.categories[category]?.features || 
+                featuresContent.en.categories[category]?.features || 
+                featuresContent.en.categories[PROJECT_TYPE === 'degital' ? 'digital' : 'jacket'].features; // ultimate fallback
 ---
 
 <div class="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
-  <h3 class="text-xl font-bold text-gray-900 mb-4">{currentLang.title}</h3>
+  <h3 class="text-xl font-bold text-gray-900 mb-4">{content.title}</h3>
   <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    {featureList.map((feature) => (
+    {features.map((feature) => (
       <li class="flex items-center gap-2">
         <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>

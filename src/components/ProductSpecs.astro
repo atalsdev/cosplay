@@ -8,9 +8,26 @@ interface Props {
 
 const { productTitle, language = 'en' } = Astro.props;
 
+// Get PROJECT_TYPE from environment variables
+const PROJECT_TYPE = import.meta.env.PROJECT_TYPE || 'default';
+
 function getProductCategory(title: string): string {
   const title_lower = title.toLowerCase();
   
+  if (PROJECT_TYPE === 'degital') {
+    if (title_lower.includes('template') || title_lower.includes('theme')) {
+      return 'template';
+    }
+    if (title_lower.includes('plugin') || title_lower.includes('extension')) {
+      return 'plugin';
+    }
+    if (title_lower.includes('script') || title_lower.includes('code')) {
+      return 'script';
+    }
+    return 'digital'; // default digital fallback
+  }
+  
+  // Original physical product categories
   if (title_lower.includes('jacket') || title_lower.includes('coat')) {
     return 'jacket';
   }
@@ -21,7 +38,7 @@ function getProductCategory(title: string): string {
     return 'helmet';
   }
   
-  return 'jacket'; // default fallback
+  return PROJECT_TYPE === 'degital' ? 'digital' : 'jacket'; // default fallback
 }
 
 // Get content for current language or fallback to English
@@ -31,7 +48,7 @@ const category = getProductCategory(productTitle);
 // Get specs for the category, fallback to English if not available in current language
 const specs = content.categories[category]?.specs || 
              specsContent.en.categories[category]?.specs || 
-             specsContent.en.categories.jacket.specs; // ultimate fallback
+             specsContent.en.categories[PROJECT_TYPE === 'degital' ? 'digital' : 'jacket'].specs; // ultimate fallback
 ---
 
 <div class="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
