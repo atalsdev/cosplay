@@ -320,7 +320,7 @@ console.log('Processed product data:', {
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <!-- Image Gallery -->
               <div class="space-y-4 lg:sticky lg:top-24 lg:self-start">
-                <div class="relative bg-gray-50 rounded-2xl overflow-hidden">
+                <div class="relative bg-gray-50 rounded-2xl overflow-hidden group">
                   <div class="aspect-square">
                     <img
                       id="mainImage"
@@ -329,40 +329,59 @@ console.log('Processed product data:', {
                       class="w-full h-full object-contain transition-opacity duration-200"
                       loading="eager"
                       fetchpriority="high"
+                      width="800"
+                      height="800"
                       decoding="async"
-                      width="600"
-                      height="600"
-                      data-testid="product-main-image"
                     />
                   </div>
                   
-                  {product.processedImages.length > 1 && (
-                    <div class="flex gap-2 overflow-x-auto pb-2 mt-4">
-                      {product.processedImages.map((image, index) => (
-                        <button 
-                          class:list={[
-                            "flex-none w-20 aspect-square rounded-lg overflow-hidden bg-gray-50 hover:opacity-75 transition-opacity",
-                            { "ring-2 ring-blue-500": index === 0 }
-                          ]}
-                          data-image-url={image.url}
-                          data-image-id={image.id}
-                          data-image-index={index}
-                          data-testid={`thumbnail-${index}`}
-                          aria-label={`View ${image.altText}`}
-                        >
-                          <img
-                            src={image.url}
-                            alt={image.altText}
-                            class="w-full h-full object-cover"
-                            loading="lazy"
-                            decoding="async"
-                            width="80"
-                            height="80"
-                          />
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                  <!-- Navigation Arrows -->
+                  <button 
+                    id="prevImage" 
+                    class="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 backdrop-blur-sm 
+                           shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                           hover:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500
+                           disabled:opacity-30 disabled:cursor-not-allowed"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft className="w-6 h-6 text-gray-700" />
+                  </button>
+                  
+                  <button 
+                    id="nextImage" 
+                    class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 backdrop-blur-sm 
+                           shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                           hover:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500
+                           disabled:opacity-30 disabled:cursor-not-allowed"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight className="w-6 h-6 text-gray-700" />
+                  </button>
+                </div>
+
+                <!-- Thumbnails -->
+                <div class="flex gap-2 overflow-x-auto pb-2 snap-x scrollbar-hide">
+                  {product.processedImages.map((image, index) => (
+                    <button
+                      key={image.id}
+                      data-image-url={image.url}
+                      data-image-id={image.id}
+                      data-image-index={index}
+                      class={`flex-none w-20 h-20 rounded-lg overflow-hidden snap-start
+                              ${index === 0 ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-gray-300'}
+                              transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.altText || ''}
+                        class="w-full h-full object-cover"
+                        loading={index === 0 ? "eager" : "lazy"}
+                        width="80"
+                        height="80"
+                        decoding="async"
+                      />
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -450,7 +469,6 @@ console.log('Processed product data:', {
                       
                       [&>a]:text-blue-600 
                       [&>a]:underline 
-                      [&>a]:font-medium
                       [&>a:hover]:text-blue-800
 
                       [&>blockquote]:pl-4 
@@ -662,86 +680,164 @@ console.log('Processed product data:', {
 
 <script>
   class ImageGallery {
-    mainImage;
-    thumbnails;
-    currentIndex = 0;
+    mainImage: HTMLImageElement | null;
+    thumbnails: NodeListOf<HTMLElement>;
+    prevButton: HTMLButtonElement | null;
+    nextButton: HTMLButtonElement | null;
+    currentIndex: number = 0;
+    maxIndex: number;
 
     constructor() {
+      this.mainImage = document.getElementById('mainImage') as HTMLImageElement;
+      this.thumbnails = document.querySelectorAll('[data-image-url]');
+      this.prevButton = document.getElementById('prevImage') as HTMLButtonElement;
+      this.nextButton = document.getElementById('nextImage') as HTMLButtonElement;
+      this.maxIndex = this.thumbnails.length - 1;
       this.init();
     }
 
     init() {
-      // Get elements
-      this.mainImage = document.getElementById('mainImage');
-      this.thumbnails = document.querySelectorAll('[data-image-url]');
+      if (!this.mainImage || !this.prevButton || !this.nextButton) return;
+
+      // Add click handlers for navigation buttons
+      this.prevButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.navigate('prev');
+      });
       
-      // Add click handlers
+      this.nextButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.navigate('next');
+      });
+
+      // Add keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          this.navigate('prev');
+        }
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          this.navigate('next');
+        }
+      });
+
+      // Add touch swipe navigation
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      this.mainImage.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+
+      this.mainImage.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        if (touchStartX - touchEndX > 50) this.navigate('next');
+        if (touchStartX - touchEndX < -50) this.navigate('prev');
+      }, { passive: true });
+
+      // Add click handlers for thumbnails
       this.thumbnails.forEach((thumb, index) => {
-        thumb.addEventListener('click', () => this.setImage(index));
+        thumb.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.setImage(index);
+        });
       });
 
       // Listen for variant changes
-      window.addEventListener('variantImageChange', (event) => {
+      window.addEventListener('variantImageChange', (event: CustomEvent) => {
         const { imageUrl, imageId } = event.detail;
         const matchingThumb = Array.from(this.thumbnails)
           .find(thumb => thumb.dataset.imageId === imageId);
 
         if (matchingThumb) {
-          const index = parseInt(matchingThumb.dataset.imageIndex);
+          const index = parseInt(matchingThumb.dataset.imageIndex || '0');
           this.setImage(index);
         } else if (imageUrl && this.mainImage) {
           this.mainImage.src = imageUrl;
         }
       });
+
+      // Initial button state
+      this.updateNavigationButtons();
     }
 
-    setImage(index) {
+    navigate(direction: 'prev' | 'next') {
+      if (direction === 'prev' && this.currentIndex > 0) {
+        this.setImage(this.currentIndex - 1);
+      } else if (direction === 'next' && this.currentIndex < this.maxIndex) {
+        this.setImage(this.currentIndex + 1);
+      }
+    }
+
+    setImage(index: number) {
       if (!this.mainImage) return;
       
       // Update current index
       this.currentIndex = index;
       
-      // Update main image
+      // Update main image with fade effect
       const newUrl = this.thumbnails[index].dataset.imageUrl;
       if (newUrl) {
-        this.mainImage.src = newUrl;
+        this.mainImage.style.opacity = '0';
+        setTimeout(() => {
+          this.mainImage.src = newUrl;
+          this.mainImage.style.opacity = '1';
+        }, 200);
       }
 
       // Update thumbnail states
       this.thumbnails.forEach((thumb, i) => {
         thumb.classList.toggle('ring-2', i === index);
         thumb.classList.toggle('ring-blue-500', i === index);
+        thumb.classList.toggle('ring-gray-300', i !== index);
       });
+
+      // Scroll thumbnail into view if needed, but prevent page scroll
+      const scrollOptions: ScrollIntoViewOptions = {
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center'
+      };
+      
+      // Use requestAnimationFrame to ensure smooth scrolling
+      requestAnimationFrame(() => {
+        const thumbnail = this.thumbnails[index];
+        const container = thumbnail.parentElement;
+        if (container) {
+          const scrollLeft = thumbnail.offsetLeft - (container.clientWidth - thumbnail.clientWidth) / 2;
+          container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+        }
+      });
+
+      // Update navigation buttons
+      this.updateNavigationButtons();
+    }
+
+    updateNavigationButtons() {
+      if (!this.prevButton || !this.nextButton) return;
+      
+      this.prevButton.disabled = this.currentIndex === 0;
+      this.nextButton.disabled = this.currentIndex === this.maxIndex;
     }
   }
 
   // Initialize
-  new ImageGallery();
+  document.addEventListener('astro:page-load', () => {
+    new ImageGallery();
+  });
 </script>
 
 <style>
-  /* Add this to your global CSS or in the page */
-  .floating-buttons {
-    z-index: 40; /* Make sure this is lower than the product info section */
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
-</style>
-
-<div class="fixed right-4 top-1/2 transform -translate-y-1/2 space-y-4 floating-buttons">
-  <!-- Your floating buttons here -->
-</div>
-
-<style is:inline>
-  /* Critical CSS */
-  .aspect-square {
-    aspect-ratio: 1 / 1;
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
-  .object-contain {
-    object-fit: contain;
-  }
-  .rounded-2xl {
-    border-radius: 1rem;
-  }
-  /* Add other critical styles */
 </style>
 
 <style>
