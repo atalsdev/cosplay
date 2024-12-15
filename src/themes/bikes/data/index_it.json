@@ -1,0 +1,115 @@
+{
+  "siteTitle": "MotoGear Pro - Abbigliamento Moto Premium & Accessori",
+  "siteDescription": "La tua destinazione definitiva per equipaggiamento moto premium, protezioni e accessori. Prodotti selezionati da esperti, per motociclisti.",
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Benvenuto nel Tuo Negozio Moto Definitivo",
+      "description": "Esplora equipaggiamento moto di alta qualità, accessori e consigli per alimentare la tua passione per la strada.",
+      "blogLinkText": "Leggi il Blog",
+      "blogLink": "/blog"
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Preparati per la Tua Prossima Avventura",
+      "description": "Scopri i nostri caschi, giacche e accessori più votati per rimanere sicuro e alla moda sulla strada.",
+      "backgroundImage": "/images/banner-motorcycle-bg.jpg",
+      "button1Text": "Acquista",
+      "button1Link": "/shop",
+      "button2Text": "Scopri di più",
+      "button2Link": "/about"
+    },
+    {
+      "type": "categoryGrid",
+      "title": "Acquista per Categoria",
+      "description": "Trova l'equipaggiamento che si adatta al tuo stile di guida, dai caschi alle giacche, dai guanti agli stivali.",
+      "categories": [
+        {
+          "id": "helmets",
+          "name": "Caschi",
+          "description": "Caschi omologati DOT per la massima sicurezza.",
+          "image": "https://source.unsplash.com/random/800x600/?bike",
+          "link": "/helmets"
+        },
+        {
+          "id": "jackets",
+          "name": "Giacche",
+          "description": "Giacche moto protettive e alla moda.",
+          "image": "https://source.unsplash.com/random/800x600/?bike",
+          "link": "/jackets"
+        },
+        {
+          "id": "gloves",
+          "name": "Guanti",
+          "description": "Guanti resistenti per una migliore presa e controllo.",
+          "image": "https://source.unsplash.com/random/800x600/?bike",
+          "link": "/gloves"
+        }
+      ]
+    },
+    {
+      "type": "productShowcase",
+      "title": "Prodotti in Evidenza",
+      "description": "Scopri i nostri equipaggiamenti e accessori più venduti scelti dai motociclisti.",
+      "viewAllLink": "/products",
+      "products": [
+        {
+          "id": "helmet-1",
+          "name": "Casco Integrale",
+          "description": "Protezione definitiva con ventilazione avanzata.",
+          "price": "199,99",
+          "image": "/images/products/helmet-1.jpg",
+          "category": "Caschi"
+        },
+        {
+          "id": "jacket-1",
+          "name": "Giacca in Pelle",
+          "description": "Elegante e resistente con protezioni integrate.",
+          "price": "249,99",
+          "image": "/images/products/jacket-1.jpg",
+          "category": "Giacche"
+        }
+      ]
+    },
+    {
+      "type": "testimonialSlider",
+      "title": "Testimonianze dei Motociclisti",
+      "testimonials": [
+        {
+          "id": "1",
+          "author": "Alex Thompson",
+          "role": "Motociclista d'Avventura",
+          "content": "L'equipaggiamento qui è di prima classe. Non mi sono mai sentito più sicuro sulla mia moto.",
+          "avatar": "/images/testimonials/avatar-1.jpg"
+        }
+      ]
+    },
+    {
+      "type": "faqSection",
+      "title": "Domande Frequenti",
+      "description": "Trova risposte alle tue domande sull'equipaggiamento moto, la sicurezza e la manutenzione.",
+      "faqs": [
+        {
+          "question": "Quale tipo di moto è migliore per i principianti?",
+          "answer": "Per i principianti, consigliamo una moto leggera (250-400cc) per un equilibrio ottimale tra potenza e controllo."
+        },
+        {
+          "question": "Come scelgo il casco giusto?",
+          "answer": "Scegli un casco omologato DOT che calzi perfettamente. Considera il tipo di casco, la ventilazione e la visibilità."
+        },
+        {
+          "question": "Quale equipaggiamento di sicurezza è essenziale per guidare?",
+          "answer": "Gli elementi essenziali includono un casco omologato DOT, una giacca con protezioni, guanti e stivali robusti per una protezione completa."
+        }
+      ]
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Rimani Aggiornato su Equipaggiamento e Consigli",
+      "description": "Iscriviti alla nostra newsletter per ricevere gli ultimi aggiornamenti sui prodotti, consigli e offerte esclusive.",
+      "backgroundImage": "/images/newsletter-motorcycle-bg.jpg",
+      "formAction": "/api/subscribe",
+      "submitText": "Iscriviti"
+    }
+  ]
+}

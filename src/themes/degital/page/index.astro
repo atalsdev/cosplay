@@ -1,5 +1,4 @@
 ---
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { fetchBlogPosts } from '../../../utils/shopifyAPI';
 import { getLangFromUrl, useTranslations, isValidLanguage } from '../../../utils/i18n';
 
@@ -30,6 +29,10 @@ if (!isValidLanguage(lang)) {
 const translations = await useTranslations(lang);
 const jsonData = translations.default;
 
+// Get site title and description from language-specific data
+const SITE_TITLE = jsonData.siteTitle || 'Degital';
+const SITE_DESCRIPTION = jsonData.siteDescription || 'Your ultimate cosplay destination';
+
 const blogId = '82152357935';
 let posts = [];
 
@@ -56,7 +59,7 @@ export async function getStaticPaths() {
 <!doctype html>
 <html lang={lang}>
   <head>
-    <BaseHead title={jsonData.siteTitle || SITE_TITLE} description={jsonData.siteDescription || SITE_DESCRIPTION} />
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
   </head>
   <body>
     <Header />
