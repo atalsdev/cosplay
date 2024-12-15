@@ -1,2 +1,2 @@
-export const SITE_TITLE = 'MotoPalnet - Motorcycle Gear & Community';
-export const SITE_DESCRIPTION = 'Your ultimate destination for motorcycle gear, reviews, and community. Find the best gear, read expert reviews, and connect with fellow riders.';
+export const SITE_TITLE = 'Digivast - Digital Products Marketplace';
+export const SITE_DESCRIPTION = 'Your ultimate destination for digital products. Discover and purchase high-quality digital assets, software, templates, and more from trusted creators.';

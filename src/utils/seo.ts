@@ -10,17 +10,19 @@ export interface SEOProps {
 }
 
 export function generateCanonicalURL(pathname: string): string {
-  const siteUrl = import.meta.env.SITE_URL || 'https://ridwear.com';
+  const siteUrl = import.meta.env.DOMAINE || '';
   return `${siteUrl}${pathname}`;
 }
 
 export function generateSchema(props: SEOProps, pathname: string): string {
+  const siteName = import.meta.env.PUBLIC_SITE_NAME;
+  
   const baseSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'RidWear',
+    name: siteName,
     url: generateCanonicalURL('/'),
-    description: 'Your ultimate destination for motorcycle gear, reviews, and community.',
+    description: `Your ultimate destination for ${siteName} gear, reviews, and community.`,
   };
 
   if (props.article) {
@@ -34,7 +36,7 @@ export function generateSchema(props: SEOProps, pathname: string): string {
       dateModified: props.modifiedTime || props.publishedTime,
       publisher: {
         '@type': 'Organization',
-        name: 'RidWear',
+        name: siteName,
         logo: {
           '@type': 'ImageObject',
           url: generateCanonicalURL('/images/logo.png'),
@@ -51,7 +53,7 @@ export function generateSchema(props: SEOProps, pathname: string): string {
     return JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'Store',
-      name: 'RidWear Store',
+      name: `${siteName} Store`,
       description: props.description,
       url: generateCanonicalURL(pathname),
       image: props.image,
