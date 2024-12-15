@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ShoppingCart, Loader2 } from 'lucide-react';
 import { useCartStore } from '../../../store/cart';
 import addToCartContent from './addToCartContent.json';
@@ -110,12 +110,46 @@ const colorMap: Record<string, { color: string; border?: boolean }> = {
   'Heather Navy': { color: '#34495E' } 
 };
 
+const safeAreaStyles = `
+  @supports(padding: env(safe-area-inset-bottom)) {
+    .h-safe-area-inset-bottom {
+      height: env(safe-area-inset-bottom);
+    }
+  }
+`;
+
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.textContent = safeAreaStyles;
+  document.head.appendChild(style);
+}
 
 export default function AddToCart({ product, language }: AddToCartProps) {
   const [selectedOptions, setSelectedOptions] = React.useState<Record<string, string>>({});
   const [selectedVariant, setSelectedVariant] = React.useState<Variant | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [showStickyButtons, setShowStickyButtons] = React.useState(false);
+  const addToCartRef = useRef<HTMLDivElement>(null);
   const addItem = useCartStore((state) => state.addItem);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Show sticky buttons when main add to cart is not visible
+        setShowStickyButtons(!entry.isIntersecting);
+      },
+      {
+        threshold: 0,
+        rootMargin: '-100px 0px 0px 0px' // Adjust this value to control when the sticky buttons appear
+      }
+    );
+
+    if (addToCartRef.current) {
+      observer.observe(addToCartRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   React.useEffect(() => {
     if (product.options.length > 0) {
@@ -209,128 +243,162 @@ export default function AddToCart({ product, language }: AddToCartProps) {
   const translations = addToCartContent[language] || addToCartContent['en'];
 
   return (
-    <div className="space-y-8 relative z-10">
-      {product.options.map((option) => (
-        <div key={option.name} className="space-y-4 relative">
-          <label className="block text-sm font-medium uppercase tracking-wide">
-            {option.name}
-          </label>
-          <div className="flex flex-wrap gap-3 relative z-20">
-            {option.values.map((value) => {
-              const isSelected = selectedOptions[option.name] === value;
-              
-              if (option.name.toLowerCase() === 'color' || option.name.toLowerCase() === 'colour') {
+    <div className="space-y-8">
+      {/* Options Selection Area */}
+      <div className="space-y-8 pb-24 md:pb-0" ref={addToCartRef}>
+        {product.options.map((option) => (
+          <div key={option.name} className="space-y-4">
+            <label className="block text-sm font-medium uppercase tracking-wide">
+              {option.name}
+            </label>
+            <div className="flex flex-wrap gap-3">
+              {option.values.map((value) => {
+                const isSelected = selectedOptions[option.name] === value;
+                
+                if (option.name.toLowerCase() === 'color' || option.name.toLowerCase() === 'colour') {
+                  return (
+                    <button
+                      key={value}
+                      onClick={() => handleOptionChange(option.name, value)}
+                      className={`w-8 h-8 rounded-full relative transition-all duration-200 ${
+                        isSelected 
+                          ? 'ring-2 ring-offset-2 ring-blue-500 scale-110' 
+                          : 'hover:scale-105'
+                      }`}
+                      style={getColorStyle(value)}
+                      title={value}
+                    >
+                    </button>
+                  );
+                }
+
                 return (
                   <button
                     key={value}
                     onClick={() => handleOptionChange(option.name, value)}
-                    className={`w-8 h-8 rounded-full relative transition-all duration-200 z-30 ${
-                      isSelected 
-                        ? 'ring-2 ring-offset-2 ring-blue-500 scale-110' 
-                        : 'hover:scale-105'
-                    }`}
-                    style={getColorStyle(value)}
-                    title={value}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
+                      ${isSelected 
+                        ? 'bg-blue-500 text-white' 
+                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                      }`}
                   >
+                    {value}
                   </button>
                 );
-              }
-
-              return (
-                <button
-                  key={value}
-                  onClick={() => handleOptionChange(option.name, value)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors relative z-30
-                    ${isSelected 
-                      ? 'bg-blue-500 text-white' 
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                    }`}
-                >
-                  {value}
-                </button>
-              );
-            })}
+              })}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
 
-      {selectedVariant && (
-        <div className="flex items-baseline justify-between mb-6 relative z-10">
-          <div className="text-3xl font-bold text-gray-900">
-            {selectedVariant.price.currencyCode} {parseFloat(selectedVariant.price.amount).toFixed(2)}
+        {selectedVariant && (
+          <div className="flex items-baseline justify-between mb-6">
+            <div className="text-3xl font-bold text-gray-900">
+              {selectedVariant.price.currencyCode} {parseFloat(selectedVariant.price.amount).toFixed(2)}
+            </div>
+            {selectedVariant.availableForSale ? (
+              <span className="text-sm font-medium text-green-600">In Stock</span>
+            ) : (
+              <span className="text-sm font-medium text-red-600">Out of Stock</span>
+            )}
           </div>
-          {selectedVariant.availableForSale ? (
-            <span className="text-sm font-medium text-green-600">In Stock</span>
-          ) : (
-            <span className="text-sm font-medium text-red-600">Out of Stock</span>
-          )}
-        </div>
-      )}
+        )}
 
-      <div className="flex flex-col gap-3 relative z-10">
-        {/* Add to Cart Button */}
-        <button
-          onClick={handleAddToCart}
-          disabled={!selectedVariant?.availableForSale || isLoading}
-          className="w-full bg-gray-900 text-white px-5 py-3 rounded-full text-base font-semibold 
-                   hover:bg-gray-800 transition-all duration-200 
-                   disabled:bg-gray-300 disabled:cursor-not-allowed 
-                   flex items-center justify-center gap-2 
-                   transform hover:scale-[1.02] active:scale-[0.98]
-                   relative z-20"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="animate-spin" size={20} />
-              <span>{translations.processing}</span>
-            </>
-          ) : (
-            <>
-              <ShoppingCart size={18} />
-              <span>{translations.addToCart}</span>
-            </>
-          )}
-        </button>
-
-        {/* Buy Now Button */}
-        <button
-          onClick={handleBuyNow}
-          disabled={!selectedVariant?.availableForSale || isLoading}
-          className="w-full bg-blue-600 text-white px-5 py-3 rounded-full text-base font-semibold 
-                   hover:bg-blue-700 transition-all duration-200 
-                   disabled:bg-gray-300 disabled:cursor-not-allowed 
-                   flex items-center justify-center gap-2
-                   transform hover:scale-[1.02] active:scale-[0.98]
-                   shadow-lg hover:shadow-xl
-                   relative z-20"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="animate-spin" size={20} />
-              <span>{translations.processing}</span>
-            </>
-          ) : (
-            <span>{translations.buyNow}</span>
-          )}
-        </button>
-
-        {/* Additional Info */}
-        <div className="mt-3 flex items-center justify-center gap-2 text-xs text-gray-600 relative z-10">
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        {/* Main Add to Cart Buttons */}
+        <div className="space-y-3">
+          <button
+            onClick={handleAddToCart}
+            disabled={!selectedVariant?.availableForSale || isLoading}
+            className="w-full bg-gray-900 text-white px-5 py-3 rounded-full text-base font-semibold 
+                     hover:bg-gray-800 transition-all duration-200 
+                     disabled:bg-gray-300 disabled:cursor-not-allowed 
+                     flex items-center justify-center gap-2 
+                     transform hover:scale-[1.02] active:scale-[0.98]"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-            />
-          </svg>
-          <span>{translations.secureTransaction}</span>
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                <span>{translations.processing}</span>
+              </>
+            ) : (
+              <>
+                <ShoppingCart size={18} />
+                <span>{translations.addToCart}</span>
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={handleBuyNow}
+            disabled={!selectedVariant?.availableForSale || isLoading}
+            className="w-full bg-blue-600 text-white px-5 py-3 rounded-full text-base font-semibold 
+                     hover:bg-blue-700 transition-all duration-200 
+                     disabled:bg-gray-300 disabled:cursor-not-allowed 
+                     flex items-center justify-center gap-2
+                     transform hover:scale-[1.02] active:scale-[0.98]
+                     shadow-lg hover:shadow-xl"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                <span>{translations.processing}</span>
+              </>
+            ) : (
+              <span>{translations.buyNow}</span>
+            )}
+          </button>
         </div>
+      </div>
+
+      {/* Sticky Buttons Container for Mobile */}
+      <div 
+        className={`fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 md:hidden z-50 transition-transform duration-300 ${
+          showStickyButtons ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto space-y-3">
+          {/* Sticky Add to Cart Button */}
+          <button
+            onClick={handleAddToCart}
+            disabled={!selectedVariant?.availableForSale || isLoading}
+            className="w-full bg-gray-900 text-white px-5 py-3 rounded-full text-base font-semibold 
+                     hover:bg-gray-800 transition-all duration-200 
+                     disabled:bg-gray-300 disabled:cursor-not-allowed 
+                     flex items-center justify-center gap-2"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                <span>{translations.processing}</span>
+              </>
+            ) : (
+              <>
+                <ShoppingCart size={18} />
+                <span>{translations.addToCart}</span>
+              </>
+            )}
+          </button>
+
+          {/* Additional Info */}
+          <div className="flex items-center justify-center gap-2 text-xs text-gray-600">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+            <span>{translations.secureTransaction}</span>
+          </div>
+        </div>
+
+        {/* Safe Area Spacing for Mobile */}
+        <div className="h-safe-area-inset-bottom" />
       </div>
     </div>
   );

@@ -296,18 +296,22 @@ console.log('Processed product data:', {
           data-handle={handle}
         >
           <!-- Breadcrumb Navigation -->
-          <nav aria-label="Breadcrumb" class="max-w-7xl mx-auto px-4 py-4">
-            <ol class="flex items-center space-x-2 text-sm text-gray-600">
-              <li>
-                <a href={`/${lang}`} class="hover:text-blue-600">Home</a>
+          <nav aria-label="Breadcrumb" class="max-w-7xl mx-auto px-4 py-4 overflow-x-auto">
+            <ol class="flex flex-nowrap items-center text-sm text-gray-600 whitespace-nowrap min-w-0">
+              <li class="flex items-center">
+                <a href={`/${lang}`} class="hover:text-blue-600 truncate">Home</a>
               </li>
-              <li>
-                <span class="mx-2">/</span>
-                <a href={`/${lang}/products`} class="hover:text-blue-600">Products</a>
+              <li class="flex items-center">
+                <svg class="h-5 w-5 text-gray-400 mx-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+                <a href={`/${lang}/products`} class="hover:text-blue-600 truncate">Products</a>
               </li>
-              <li>
-                <span class="mx-2">/</span>
-                <span class="text-gray-900">{product.title}</span>
+              <li class="flex items-center">
+                <svg class="h-5 w-5 text-gray-400 mx-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-gray-900 truncate" title={product.title}>{product.title}</span>
               </li>
             </ol>
           </nav>
