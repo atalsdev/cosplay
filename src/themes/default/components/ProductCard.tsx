@@ -2,6 +2,69 @@ import React from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { useCartStore } from '../../../store/cart';
 
+const translations = {
+  en: {
+    addToCart: 'Add to Cart'
+  },
+  fr: {
+    addToCart: 'Ajouter au panier'
+  },
+  es: {
+    addToCart: 'Añadir al carrito'
+  },
+  de: {
+    addToCart: 'In den Warenkorb'
+  },
+  nl: {
+    addToCart: 'In winkelwagen'
+  },
+  it: {
+    addToCart: 'Aggiungi al carrello'
+  },
+  pt: {
+    addToCart: 'Adicionar ao carrinho'
+  },
+  pl: {
+    addToCart: 'Dodaj do koszyka'
+  },
+  ru: {
+    addToCart: 'Добавить в корзину'
+  },
+  ja: {
+    addToCart: 'カートに追加'
+  },
+  ko: {
+    addToCart: '장바구니에 담기'
+  },
+  zh: {
+    addToCart: '添加到购物车'
+  },
+  ar: {
+    addToCart: 'أضف إلى السلة'
+  },
+  tr: {
+    addToCart: 'Sepete Ekle'
+  },
+  sv: {
+    addToCart: 'Lägg i varukorgen'
+  },
+  da: {
+    addToCart: 'Læg i kurv'
+  },
+  fi: {
+    addToCart: 'Lisää ostoskoriin'
+  },
+  no: {
+    addToCart: 'Legg i handlekurv'
+  },
+  cs: {
+    addToCart: 'Přidat do košíku'
+  },
+  hu: {
+    addToCart: 'Kosárba tesz'
+  }
+};
+
 interface ProductCardProps {
   id: string;
   title: string;
@@ -26,29 +89,56 @@ export default function ProductCard({ id, title, price, image, description, hand
     });
   };
 
+  const buttonText = translations[lang as keyof typeof translations]?.addToCart || translations.en.addToCart;
+
   return (
     <a 
       href={`/${lang}/products/${handle}`}
-      className="group bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:-translate-y-1"
+      className="group flex flex-col h-full bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
     >
-      <div className="aspect-square overflow-hidden">
+      {/* Image Container */}
+      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
         <img 
           src={image} 
           alt={title} 
-          className="w-full h-full object-cover transition-transform group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
         />
+        {/* Hover Overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300" />
       </div>
-      <div className="p-4">
-        <h3 className="text-lg font-semibold group-hover:text-blue-600 transition-colors">{title}</h3>
-        <p className="text-gray-600 mt-2 text-sm line-clamp-2">{description}</p>
-        <div className="mt-4 flex items-center justify-between">
-          <span className="text-xl font-bold">${price.toFixed(2)}</span>
+
+      {/* Content Container */}
+      <div className="flex flex-col flex-grow p-4 space-y-3">
+        {/* Title */}
+        <h3 className="text-lg font-medium text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">
+          {title}
+        </h3>
+
+        {/* Description */}
+        <p className="text-sm text-gray-500 line-clamp-2 flex-grow">
+          {description}
+        </p>
+
+        {/* Price and Button Container */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2">
+          {/* Price */}
+          <div className="text-xl font-bold text-gray-900">
+            ${price.toFixed(2)}
+          </div>
+
+          {/* Add to Cart Button */}
           <button
             onClick={handleAddToCart}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 
+                     bg-blue-600 text-white text-sm font-medium rounded-lg
+                     hover:bg-blue-700 active:bg-blue-800
+                     transition-colors duration-200 ease-in-out
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            aria-label={buttonText}
           >
-            <ShoppingCart size={20} />
-            Add to Cart
+            <ShoppingCart size={18} className="flex-shrink-0" />
+            <span className="whitespace-nowrap">{buttonText}</span>
           </button>
         </div>
       </div>

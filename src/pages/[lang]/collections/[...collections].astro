@@ -4,8 +4,8 @@ import { ArrowRight } from 'lucide-react';
 
 const theme = import.meta.env.THEME || 'default';
 const languages = ['en', 'fr', 'de', 'es', 'it'];
-const baseUrl = import.meta.env.SITE || 'https://ridwear.com';
-const storeName = 'RidWear';
+const baseUrl = import.meta.env.DOMAINE || 'https://ridwear.com';
+const storeName = import.meta.env.PUBLIC_SITE_NAME || 'RidWear';
 
 // Properly handle dynamic imports with default exports
 const { default: BaseHead } = await import(`../../../themes/${theme}/components/BaseHead.astro`);
