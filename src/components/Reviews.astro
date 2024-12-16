@@ -22,6 +22,12 @@ function formatDate(months: string, content: any) {
   const monthCount = parseInt(months);
   return `${months} ${monthCount === 1 ? content.monthsAgo : content.monthsAgoPlural}`;
 }
+
+// Initially show only 3 reviews, limit total to 9
+const initialReviews = reviews?.slice(0, 3);
+const moreReviews = reviews?.slice(3, 9); // Only take up to 6 more reviews
+const hasMoreReviews = reviews && reviews.length > 3;
+const totalDisplayedReviews = Math.min(reviews?.length || 0, 9);
 ---
 
 <div class="border-t pt-8" id="reviews">
@@ -33,35 +39,123 @@ function formatDate(months: string, content: any) {
   </h2>
   
   <div class="space-y-6">
-    {reviews && reviews.map((review) => (
-      <div class="bg-gray-50 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-4">
-            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-              <span class="text-blue-600 font-semibold">{review.name[0]}</span>
-            </div>
-            <div>
-              <div class="font-medium text-gray-900">{review.name}</div>
-              <div class="text-sm text-gray-500 flex items-center gap-2">
-                {formatDate(review.date, content)}
-                {review.verified && (
-                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                    {content.verifiedPurchase}
-                  </span>
-                )}
+    {/* Initial Reviews */}
+    <div id="initial-reviews">
+      {initialReviews && initialReviews.map((review) => (
+        <div class="bg-gray-50 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow mb-4">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <span class="text-blue-600 font-semibold">{review.name[0]}</span>
+              </div>
+              <div>
+                <div class="font-medium text-gray-900">{review.name}</div>
+                <div class="text-sm text-gray-500 flex items-center gap-2">
+                  {formatDate(review.date, content)}
+                  {review.verified && (
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                      {content.verifiedPurchase}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
+            <div 
+              class="flex text-yellow-400" 
+              aria-label={content.ratingLabel.replace('{rating}', review.rating.toString())}
+            >
+              {'★'.repeat(review.rating)}
+              {'☆'.repeat(5 - review.rating)}
+            </div>
           </div>
-          <div 
-            class="flex text-yellow-400" 
-            aria-label={content.ratingLabel.replace('{rating}', review.rating.toString())}
-          >
-            {'★'.repeat(review.rating)}
-            {'☆'.repeat(5 - review.rating)}
-          </div>
+          <p class="text-gray-700">{review.comment}</p>
         </div>
-        <p class="text-gray-700">{review.comment}</p>
+      ))}
+    </div>
+
+    {/* Hidden Reviews (limited to 6 more) */}
+    <div id="more-reviews" class="hidden space-y-6">
+      {moreReviews && moreReviews.map((review) => (
+        <div class="bg-gray-50 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <span class="text-blue-600 font-semibold">{review.name[0]}</span>
+              </div>
+              <div>
+                <div class="font-medium text-gray-900">{review.name}</div>
+                <div class="text-sm text-gray-500 flex items-center gap-2">
+                  {formatDate(review.date, content)}
+                  {review.verified && (
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                      {content.verifiedPurchase}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div 
+              class="flex text-yellow-400" 
+              aria-label={content.ratingLabel.replace('{rating}', review.rating.toString())}
+            >
+              {'★'.repeat(review.rating)}
+              {'☆'.repeat(5 - review.rating)}
+            </div>
+          </div>
+          <p class="text-gray-700">{review.comment}</p>
+        </div>
+      ))}
+    </div>
+
+    {/* Show More Button */}
+    {hasMoreReviews && (
+      <div class="text-center pt-6">
+        <button
+          id="show-more-button"
+          class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+        >
+          <span id="button-text">Show More Reviews</span>
+          <svg id="button-icon" class="ml-2 h-5 w-5 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
       </div>
-    ))}
+    )}
+
+    {/* Total Reviews Count */}
+    {reviews && reviews.length > 9 && (
+      <div class="text-center text-sm text-gray-500 mt-4">
+        Showing {totalDisplayedReviews} of {reviews.length} reviews
+      </div>
+    )}
   </div>
-</div> 
+</div>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const showMoreButton = document.getElementById('show-more-button');
+    const moreReviews = document.getElementById('more-reviews');
+    const buttonText = document.getElementById('button-text');
+    const buttonIcon = document.getElementById('button-icon');
+    let isExpanded = false;
+
+    if (showMoreButton && moreReviews && buttonText && buttonIcon) {
+      showMoreButton.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        moreReviews.classList.toggle('hidden');
+        buttonText.textContent = isExpanded ? 'Show Less' : 'Show More Reviews';
+        buttonIcon.style.transform = isExpanded ? 'rotate(180deg)' : '';
+        
+        if (isExpanded) {
+          moreReviews.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  .hidden {
+    display: none;
+  }
+</style> 

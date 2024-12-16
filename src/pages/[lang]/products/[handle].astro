@@ -12,6 +12,7 @@ import ProductSpecs from '@components/ProductSpecs.astro';
 import KeyFeatures from '@components/KeyFeatures.astro';
 import ProductLoading from '@components/ProductLoading.astro';
 import { useCurrencyStore } from '../../../store/currency';
+import { getReviewStats, getReviews } from '../../../lib/db';
 
 const { lang, handle } = Astro.params;
 const supportedLanguages = ['en', 'fr', 'de', 'es', 'it'];
@@ -145,7 +146,19 @@ const metaPrice = {
   currency: europeanCurrencies[lang] ? 'EUR' : originalPrice.currencyCode
 };
 
-// Generate structured data for the product
+// Get review stats and reviews first
+const { stats: reviewStats, error: reviewError } = await getReviewStats(import.meta.env.PUBLIC_SITE_NAME?.toLowerCase());
+const { reviews, error: reviewsError } = await getReviews(lang, import.meta.env.PUBLIC_SITE_NAME?.toLowerCase());
+
+if (reviewError) {
+  console.error('Error fetching review stats:', reviewError);
+}
+
+if (reviewsError) {
+  console.error('Error fetching reviews:', reviewsError);
+}
+
+// Then generate the schema
 const productSchema = {
   "@context": "https://schema.org/",
   "@type": "Product",
@@ -161,23 +174,30 @@ const productSchema = {
       ? "https://schema.org/InStock" 
       : "https://schema.org/OutOfStock"
   })),
-  "aggregateRating": {
+  "aggregateRating": reviewStats ? {
     "@type": "AggregateRating",
-    "ratingValue": "4.7",
-    "reviewCount": "3"
-  },
-  "review": [
-    {
-      "@type": "Review",
-      "author": "Sarah M.",
-      "datePublished": "2024-02-15",
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "5"
-      }
-    }
-  ]
+    "ratingValue": reviewStats.averageRating.toFixed(1),
+    "reviewCount": reviewStats.totalReviews.toString()
+  } : undefined,
+  "review": reviews?.slice(0, 9).map(review => ({
+    "@type": "Review",
+    "author": {
+      "@type": "Person",
+      "name": review.name
+    },
+    "datePublished": new Date(Date.now() - parseInt(review.date) * 30 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split('T')[0],
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": review.rating.toString()
+    },
+    "reviewBody": review.comment
+  })) || []
 };
+
+// Remove undefined properties from schema
+const cleanSchema = JSON.parse(JSON.stringify(productSchema));
 
 // Generate breadcrumb schema
 const breadcrumbSchema = {
@@ -437,14 +457,57 @@ const initialCurrency = 'USD'; // Or get from store/session
               <div class="space-y-8 relative" style="z-index: 50;">
                 <div>
                   <h1 class="text-3xl font-bold mb-2">{product.title}</h1>
-                  <div class="flex items-center gap-2 text-sm text-gray-600">
-                    <div class="flex items-center">
-                      ★★★★☆
-                      <span class="ml-1">4.0</span>
+                  {reviewStats && (
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                      <div class="flex items-center">
+                        <div 
+                          class="flex text-yellow-400" 
+                          aria-label={`Rated ${reviewStats.averageRating.toFixed(1)} out of 5 stars`}
+                        >
+                          {Array.from({ length: 5 }).map((_, i) => {
+                            const starValue = i + 1;
+                            const ratingDiff = reviewStats.averageRating - i;
+                            
+                            return (
+                              <span 
+                                class={`transition-colors duration-200 ${
+                                  ratingDiff >= 1 
+                                    ? 'text-yellow-400' 
+                                    : ratingDiff > 0 
+                                    ? 'relative inline-block'
+                                    : 'text-gray-300'
+                                }`}
+                              >
+                                {ratingDiff > 0 && ratingDiff < 1 ? (
+                                  <>
+                                    <span 
+                                      class="absolute text-yellow-400" 
+                                      style={`clip-path: inset(0 ${100 - (ratingDiff * 100)}% 0 0);`}
+                                    >
+                                      ★
+                                    </span>
+                                    <span class="text-gray-300">☆</span>
+                                  </>
+                                ) : ratingDiff >= 1 ? '★' : '☆'}
+                              </span>
+                            );
+                          })}
+                        </div>
+                        <span class="ml-1">{reviewStats.averageRating.toFixed(1)}</span>
+                      </div>
+                      <span>•</span>
+                      <a 
+                        href="#reviews" 
+                        class="hover:text-blue-500 transition-colors duration-200 group"
+                      >
+                        <span>{reviewStats.totalReviews}</span>
+                        <span class="ml-1">
+                          {reviewStats.totalReviews === 1 ? 'Review' : 'Reviews'}
+                        </span>
+                        <span class="inline-block transition-transform group-hover:translate-x-0.5">→</span>
+                      </a>
                     </div>
-                    <span>•</span>
-                    <a href="#reviews" class="hover:text-blue-500">42 Reviews</a>
-                  </div>
+                  )}
                 </div>
 
                 <AddToCart
@@ -923,3 +986,14 @@ const initialCurrency = 'USD'; // Or get from store/session
     window.dispatchEvent(new Event('priceUpdate'));
   });
 </script>
+
+<style>
+  @keyframes starFill {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+  }
+  
+  .text-yellow-400 {
+    animation: starFill 0.3s ease-out forwards;
+  }
+</style>
