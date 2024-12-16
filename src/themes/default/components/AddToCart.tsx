@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ShoppingCart, Loader2 } from 'lucide-react';
 import { useCartStore } from '../../../store/cart';
+import { useCurrencyStore } from '../../../store/currency';
 import addToCartContent from './addToCartContent.json';
 
 interface Variant {
@@ -131,6 +132,8 @@ export default function AddToCart({ product, language }: AddToCartProps) {
   const [showStickyButtons, setShowStickyButtons] = React.useState(false);
   const addToCartRef = useRef<HTMLDivElement>(null);
   const addItem = useCartStore((state) => state.addItem);
+  const { currency, convert } = useCurrencyStore();
+  const [convertedPrice, setConvertedPrice] = useState<string>('0');
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -185,6 +188,15 @@ export default function AddToCart({ product, language }: AddToCartProps) {
       }
     }
   }, [selectedOptions, product.variants, product.images]);
+
+  // Update price when currency or variant changes
+  useEffect(() => {
+    if (selectedVariant) {
+      const originalAmount = parseFloat(selectedVariant.price.amount);
+      const converted = convert(originalAmount, selectedVariant.price.currencyCode, currency);
+      setConvertedPrice(converted.toFixed(2));
+    }
+  }, [selectedVariant, currency]);
 
   const handleOptionChange = (optionName: string, value: string) => {
     setSelectedOptions(prev => ({
@@ -242,6 +254,14 @@ export default function AddToCart({ product, language }: AddToCartProps) {
 
   const translations = addToCartContent[language] || addToCartContent['en'];
 
+  // Set default currency based on language
+  useEffect(() => {
+    const europeanLanguages = ['fr', 'it', 'de', 'es'];
+    if (europeanLanguages.includes(language)) {
+      useCurrencyStore.getState().setCurrency('EUR');
+    }
+  }, [language]);
+
   return (
     <div className="space-y-8">
       {/* Options Selection Area */}
@@ -293,7 +313,7 @@ export default function AddToCart({ product, language }: AddToCartProps) {
         {selectedVariant && (
           <div className="flex items-baseline justify-between mb-6">
             <div className="text-3xl font-bold text-gray-900">
-              {selectedVariant.price.currencyCode} {parseFloat(selectedVariant.price.amount).toFixed(2)}
+              {currency} {convertedPrice}
             </div>
             {selectedVariant.availableForSale ? (
               <span className="text-sm font-medium text-green-600">In Stock</span>

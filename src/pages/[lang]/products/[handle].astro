@@ -11,6 +11,7 @@ import BaseHead from '@themes/default/components/BaseHead.astro';
 import ProductSpecs from '@components/ProductSpecs.astro';
 import KeyFeatures from '@components/KeyFeatures.astro';
 import ProductLoading from '@components/ProductLoading.astro';
+import { useCurrencyStore } from '../../../store/currency';
 
 const { lang, handle } = Astro.params;
 const supportedLanguages = ['en', 'fr', 'de', 'es', 'it'];
@@ -101,6 +102,48 @@ if (!product || !product.processedImages || !product.processedVariants) {
     statusText: 'Invalid processed data'
   });
 }
+
+// Define European language to currency mapping
+const europeanCurrencies = {
+  'fr': 'EUR',
+  'it': 'EUR',
+  'de': 'EUR',
+  'es': 'EUR',
+  // Add more European languages as needed
+};
+
+// Function to get appropriate currency based on language
+const getCurrencyForLanguage = (language: string) => {
+  return europeanCurrencies[language] || 'USD';
+};
+
+// Get currency for current language
+const currentCurrency = getCurrencyForLanguage(lang);
+
+// Convert price to EUR if needed
+const convertPriceToEUR = (priceAmount: string, originalCurrency: string) => {
+  if (originalCurrency === 'EUR') return parseFloat(priceAmount);
+  
+  const rates = {
+    USD: 0.85, // Example rate USD to EUR
+    GBP: 1.17, // Example rate GBP to EUR
+    // Add more conversion rates as needed
+  };
+
+  const amount = parseFloat(priceAmount);
+  return rates[originalCurrency] ? amount * rates[originalCurrency] : amount;
+};
+
+// Process price for meta tags
+const originalPrice = product.processedVariants[0].price;
+const priceInEUR = europeanCurrencies[lang] 
+  ? convertPriceToEUR(originalPrice.amount, originalPrice.currencyCode)
+  : parseFloat(originalPrice.amount);
+
+const metaPrice = {
+  amount: priceInEUR.toFixed(2),
+  currency: europeanCurrencies[lang] ? 'EUR' : originalPrice.currencyCode
+};
 
 // Generate structured data for the product
 const productSchema = {
@@ -215,6 +258,9 @@ console.log('Processed product data:', {
   options: processedProduct?.options
 });
 
+// Get initial currency data
+const initialCurrency = 'USD'; // Or get from store/session
+
 ---
 
 <!DOCTYPE html>
@@ -224,7 +270,9 @@ console.log('Processed product data:', {
       title={product.seo?.title || `${product.title} | RidWear`}
       description={product.seo?.description || metaDescription}
       image={product.processedImages[0].url}
-      article={false}
+      isProduct={true}
+      price={metaPrice}
+      availability={product.processedVariants[0].availableForSale}
     />
     
     <!-- Resource Hints -->
@@ -263,8 +311,8 @@ console.log('Processed product data:', {
     <meta name="apple-mobile-web-app-capable" content="yes" />
     
     <!-- Open Graph Product Specific -->
-    <meta property="og:price:amount" content={product.processedVariants[0].price.amount} />
-    <meta property="og:price:currency" content={product.processedVariants[0].price.currencyCode} />
+    <meta property="og:price:amount" content={metaPrice.amount} />
+    <meta property="og:price:currency" content={metaPrice.currency} />
     <meta property="product:availability" content={product.processedVariants[0].availableForSale ? "in stock" : "out of stock"} />
     
     <!-- Language variants -->
@@ -868,3 +916,10 @@ console.log('Processed product data:', {
     overscroll-behavior: none;
   }
 </style>
+
+<script>
+  document.addEventListener('currencyChange', (event) => {
+    // Force re-render of price components
+    window.dispatchEvent(new Event('priceUpdate'));
+  });
+</script>

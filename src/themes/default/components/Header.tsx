@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ShoppingCart, Globe } from 'lucide-react';
 import Cart from './Cart';
 import { useCartStore } from '../../../store/cart';
+import { useCurrencyStore } from '../../../store/currency';
 
 interface HeaderProps {
   siteName: string;
@@ -20,6 +21,9 @@ interface HeaderProps {
   };
   projectType: string;
   currentPath: string;
+  currencies: {
+    [key: string]: string;
+  };
 }
 
 export default function Header({ 
@@ -27,7 +31,8 @@ export default function Header({
   menuConfig, 
   languages, 
   projectType, 
-  currentPath 
+  currentPath,
+  currencies 
 }: HeaderProps) {
   // Extract initial language from current path
   const getInitialLanguage = () => {
@@ -38,6 +43,9 @@ export default function Header({
   const { isOpen, setIsOpen, items } = useCartStore();
   const [language, setLanguage] = useState(getInitialLanguage());
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+
+  const { currency, setCurrency } = useCurrencyStore();
+  const [showCurrencyMenu, setShowCurrencyMenu] = useState(false);
 
   // Update language when URL changes
   useEffect(() => {
@@ -76,6 +84,36 @@ export default function Header({
     useCartStore.persist.rehydrate();
   }, []);
 
+  const currencySelector = (
+    <div className="relative">
+      <button
+        onClick={() => setShowCurrencyMenu(!showCurrencyMenu)}
+        className="flex items-center space-x-2 text-gray-700 hover:text-black"
+      >
+        <span className="text-sm">{currencies[currency]}</span>
+      </button>
+
+      {showCurrencyMenu && (
+        <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-50">
+          {Object.entries(currencies).map(([code, symbol]) => (
+            <button
+              key={code}
+              onClick={() => {
+                setCurrency(code);
+                setShowCurrencyMenu(false);
+              }}
+              className={`block w-full text-left px-4 py-2 text-sm ${
+                currency === code ? 'bg-gray-100' : 'hover:bg-gray-50'
+              }`}
+            >
+              {`${code} (${symbol})`}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <header className="bg-white shadow-sm sticky top-0 z-[100]">
       <div className="max-w-7xl mx-auto px-4">
@@ -95,6 +133,7 @@ export default function Header({
           </nav>
 
           <div className="flex items-center space-x-4">
+            {currencySelector}
             {/* Language Switcher */}
             <div className="relative">
               <button
