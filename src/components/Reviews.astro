@@ -1,11 +1,19 @@
 ---
+import { getReviews } from '../lib/db';
 import reviewsContent from './content/reviews.json';
 
 interface Props {
   language: string;
+  storeName?: string;
 }
 
-const { language = 'en' } = Astro.props;
+const { 
+  language = 'en', 
+  storeName = import.meta.env.PUBLIC_SITE_NAME?.toLowerCase() 
+} = Astro.props;
+
+// Fetch reviews using the separated database logic
+const { reviews, error } = await getReviews(language, storeName);
 
 // Get content for current language, fallback to English
 const content = reviewsContent[language] || reviewsContent['en'];
@@ -25,7 +33,7 @@ function formatDate(months: string, content: any) {
   </h2>
   
   <div class="space-y-6">
-    {content.reviews.map((review) => (
+    {reviews && reviews.map((review) => (
       <div class="bg-gray-50 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-4">
