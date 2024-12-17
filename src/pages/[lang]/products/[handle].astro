@@ -133,35 +133,27 @@ const europeanCurrencies = {
 
 // Function to get appropriate currency based on language
 const getCurrencyForLanguage = (language: string) => {
-  return europeanCurrencies[language] || 'USD';
+  return europeanCurrencies[language] || 'GBP'; // Default to GBP since data is in GBP
+};
+
+// Convert GBP to EUR if needed
+const convertGBPToEUR = (priceAmount: string) => {
+  const rate = 1.17; // GBP to EUR conversion rate
+  return parseFloat(priceAmount) * rate;
 };
 
 // Get currency for current language
 const currentCurrency = getCurrencyForLanguage(lang);
 
-// Convert price to EUR if needed
-const convertPriceToEUR = (priceAmount: string, originalCurrency: string) => {
-  if (originalCurrency === 'EUR') return parseFloat(priceAmount);
-  
-  const rates = {
-    USD: 0.85, // Example rate USD to EUR
-    GBP: 1.17, // Example rate GBP to EUR
-    // Add more conversion rates as needed
-  };
-
-  const amount = parseFloat(priceAmount);
-  return rates[originalCurrency] ? amount * rates[originalCurrency] : amount;
-};
-
 // Process price for meta tags
 const originalPrice = product.processedVariants[0].price;
 const priceInEUR = europeanCurrencies[lang] 
-  ? convertPriceToEUR(originalPrice.amount, originalPrice.currencyCode)
+  ? convertGBPToEUR(originalPrice.amount)
   : parseFloat(originalPrice.amount);
 
 const metaPrice = {
   amount: priceInEUR.toFixed(2),
-  currency: europeanCurrencies[lang] ? 'EUR' : originalPrice.currencyCode
+  currency: currentCurrency
 };
 
 // Get review stats and reviews first
@@ -176,7 +168,7 @@ if (reviewsError) {
   console.error('Error fetching reviews:', reviewsError);
 }
 
-// Then generate the schema
+// Then generate the schema with currency conversion
 const productSchema = {
   "@context": "https://schema.org/",
   "@type": "Product",
@@ -184,14 +176,16 @@ const productSchema = {
   "description": product.description,
   "image": product.processedImages.map(img => img.url),
   "sku": product.id,
-  "offers": product.processedVariants.map(variant => ({
+  "offers": {
     "@type": "Offer",
-    "price": variant.price.amount,
-    "priceCurrency": variant.price.currencyCode,
-    "availability": variant.availableForSale 
+    "price": metaPrice.amount,
+    "priceCurrency": metaPrice.currency,
+    "availability": product.processedVariants[0].availableForSale 
       ? "https://schema.org/InStock" 
-      : "https://schema.org/OutOfStock"
-  })),
+      : "https://schema.org/OutOfStock",
+    "priceValidUntil": new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    "url": Astro.url.href
+  },
   "aggregateRating": reviewStats ? {
     "@type": "AggregateRating",
     "ratingValue": reviewStats.averageRating.toFixed(1),

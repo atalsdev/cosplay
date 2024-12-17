@@ -2,6 +2,16 @@ import React from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { useCartStore } from '../../../store/cart';
 
+// Define European language to currency mapping
+const currencyMapping = {
+  'fr': { symbol: '€', currency: 'EUR', rate: 1.17 }, // GBP to EUR
+  'it': { symbol: '€', currency: 'EUR', rate: 1.17 },
+  'de': { symbol: '€', currency: 'EUR', rate: 1.17 },
+  'es': { symbol: '€', currency: 'EUR', rate: 1.17 },
+  'en': { symbol: '£', currency: 'GBP', rate: 1 },
+  // Add more languages as needed
+};
+
 const translations = {
   en: {
     addToCart: 'Add to Cart'
@@ -90,6 +100,11 @@ export default function ProductCard({ id, title, price, image, imageAlt, descrip
     });
   };
 
+  // Get currency info based on language
+  const currencyInfo = currencyMapping[lang as keyof typeof currencyMapping] || currencyMapping.en;
+  
+  // Convert price if needed (price is already in GBP)
+  const displayPrice = (price * currencyInfo.rate).toFixed(2);
   const buttonText = translations[lang as keyof typeof translations]?.addToCart || translations.en.addToCart;
 
   return (
@@ -127,7 +142,7 @@ export default function ProductCard({ id, title, price, image, imageAlt, descrip
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2">
           {/* Price */}
           <div className="text-xl font-bold text-gray-900">
-            ${price.toFixed(2)}
+            {currencyInfo.symbol}{displayPrice}
           </div>
 
           {/* Add to Cart Button */}
