@@ -46,9 +46,9 @@ export async function getReviews(language: string, storeName: string) {
       return { reviews: null, error };
     }
 
-    // Cache the results for 1 hour (3600 seconds)
+    // Cache the results for 24 hours (86400 seconds)
     if (reviews && reviews.length > 0) {
-      await setCachedData(cacheKey, reviews, 3600);
+      await setCachedData(cacheKey, reviews, 86400);
       console.log('💾 Cached reviews for:', {
         storeName,
         language,
@@ -188,8 +188,8 @@ export async function getRecentReviews(limit: number = 10) {
       return { reviews: null, error };
     }
 
-    // Cache recent reviews for 1 hour
-    await setCachedData(cacheKey, reviews, 3600);
+    // Cache recent reviews for 24 hours
+    await setCachedData(cacheKey, reviews, 86400);
 
     return { reviews, error: null };
   } catch (err) {
