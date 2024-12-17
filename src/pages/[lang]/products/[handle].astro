@@ -13,6 +13,7 @@ import KeyFeatures from '@components/KeyFeatures.astro';
 import ProductLoading from '@components/ProductLoading.astro';
 import { useCurrencyStore } from '../../../store/currency';
 import { getReviewStats, getReviews } from '../../../lib/db';
+import { generateCacheKey, getCachedPage, cachePageContent } from '@libs/cache';
 
 const { lang, handle } = Astro.params;
 const supportedLanguages = ['en', 'fr', 'de', 'es', 'it'];
@@ -20,6 +21,23 @@ let product;
 let relatedProducts;
 let error;
 
+// Generate cache key
+const cacheKey = generateCacheKey(`/products/${handle}`, lang);
+
+// Try to get cached version
+const cachedContent = await getCachedPage(cacheKey);
+
+if (cachedContent) {
+  console.log('✅ Serving cached page:', cacheKey);
+  return new Response(cachedContent, {
+    headers: {
+      'Content-Type': 'text/html;charset=UTF-8',
+      'X-Cache': 'HIT',
+    },
+  });
+}
+
+// If no cache, proceed with normal rendering
 console.log(`🔍 Fetching product: ${handle} in language: ${lang}`);
 
 try {
@@ -389,17 +407,23 @@ const initialCurrency = 'USD'; // Or get from store/session
               <!-- Image Gallery -->
               <div class="space-y-4 lg:sticky lg:top-24 lg:self-start">
                 <div class="relative bg-gray-50 rounded-2xl overflow-hidden group">
-                  <div class="aspect-square">
+                  <div class="aspect-square relative">
                     <img
                       id="mainImage"
-                      src={product.processedImages[0].url}
+                      src={`${product.processedImages[0].url}&width=800`}
                       alt={product.title}
-                      class="w-full h-full object-contain transition-opacity duration-200"
+                      class="w-full h-full object-contain absolute inset-0"
                       loading="eager"
                       fetchpriority="high"
                       width="800"
                       height="800"
                       decoding="async"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+                      srcset={`
+                        ${product.processedImages[0].url}&width=400 400w,
+                        ${product.processedImages[0].url}&width=800 800w,
+                        ${product.processedImages[0].url}&width=1200 1200w
+                      `}
                     />
                   </div>
                   
@@ -432,17 +456,22 @@ const initialCurrency = 'USD'; // Or get from store/session
                   {product.processedImages.map((image, index) => (
                     <button
                       key={image.id}
-                      data-image-url={image.url}
+                      data-image-url={`${image.url}&width=800`}
+                      data-image-srcset={`
+                        ${image.url}&width=400 400w,
+                        ${image.url}&width=800 800w,
+                        ${image.url}&width=1200 1200w
+                      `}
                       data-image-id={image.id}
                       data-image-index={index}
-                      class={`flex-none w-20 h-20 rounded-lg overflow-hidden snap-start
+                      class={`relative flex-none aspect-square w-20 rounded-lg overflow-hidden snap-start
                               ${index === 0 ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-gray-300'}
                               transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     >
                       <img
-                        src={image.url}
+                        src={`${image.url}&width=80`}
                         alt={`${product.title} - View ${index + 1}`}
-                        class="w-full h-full object-cover"
+                        class="absolute inset-0 w-full h-full object-cover"
                         loading={index === 0 ? "eager" : "lazy"}
                         width="80"
                         height="80"
@@ -886,44 +915,21 @@ const initialCurrency = 'USD'; // Or get from store/session
     setImage(index: number) {
       if (!this.mainImage) return;
       
-      // Update current index
-      this.currentIndex = index;
-      
-      // Update main image with fade effect
-      const newUrl = this.thumbnails[index].dataset.imageUrl;
-      if (newUrl) {
-        this.mainImage.style.opacity = '0';
-        setTimeout(() => {
-          this.mainImage.src = newUrl;
-          this.mainImage.style.opacity = '1';
-        }, 200);
-      }
+      const thumb = this.thumbnails[index];
+      if (!thumb) return;
+
+      // Update main image with responsive attributes
+      this.mainImage.src = thumb.dataset.imageUrl || '';
+      this.mainImage.srcset = thumb.dataset.imageSrcset || '';
+      this.mainImage.alt = thumb.querySelector('img')?.alt || '';
 
       // Update thumbnail states
-      this.thumbnails.forEach((thumb, i) => {
-        thumb.classList.toggle('ring-2', i === index);
-        thumb.classList.toggle('ring-blue-500', i === index);
-        thumb.classList.toggle('ring-gray-300', i !== index);
+      this.thumbnails.forEach((t, i) => {
+        t.classList.toggle('ring-2', i === index);
+        t.classList.toggle('ring-blue-500', i === index);
       });
 
-      // Scroll thumbnail into view if needed, but prevent page scroll
-      const scrollOptions: ScrollIntoViewOptions = {
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center'
-      };
-      
-      // Use requestAnimationFrame to ensure smooth scrolling
-      requestAnimationFrame(() => {
-        const thumbnail = this.thumbnails[index];
-        const container = thumbnail.parentElement;
-        if (container) {
-          const scrollLeft = thumbnail.offsetLeft - (container.clientWidth - thumbnail.clientWidth) / 2;
-          container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
-        }
-      });
-
-      // Update navigation buttons
+      this.currentIndex = index;
       this.updateNavigationButtons();
     }
 
@@ -935,9 +941,22 @@ const initialCurrency = 'USD'; // Or get from store/session
     }
   }
 
-  // Initialize
-  document.addEventListener('astro:page-load', () => {
-    new ImageGallery();
+  // Initialize gallery
+  new ImageGallery();
+
+  // Listen for variant changes
+  window.addEventListener('variantImageChange', (event: CustomEvent) => {
+    const { imageUrl, imageId } = event.detail;
+    const mainImage = document.getElementById('mainImage') as HTMLImageElement;
+    if (mainImage && imageUrl) {
+      // Update main image with responsive attributes
+      mainImage.src = `${imageUrl}&width=800`;
+      mainImage.srcset = `
+        ${imageUrl}&width=400 400w,
+        ${imageUrl}&width=800 800w,
+        ${imageUrl}&width=1200 1200w
+      `;
+    }
   });
 </script>
 

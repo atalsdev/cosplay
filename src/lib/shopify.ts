@@ -1,6 +1,7 @@
 import { createClient } from 'redis';
 import { getRedisClient, getCachedData as getRedisData, setCachedData as setRedisData } from './redis';
 import { connectToDatabase } from './mongodb';
+import { invalidatePageCache } from './cache';
 
 const domain = import.meta.env.PUBLIC_SHOPIFY_SHOP;
 const storefrontAccessToken = import.meta.env.PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN;
@@ -18,6 +19,10 @@ async function backgroundSyncProducts() {
     const client = await connectToDatabase();
     const collection = client.db('shopify_cache').collection('products');
     await fetchAndSaveAllProducts(collection);
+    
+    // Invalidate page cache after sync
+    await invalidatePageCache('*/products/*');
+    
     console.log('✅ [BACKGROUND] Products sync completed');
   } catch (error) {
     console.error('❌ [BACKGROUND] Products sync failed:', error);
@@ -296,10 +301,14 @@ export async function refreshProductCache() {
     
     console.log('🔄 Fetching fresh data...');
     const result = await getAllProducts();
-    console.log('✅ Manual cache refresh completed successfully');
+    
+    // Invalidate all product page caches
+    await invalidatePageCache('products/*');
+    
+    console.log('✅ Product cache refreshed and page cache invalidated');
     return result;
   } catch (error) {
-    console.error('❌ Error during manual cache refresh:', error);
+    console.error('❌ Error refreshing cache:', error);
     throw error;
   }
 }
