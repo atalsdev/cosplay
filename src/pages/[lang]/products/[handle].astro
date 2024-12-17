@@ -393,7 +393,7 @@ const initialCurrency = 'USD'; // Or get from store/session
                     <img
                       id="mainImage"
                       src={product.processedImages[0].url}
-                      alt={product.processedImages[0].altText}
+                      alt={product.title}
                       class="w-full h-full object-contain transition-opacity duration-200"
                       loading="eager"
                       fetchpriority="high"
@@ -441,7 +441,7 @@ const initialCurrency = 'USD'; // Or get from store/session
                     >
                       <img
                         src={image.url}
-                        alt={image.altText || ''}
+                        alt={`${product.title} - View ${index + 1}`}
                         class="w-full h-full object-cover"
                         loading={index === 0 ? "eager" : "lazy"}
                         width="80"
@@ -672,6 +672,7 @@ const initialCurrency = 'USD'; // Or get from store/session
                     title={product.node.title}
                     price={parseFloat(product.node.priceRange.minVariantPrice.amount)}
                     image={product.node.images.edges[0]?.node.url}
+                    imageAlt={product.node.title}
                     description={product.node.description}
                     handle={product.node.handle}
                     lang={lang}

@@ -89,6 +89,7 @@ export default function Header({
       <button
         onClick={() => setShowCurrencyMenu(!showCurrencyMenu)}
         className="flex items-center space-x-2 text-gray-700 hover:text-black"
+        aria-label={`Select currency (current: ${currencies[currency]})`}
       >
         <span className="text-sm">{currencies[currency]}</span>
       </button>
@@ -105,6 +106,7 @@ export default function Header({
               className={`block w-full text-left px-4 py-2 text-sm ${
                 currency === code ? 'bg-gray-100' : 'hover:bg-gray-50'
               }`}
+              aria-label={`Change currency to ${code} (${symbol})`}
             >
               {`${code} (${symbol})`}
             </button>
@@ -139,6 +141,7 @@ export default function Header({
               <button
                 onClick={() => setShowLanguageMenu(!showLanguageMenu)}
                 className="flex items-center space-x-2 text-gray-700 hover:text-black"
+                aria-label={`Select language (current: ${languages[language]})`}
               >
                 <Globe size={20} />
                 <span className="text-sm">{languages[language]}</span>
@@ -153,6 +156,7 @@ export default function Header({
                       className={`block w-full text-left px-4 py-2 text-sm ${
                         language === code ? 'bg-gray-100' : 'hover:bg-gray-50'
                       }`}
+                      aria-label={`Change language to ${name}`}
                     >
                       {name}
                     </button>
@@ -165,6 +169,7 @@ export default function Header({
             <button 
               onClick={() => setIsOpen(!isOpen)} 
               className="text-gray-700 hover:text-black relative"
+              aria-label={`Shopping cart${items.length > 0 ? ` (${items.length} items)` : ''}`}
             >
               <ShoppingCart size={24} />
               {items.length > 0 && (
@@ -189,6 +194,7 @@ export default function Header({
               <button 
                 onClick={() => setIsOpen(false)}
                 className="text-gray-500 hover:text-gray-700"
+                aria-label="Close shopping cart"
               >
                 ✕
               </button>

@@ -70,12 +70,13 @@ interface ProductCardProps {
   title: string;
   price: number;
   image: string;
+  imageAlt: string;
   description: string;
   handle: string;
-  lang?: string;
+  lang: string;
 }
 
-export default function ProductCard({ id, title, price, image, description, handle, lang = 'en' }: ProductCardProps) {
+export default function ProductCard({ id, title, price, image, imageAlt, description, handle, lang }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -100,9 +101,11 @@ export default function ProductCard({ id, title, price, image, description, hand
       <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
         <img 
           src={image} 
-          alt={title} 
+          alt={imageAlt} 
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
+          width="400"
+          height="400"
         />
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300" />
