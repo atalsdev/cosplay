@@ -17,13 +17,13 @@ import { generateCacheKey, getCachedPage, cachePageContent } from '@libs/cache';
 
 const { lang, handle } = Astro.params;
 const supportedLanguages = ['en', 'fr', 'de', 'es', 'it'];
+const siteName = import.meta.env.PUBLIC_SITE_NAME;
 let product;
 let relatedProducts;
 let error;
 
 // Generate cache key
 const cacheKey = generateCacheKey(`/products/${handle}`, lang);
-
 // Try to get cached version
 const cachedContent = await getCachedPage(cacheKey);
 
@@ -299,7 +299,7 @@ const initialCurrency = 'USD'; // Or get from store/session
 <html lang={lang}>
   <head>
     <BaseHead 
-      title={product.seo?.title || `${product.title} | RidWear`}
+      title={product.seo?.title || `${product.title} | ${siteName}`}
       description={product.seo?.description || metaDescription}
       image={product.processedImages[0].url}
       isProduct={true}
@@ -368,7 +368,7 @@ const initialCurrency = 'USD'; // Or get from store/session
     <link rel="manifest" href="/manifest.json" />
   </head>
   <body>
-    <Layout title={`${product.title} | RidWear`}>
+    <Layout title={`${product.title} | ${siteName}`}>
       <div id="product-wrapper" class="relative">
         <div 
           id="product-content" 
