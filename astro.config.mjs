@@ -5,7 +5,6 @@ import node from '@astrojs/node';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import * as dotenv from 'dotenv';
-import { cacheControl } from './src/middleware/cache';
 
 
 // Helper function to load environment variables
@@ -32,8 +31,7 @@ export default defineConfig({
   adapter: node({
     mode: 'standalone',
     host: HOST,
-    port: PORT,
-    middleware: [cacheControl]
+    port: PORT
   }),
   vite: {
     envPrefix: 'SHOPIFY_',
