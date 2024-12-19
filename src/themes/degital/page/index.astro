@@ -30,7 +30,7 @@ const translations = await useTranslations(lang);
 const jsonData = translations.default;
 
 // Get site title and description from language-specific data
-const SITE_TITLE = jsonData.siteTitle || 'Degital';
+const SITE_TITLE = jsonData.siteTitle || 'DigiVast';
 const SITE_DESCRIPTION = jsonData.siteDescription || 'Your ultimate cosplay destination';
 
 const blogId = '82152357935';
@@ -59,7 +59,11 @@ export async function getStaticPaths() {
 <!doctype html>
 <html lang={lang}>
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead 
+      title={SITE_TITLE} 
+      description={SITE_DESCRIPTION} 
+      isHomePage={true}
+    />
   </head>
   <body>
     <Header />

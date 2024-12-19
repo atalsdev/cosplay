@@ -10,10 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy:bikes": "node scripts/deploy-store.js bikes",
-    "deploy:digivast": "node scripts/deploy-store.js digivast",
-    "deploy:cosplay": "node scripts/deploy-store.js cosplayverse",
-    "deploy:all": "npm run deploy:bikes && npm run deploy:digivast && npm run deploy:cosplay",
+    "deploy": "node scripts/deploy-store.js",
+    "deploy:all": "node scripts/deploy-store.js all",
     "start:all": "pm2 start ecosystem.config.cjs",
     "stop:all": "pm2 stop all",
     "restart:all": "pm2 restart all"

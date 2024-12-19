@@ -59,7 +59,11 @@ export async function getStaticPaths() {
 <!doctype html>
 <html lang={lang}>
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead 
+      title={SITE_TITLE} 
+      description={SITE_DESCRIPTION} 
+      isHomePage={true}
+    />
   </head>
   <body>
     <Header />

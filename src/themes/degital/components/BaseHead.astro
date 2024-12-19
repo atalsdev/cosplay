@@ -1,8 +1,11 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
 import { generateCanonicalURL, generateSchema, type SEOProps } from '../../../utils/seo';
+import { getReviewStats, getReviews } from '../../../lib/db';
 
-interface Props extends SEOProps {}
+interface Props extends SEOProps {
+  isHomePage?: boolean;
+}
 
 const { 
   title, 
@@ -10,10 +13,68 @@ const {
   image = '/images/social-card.jpg',
   article = false,
   publishedTime,
-  modifiedTime
+  modifiedTime,
+  isHomePage = false
 } = Astro.props;
 
-const canonicalURL = generateCanonicalURL(Astro.url.pathname);
+// Get current language from URL
+const currentPath = Astro.url.pathname;
+const currentLang = currentPath.split('/')[1];
+
+// Define supported languages
+const supportedLanguages = ['en', 'fr', 'es', 'it', 'de', 'nl', 'pt'];
+
+// Generate hreflang URLs
+const hrefLangURLs = supportedLanguages.map(lang => ({
+  lang,
+  url: `${Astro.url.origin}/${lang}${currentPath.substring(3)}` // Remove current language and add new one
+}));
+
+// Set canonical URL to English version for all languages except English
+const canonicalURL = currentLang === 'en' 
+  ? generateCanonicalURL(Astro.url.pathname)
+  : `${Astro.url.origin}/en${currentPath.substring(3)}`;
+
+// Fetch review data if it's the homepage
+let reviewSchema = null;
+if (isHomePage) {
+  const { stats: reviewStats, error: reviewError } = await getReviewStats(import.meta.env.PUBLIC_SITE_NAME?.toLowerCase());
+  const { reviews, error: reviewsError } = await getReviews(currentLang, import.meta.env.PUBLIC_SITE_NAME?.toLowerCase());
+
+  if (reviewStats && !reviewError && reviews && !reviewsError) {
+    reviewSchema = {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": import.meta.env.PUBLIC_SITE_NAME,
+      "url": Astro.url.origin,
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": reviewStats.averageRating.toFixed(1),
+        "reviewCount": reviewStats.totalReviews.toString(),
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "review": reviews.slice(0, 9).map(review => ({
+        "@type": "Review",
+        "author": {
+          "@type": "Person",
+          "name": review.name || "Anonymous"
+        },
+        "datePublished": new Date(Date.now() - parseInt(review.date) * 30 * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .split('T')[0],
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": review.rating.toString(),
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "reviewBody": review.comment
+      }))
+    };
+  }
+}
+
 const schema = generateSchema(Astro.props, Astro.url.pathname);
 ---
 
@@ -25,6 +86,13 @@ const schema = generateSchema(Astro.props, Astro.url.pathname);
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
+
+<!-- Language Alternates -->
+{hrefLangURLs.map(({ lang, url }) => (
+  <link rel="alternate" hreflang={lang} href={url} />
+))}
+<!-- x-default hreflang -->
+<link rel="alternate" hreflang="x-default" href={`${Astro.url.origin}/en${currentPath.substring(3)}`} />
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
@@ -54,6 +122,9 @@ const schema = generateSchema(Astro.props, Astro.url.pathname);
 
 <!-- Schema.org -->
 <script type="application/ld+json" set:html={schema} />
+{reviewSchema && (
+  <script type="application/ld+json" set:html={JSON.stringify(reviewSchema)} />
+)}
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />

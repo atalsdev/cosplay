@@ -183,7 +183,7 @@ const productSchema = {
     "availability": product.processedVariants[0].availableForSale 
       ? "https://schema.org/InStock" 
       : "https://schema.org/OutOfStock",
-    "priceValidUntil": new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    "priceValidUntil": new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     "url": Astro.url.href
   },
   "aggregateRating": reviewStats ? {
@@ -195,14 +195,16 @@ const productSchema = {
     "@type": "Review",
     "author": {
       "@type": "Person",
-      "name": review.name
+      "name": review.name || "Anonymous"
     },
     "datePublished": new Date(Date.now() - parseInt(review.date) * 30 * 24 * 60 * 60 * 1000)
       .toISOString()
       .split('T')[0],
     "reviewRating": {
       "@type": "Rating",
-      "ratingValue": review.rating.toString()
+      "ratingValue": review.rating.toString(),
+      "bestRating": "5",
+      "worstRating": "1"
     },
     "reviewBody": review.comment
   })) || []
