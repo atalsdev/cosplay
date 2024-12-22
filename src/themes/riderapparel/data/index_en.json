@@ -1,0 +1,135 @@
+{
+  "siteTitle": "MotoGear Pro - Premium Motorcycle Apparel & Accessories",
+  "siteDescription": "Your ultimate destination for premium motorcycle gear, protective equipment, and accessories. Expert-curated products for riders, by riders.",
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Welcome to Your Ultimate Motorcycle Store",
+      "description": "Explore high-quality motorcycle gear, accessories, and advice to fuel your passion for the open road.",
+      "blogLinkText": "SHOP NOW",
+      "blogLink": "/collections",
+      "backgroundVideo": {
+        "type": "youtube",
+        "videoId": "laZ-m8hY9YM",
+        "fallbackImage": "/images/hero-motorcycle.jpg"
+      }
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Gear Up for Your Next Adventure",
+      "description": "Discover our top-rated helmets, jackets, and accessories to stay safe and stylish on the road.",
+      "backgroundImage": "/images/banner-motorcycle-bg.jpg",
+      "button1Text": "Shop Gear",
+      "button1Link": "/shop",
+      "button2Text": "Learn More",
+      "button2Link": "/about"
+    },
+    {
+      "type": "categoryGrid",
+      "title": "Shop by Category",
+      "description": "Find gear that suits your ride style and needs, from helmets and jackets to gloves and boots.",
+      "categories": [
+        {
+          "id": "helmets",
+          "name": "Helmets",
+          "description": "DOT-approved helmets for maximum safety.",
+          "image": "https://cdn.shopify.com/s/files/1/0257/4372/0495/products/98365-19EX_F.jpg?v=1703022404",
+          "link": "/collections/motorcycle-helmet"
+        },
+        {
+          "id": "jackets",
+          "name": "Jackets",
+          "description": "Protective and stylish motorcycle jackets.",
+          "image": "https://cdn.shopify.com/s/files/1/0257/4372/0495/products/Triumph-Triple-Leather-Jacket-in-Black-Rider-Apparel-Ridersapparel_shop.png?v=1701469305",
+          "link": "/collections/motorcycle-jacket"
+        },
+        {
+          "id": "gloves",
+          "name": "Gloves",
+          "description": "Durable gloves for better grip and control.",
+          "image": "https://cdn.shopify.com/s/files/1/0257/4372/0495/products/Harley-Davidsonr-Mens-Grit-Adventure-Gloves-Rider-Apparel-Ridersapparel_shop.jpg?v=1701469494&width=800",
+          "link": "/collections/motorcycle-gloves"
+        }
+      ]
+    },
+    {
+      "type": "productShowcase",
+      "title": "Featured Products",
+      "description": "Check out our best-selling gear and accessories chosen by riders.",
+      "viewAllLink": "/products",
+      "collectionHandle": "motorcycle-riding-jacket",
+      "products": [
+        {
+          "id": "helmet-1",
+          "name": "Full-Face Helmet",
+          "description": "Ultimate protection with advanced ventilation.",
+          "price": "199.99",
+          "image": "/images/products/helmet-1.jpg",
+          "category": "Helmets"
+        },
+        {
+          "id": "jacket-1",
+          "name": "Leather Jacket",
+          "description": "Stylish and durable with armor inserts.",
+          "price": "249.99",
+          "image": "https://cdn.shopify.com/s/files/1/0257/4372/0495/products/Triumph-Triple-Leather-Jacket-in-Black-Rider-Apparel-Ridersapparel_shop.png?v=1701469305",
+          "category": "Jackets"
+        }
+      ]
+    },
+    {
+      "type": "testimonialSlider",
+      "title": "Rider Testimonials",
+      "testimonials": [
+        {
+          "id": "1",
+          "author": "Alex Thompson",
+          "role": "Adventure Rider",
+          "content": "The gear here is top-notch. I've never felt safer on my bike.",
+          "avatar": ""
+        },
+        {
+          "id": "2",
+          "author": "Sarah Chen",
+          "role": "Sport Bike Enthusiast",
+          "content": "Incredible selection of protective gear. The customer service team helped me find the perfect fit for my riding style.",
+          "avatar": ""
+        },
+        {
+          "id": "3",
+          "author": "Mike Rodriguez",
+          "role": "Touring Rider",
+          "content": "Quality products that stand up to long-distance rides. My gear from MotoGear Pro has lasted through countless adventures.",
+          "avatar": ""
+        }
+      ]
+    },
+    {
+      "type": "faqSection",
+      "title": "Frequently Asked Questions",
+      "description": "Find answers to your questions about motorcycle gear, safety, and maintenance.",
+      "faqs": [
+        {
+          "question": "What type of motorcycle is best for beginners?",
+          "answer": "For beginners, we recommend a lightweight motorcycle (250-400cc) for an optimal balance of power and control."
+        },
+        {
+          "question": "How do I choose the right helmet?",
+          "answer": "Choose a DOT-certified helmet that fits snugly. Consider helmet type, ventilation, and visibility."
+        },
+        {
+          "question": "What safety gear is essential for riding?",
+          "answer": "Essentials include a DOT-approved helmet, armored jacket, gloves, and sturdy boots for full protection."
+        }
+      ]
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Stay Updated on Motorcycle Gear and Tips",
+      "description": "Sign up for our newsletter to get the latest product updates, tips, and exclusive offers.",
+      "backgroundImage": "/images/newsletter-motorcycle-bg.jpg",
+      "formAction": "/api/subscribe",
+      "submitText": "Subscribe"
+    }
+  ]
+}

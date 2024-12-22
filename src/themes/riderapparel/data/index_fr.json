@@ -1,0 +1,138 @@
+{
+  "siteTitle": "MotoGear Pro - Équipement Moto Premium & Accessoires",
+  "siteDescription": "Votre destination ultime pour l'équipement moto premium, les équipements de protection et les accessoires. Produits sélectionnés par des experts, pour les motards.",
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Alimentez Votre Passion : Libérez la Route avec MotoPlanet",
+      "description": "Plongez dans l'univers de la moto avec MotoPlanet - votre destination unique pour les actualités, les tests, les guides d'équipement et l'inspiration.",
+      "blogLinkText": "ACHETER MAINTENANT",
+      "blogLink": "/collections",
+      "backgroundVideo": {
+        "type": "youtube",
+        "videoId": "laZ-m8hY9YM",
+        "fallbackImage": "/images/hero-motorcycle.jpg"
+      }
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Découvrez Votre Moto Parfaite",
+      "description": "Tests d'experts, guides d'achat et conseils d'entretien - tout ce dont vous avez besoin pour prendre des décisions éclairées dans votre aventure moto.",
+      "backgroundImage": "/images/banner-bg.jpg",
+      "button1Text": "Parcourir les Tests",
+      "button1Link": "/reviews",
+      "button2Text": "Lire les Guides",
+      "button2Link": "/guides"
+    },
+    {
+      "type": "categoryGrid",
+      "title": "Acheter par Catégorie",
+      "description": "Trouvez l'équipement parfait pour votre style de conduite",
+      "categories": [
+        {
+          "id": "helmets",
+          "name": "Casques",
+          "description": "Protection premium pour chaque motard",
+          "image": "https://cdn.shopify.com/s/files/1/0257/4372/0495/products/98365-19EX_F.jpg?v=1703022404",
+          "link": "/collections/motorcycle-helmet"
+        },
+        {
+          "id": "jackets",
+          "name": "Blousons",
+          "description": "Sécurité et style sur la route",
+          "image": "https://cdn.shopify.com/s/files/1/0257/4372/0495/products/Triumph-Triple-Leather-Jacket-in-Black-Rider-Apparel-Ridersapparel_shop.png?v=1701469305",
+          "link": "/collections/motorcycle-jacket"
+        },
+        {
+          "id": "gloves",
+          "name": "Gants",
+          "description": "Adhérence et protection maximales",
+          "image": "https://cdn.shopify.com/s/files/1/0257/4372/0495/products/Harley-Davidsonr-Mens-Grit-Adventure-Gloves-Rider-Apparel-Ridersapparel_shop.jpg?v=1701469494&width=800",
+          "link": "/collections/motorcycle-gloves"
+        }
+      ]
+    },
+    {
+      "type": "productShowcase",
+      "title": "Produits Vedettes",
+      "description": "Notre équipement moto le plus populaire",
+      "viewAllLink": "/shop",
+      "collectionHandle": "motorcycle-riding-jacket",
+      "products": [
+        {
+          "id": "helmet-1",
+          "name": "Casque de Course X-1 Pro",
+          "description": "Protection de qualité professionnelle",
+          "price": "599,99 €",
+          "image": "/images/products/helmet-1.jpg",
+          "category": "Casques"
+        },
+        {
+          "id": "jacket-1",
+          "name": "Blouson de Course en Cuir",
+          "description": "Protection en cuir premium",
+          "price": "399,99 €",
+          "image": "/images/products/jacket-1.jpg",
+          "category": "Blousons"
+        },
+        {
+          "id": "boots-1",
+          "name": "Bottes Adventure",
+          "description": "Confort tout-terrain",
+          "price": "299,99 €",
+          "image": "/images/products/boots-1.jpg",
+          "category": "Bottes"
+        },
+        {
+          "id": "gloves-1",
+          "name": "Gants de Course Pro",
+          "description": "Adh��rence et protection maximales",
+          "price": "89,99 €",
+          "image": "/images/products/gloves-1.jpg",
+          "category": "Gants"
+        }
+      ]
+    },
+    {
+      "type": "testimonialSlider",
+      "title": "Ce que Disent Nos Motards",
+      "testimonials": [
+        {
+          "id": "1",
+          "author": "Jean Dupont",
+          "role": "Pilote d'Aventure",
+          "content": "L'équipement ici est vraiment haut de gamme. Je ne me suis jamais senti aussi en sécurité sur ma moto.",
+          "avatar": ""
+        },
+        {
+          "id": "2",
+          "author": "Marie Laurent",
+          "role": "Pilote de Sport",
+          "content": "Excellente sélection d'équipements de protection. L'équipe du service client m'a aidée à trouver l'ajustement parfait pour mon style de conduite.",
+          "avatar": ""
+        },
+        {
+          "id": "3",
+          "author": "Pierre Dubois",
+          "role": "Motard Touring",
+          "content": "Des produits de qualité qui résistent aux longs trajets. Mon équipement MotoGear Pro a traversé d'innombrables aventures.",
+          "avatar": ""
+        }
+      ]
+    },
+    {
+      "type": "featuredPostsSection",
+      "title": "Derniers Articles du Blog",
+      "exploreMoreText": "Voir Tous les Articles",
+      "exploreMoreLink": "/blog"
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Restez Informé",
+      "description": "Abonnez-vous à notre newsletter pour recevoir les dernières actualités moto, tests d'équipement et offres exclusives.",
+      "backgroundImage": "/images/newsletter-bg.jpg",
+      "formAction": "/api/subscribe",
+      "submitText": "S'abonner Maintenant"
+    }
+  ]
+}

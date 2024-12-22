@@ -20,6 +20,16 @@ export const GET: APIRoute = async ({ site }) => {
     <lastmod>${lastmod}</lastmod>
   </sitemap>
 
+  <!-- Default (non-language prefixed) Sitemaps -->
+  <sitemap>
+    <loc>${new URL('sitemap_products_default.xml', site).href}</loc>
+    <lastmod>${lastmod}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${new URL('sitemap_collections_default.xml', site).href}</loc>
+    <lastmod>${lastmod}</lastmod>
+  </sitemap>
+
   <!-- Products Sitemaps by Language -->
   ${languages.map(lang => `<sitemap>
     <loc>${new URL(`sitemap_products_${lang}.xml`, site).href}</loc>

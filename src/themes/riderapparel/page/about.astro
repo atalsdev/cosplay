@@ -1,0 +1,108 @@
+---
+import { SITE_TITLE } from '../consts';
+
+const theme = import.meta.env.THEME || 'default';
+
+// Properly handle dynamic imports with default exports
+const { default: BaseHead } = await import(`../components/BaseHead.astro`);
+const { default: Header } = await import(`../components/Header.astro`);
+const { default: Footer } = await import(`../components/Footer.astro`);
+
+const team = [
+  {
+    name: 'Sarah Johnson',
+    role: 'Founder & CEO',
+    image: '/images/team/sarah.jpg',
+    bio: 'Passionate motorcyclist with 15+ years of experience in the industry.'
+  },
+  {
+    name: 'Mike Rodriguez',
+    role: 'Head of Product',
+    image: '/images/team/mike.jpg',
+    bio: 'Former professional racer turned gear expert.'
+  },
+  {
+    name: 'Emily Chen',
+    role: 'Customer Experience',
+    image: '/images/team/emily.jpg',
+    bio: 'Dedicated to ensuring riders find their perfect gear match.'
+  }
+];
+
+const stats = [
+  { value: '10K+', label: 'Happy Riders' },
+  { value: '1000+', label: 'Products' },
+  { value: '24/7', label: 'Support' },
+  { value: '50+', label: 'Brand Partners' }
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead 
+      title={`About Us | ${SITE_TITLE}`}
+      description="Learn about RidWear's mission to provide the best motorcycle gear and create a community of passionate riders."
+    />
+  </head>
+  <body>
+    <Header />
+    <main class="pt-20">
+      <!-- Hero Section -->
+      <section class="relative py-20 px-4 bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto">
+          <h1 class="text-4xl md:text-5xl font-bold mb-6">Our Story</h1>
+          <p class="text-xl text-gray-300 max-w-2xl">
+            Founded by riders, for riders. RidWear was born from a passion for motorcycling and a desire to provide fellow enthusiasts with the best gear possible.
+          </p>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section class="py-16 px-4 bg-white">
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+          {stats.map(stat => (
+            <div class="text-center">
+              <div class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{stat.value}</div>
+              <div class="text-gray-600">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Mission -->
+      <section class="py-20 px-4 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+          <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-6">Our Mission</h2>
+            <p class="text-lg text-gray-600 mb-8">
+              To provide riders with the highest quality gear while fostering a community where safety meets style. We believe every journey should be protected, comfortable, and memorable.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Team -->
+      <section class="py-20 px-4 bg-white">
+        <div class="max-w-7xl mx-auto">
+          <h2 class="text-3xl font-bold text-center mb-12">Meet Our Team</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {team.map(member => (
+              <div class="text-center">
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
+                />
+                <h3 class="text-xl font-semibold mb-1">{member.name}</h3>
+                <p class="text-gray-600 mb-3">{member.role}</p>
+                <p class="text-gray-600">{member.bio}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,66 @@
+---
+interface Props {
+  config: any;
+  uniqueOptions: Record<string, any[]>;
+}
+
+const { config, uniqueOptions } = Astro.props;
+---
+
+<div class="max-w-xl mx-auto mb-12">
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <form id="filterForm" class="space-y-4">
+      {config.filters.map((filter) => (
+        <div>
+          <label for={filter.field} class="block text-sm font-medium text-gray-700 mb-2">
+            {filter.label}
+          </label>
+          {filter.filterType === 'contains' && (
+            <input
+              type="text"
+              id={filter.field}
+              name={filter.field}
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          )}
+          {filter.filterType === 'range' && (
+            <div class="flex space-x-4">
+              <input
+                type="number"
+                id={`${filter.field}_min`}
+                name={`${filter.field}_min`}
+                placeholder="Min"
+                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+              <input
+                type="number"
+                id={`${filter.field}_max`}
+                name={`${filter.field}_max`}
+                placeholder="Max"
+                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+          )}
+          {filter.filterType === 'select' && (
+            <select
+              id={filter.field}
+              name={filter.field}
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="">All {filter.label}s</option>
+              {uniqueOptions[filter.field]?.map(option => (
+                <option value={option}>{option}</option>
+              ))}
+            </select>
+          )}
+        </div>
+      ))}
+      <button
+        type="submit"
+        class="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      >
+        Search Bikes
+      </button>
+    </form>
+  </div>
+</div> 

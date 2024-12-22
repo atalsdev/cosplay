@@ -1,0 +1,150 @@
+---
+// Header.astro
+import { Menu, Globe } from 'lucide-react';
+import { getLangFromUrl, getLocalizedPath } from '../../../utils/i18n';
+
+const navigation = [
+  { name: 'Home', href: '/' },
+  { name: 'Blog', href: '/blog' },
+  { name: 'Reviews', href: '/reviews' },
+  { name: 'About', href: '/about' },
+  { name: 'Contact', href: '/contact' },
+];
+
+const languages = [
+  { code: 'en', name: 'English' },
+  { code: 'fr', name: 'Français' },
+  { code: 'es', name: 'Español' },
+  { code: 'it', name: 'Italiano' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'nl', name: 'Nederlands' },
+  { code: 'pt', name: 'Português' },
+];
+
+const currentPath = Astro.url.pathname;
+const currentLang = getLangFromUrl(Astro.url);
+
+const siteName = import.meta.env.PUBLIC_SITE_NAME || 'MotoPalnet';
+
+// Localize navigation links
+const localizedNavigation = navigation.map(item => ({
+  ...item,
+  href: `/${currentLang}${item.href === '/' ? '' : item.href}`
+}));
+---
+
+<header class="fixed w-full top-0 z-50 bg-black/90 backdrop-blur-sm border-b border-gray-800">
+  <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
+    <div class="flex h-20 items-center justify-between">
+      <div class="flex items-center">
+        <a href={`/${currentLang}`} class="flex items-center">
+          <span class="text-2xl font-bold text-white font-['Oswald'] tracking-wider">{siteName}</span>
+        </a>
+      </div>
+      
+      <div class="hidden md:flex items-center space-x-12">
+        {localizedNavigation.map((item) => (
+          <a
+            href={item.href}
+            class="text-sm font-['Oswald'] uppercase tracking-wider text-gray-300 hover:text-white transition-colors"
+          >
+            {item.name}
+          </a>
+        ))}
+      </div>
+
+      <div class="flex items-center gap-6">
+        <!-- Language Switcher -->
+        <div class="relative group">
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 text-gray-300 hover:text-white font-['Oswald']"
+          >
+            <Globe className="h-5 w-5" />
+            <span class="hidden md:inline-block text-sm uppercase tracking-wider">
+              {languages.find(lang => lang.code === currentLang)?.name}
+            </span>
+          </button>
+          
+          <div class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-900 ring-1 ring-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <div class="py-1" role="menu" aria-orientation="vertical">
+              {languages.map((lang) => (
+                <a
+                  href={getLocalizedPath(currentPath, lang.code)}
+                  class={`block px-4 py-2 text-sm font-['Oswald'] uppercase ${
+                    currentLang === lang.code 
+                      ? 'bg-gray-800 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                  role="menuitem"
+                >
+                  {lang.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <a
+          href={`/${currentLang}/account`}
+          class="hidden md:inline-flex items-center justify-center px-6 py-2.5 border border-gray-700 text-sm font-['Oswald'] uppercase tracking-wider rounded-md text-white hover:bg-white hover:text-black transition-all duration-300"
+        >
+          Sign In
+        </a>
+        
+        <div class="relative md:hidden">
+          <button
+            type="button"
+            id="mobile-menu-button"
+            class="inline-flex items-center justify-center p-2 text-gray-300 hover:text-white"
+            aria-expanded="false"
+          >
+            <span class="sr-only">Open menu</span>
+            <Menu className="h-6 w-6" aria-hidden="true" />
+          </button>
+          <div 
+            id="mobile-menu-dropdown"
+            class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-900 ring-1 ring-gray-700 hidden"
+          >
+              <div class="py-1" role="menu" aria-orientation="vertical">
+                {localizedNavigation.map((item) => (
+                  <a
+                    href={item.href}
+                    class="block px-4 py-2 text-sm font-['Oswald'] uppercase text-gray-300 hover:bg-gray-800 hover:text-white"
+                    role="menuitem"
+                  >
+                    {item.name}
+                  </a>
+                ))}
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
+
+  mobileMenuButton?.addEventListener('click', () => {
+    const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+    mobileMenuButton.setAttribute('aria-expanded', (!isExpanded).toString());
+    mobileMenuDropdown?.classList.toggle('hidden');
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (event) => {
+    if (!mobileMenuButton?.contains(event.target as Node) && 
+        !mobileMenuDropdown?.contains(event.target as Node)) {
+      mobileMenuButton?.setAttribute('aria-expanded', 'false');
+      mobileMenuDropdown?.classList.add('hidden');
+    }
+  });
+</script>
+
+<!-- Add Oswald font -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet" />

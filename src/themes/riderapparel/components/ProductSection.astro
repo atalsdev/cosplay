@@ -1,0 +1,53 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  products: any[];
+  backgroundImage?: string;
+  dark?: boolean;
+}
+
+const { title, subtitle, products, backgroundImage, dark = false } = Astro.props;
+---
+
+<section class={`relative py-20 ${dark ? 'bg-gray-900' : 'bg-white'}`}>
+  {backgroundImage && (
+    <div 
+      class="absolute inset-0 bg-cover bg-center"
+      style={`background-image: url(${backgroundImage})`}
+    >
+      <div class="absolute inset-0 bg-black/50"></div>
+    </div>
+  )}
+  
+  <div class="relative max-w-7xl mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class={`text-3xl md:text-4xl font-bold mb-4 ${dark || backgroundImage ? 'text-white' : 'text-gray-900'}`}>
+        {title}
+      </h2>
+      <p class={`text-lg ${dark || backgroundImage ? 'text-gray-300' : 'text-gray-600'}`}>
+        {subtitle}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {products.map((product) => (
+        <a href={`/product/${product.handle}`} class="group">
+          <div class="relative aspect-[3/4] overflow-hidden rounded-lg mb-4">
+            <img
+              src={product.image}
+              alt={product.name}
+              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-sm font-medium">
+              {product.price}
+            </div>
+          </div>
+          <h3 class={`text-lg font-medium ${dark || backgroundImage ? 'text-white' : 'text-gray-900'}`}>
+            {product.name}
+          </h3>
+        </a>
+      ))}
+    </div>
+  </div>
+</section> 

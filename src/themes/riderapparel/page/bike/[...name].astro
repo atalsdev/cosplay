@@ -1,0 +1,60 @@
+---
+import { SITE_TITLE } from '../../consts';
+import tableConfig from '../../config/table-config.json';
+import { supabase } from '../../config/supabase';
+import StaticBikeDetails from '../../components/StaticBikeDetails.astro';
+
+const { name } = Astro.props;
+const bikeName = name?.replace(/-/g, ' ');
+const config = tableConfig;
+
+let bikeData = null;
+try {
+  const { data } = bikeName ? await supabase
+    .from(config.table_name)
+    .select('*')
+    .ilike(config.key_input, bikeName)
+    .limit(1) : { data: null };
+  bikeData = data?.[0] || null;
+} catch (error) {
+  console.error('Database query error:', error);
+}
+
+// Component imports
+const { default: BaseHead } = await import(`../../components/BaseHead.astro`);
+const { default: Header } = await import(`../../components/Header.astro`);
+const { default: Footer } = await import(`../../components/Footer.astro`);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`${bikeData ? bikeData[config.key_input] : 'Bike Not Found'} | ${SITE_TITLE}`} description="View detailed information about this bike." />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-gray-50">
+    <Header />
+    <main class="pt-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-12">
+          <h1 class="text-4xl font-bold text-gray-900 mb-4">Bike Information Center</h1>
+          <p class="text-lg text-gray-600">Detailed specifications for {bikeData?.[config.key_input]}</p>
+        </div>
+      </div>
+      
+      {!bikeData ? (
+        <div class="w-[90%] mx-auto">
+          <div class="bg-white p-8 rounded-lg shadow-md">
+            <p class="text-red-600 text-center">Bike not found. Please check the URL and try again.</p>
+          </div>
+        </div>
+      ) : (
+        <StaticBikeDetails 
+          config={config} 
+          bikeData={bikeData}
+        />
+      )}
+    </main>
+    <Footer />
+  </body>
+</html>

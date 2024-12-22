@@ -2,9 +2,12 @@
 import Layout from '../../../layouts/Layout.astro';
 import ProductCard from '../../../themes/default/components/ProductCard';
 import { getPaginatedTranslatedProducts } from '../../../lib/shopify';
+import { getPaginatedProducts } from '../../../lib/woocommerce';
+import { generateCacheKey, getCachedPage, cachePageContent } from '@libs/cache';
 
 const theme = import.meta.env.THEME || 'default';
 const siteName = import.meta.env.PUBLIC_SITE_NAME;
+const dataType = import.meta.env.DATA_TYPE?.toLowerCase() || 'shopify';
 
 // Properly handle dynamic imports with default exports
 const { default: BaseHead } = await import(`../../../themes/${theme}/components/BaseHead.astro`);
@@ -16,8 +19,106 @@ const page = Number(Astro.url.searchParams.get('page')) || 1;
 const PRODUCTS_PER_PAGE = 20;
 const { lang } = Astro.params;
 
-// Use getPaginatedTranslatedProducts for all languages including English
-const { products, pagination } = await getPaginatedTranslatedProducts(page, PRODUCTS_PER_PAGE, lang);
+// Add this helper function that doesn't use document
+function stripHtml(html: string) {
+  if (!html) return '';
+  
+  // First, remove script and style tags and their contents
+  let text = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  text = text.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
+  
+  // Then remove all remaining HTML tags
+  text = text.replace(/<[^>]+>/g, ' ');
+  
+  // Replace multiple spaces, newlines, and tabs with a single space
+  text = text.replace(/\s+/g, ' ');
+  
+  // Decode HTML entities
+  text = text.replace(/&nbsp;/g, ' ')
+             .replace(/&amp;/g, '&')
+             .replace(/&lt;/g, '<')
+             .replace(/&gt;/g, '>')
+             .replace(/&quot;/g, '"')
+             .replace(/&#039;/g, "'");
+  
+  // Trim whitespace
+  return text.trim();
+}
+
+// Generate cache key for this page
+const cacheKey = generateCacheKey(`/collections?page=${page}`, lang);
+const cachedContent = await getCachedPage(cacheKey);
+
+if (cachedContent) {
+  console.log('✅ Serving cached collections page:', cacheKey);
+  return new Response(cachedContent, {
+    headers: {
+      'Content-Type': 'text/html;charset=UTF-8',
+      'X-Cache': 'HIT',
+    },
+  });
+}
+
+// Fetch products based on data source
+let products = [];
+let pagination = {
+  currentPage: page,
+  totalPages: 0,
+  totalProducts: 0,
+  hasNextPage: false,
+  hasPreviousPage: false
+};
+
+try {
+  if (dataType === 'shopify') {
+    console.log('🛍️ Fetching from Shopify');
+    const shopifyData = await getPaginatedTranslatedProducts(page, PRODUCTS_PER_PAGE, lang);
+    products = shopifyData.products;
+    pagination = shopifyData.pagination;
+  } else if (dataType === 'woocommerce') {
+    console.log('🛍️ Fetching from WooCommerce');
+    const wooData = await getPaginatedProducts(page, PRODUCTS_PER_PAGE);
+    
+    // Transform WooCommerce data to match Shopify structure
+    products = wooData.products.map(product => ({
+      node: {
+        id: product.id.toString(),
+        title: product.name,
+        handle: product.slug,
+        description: stripHtml(product.description || ''),
+        variants: {
+          edges: [{
+            node: {
+              price: {
+                amount: product.price,
+                currencyCode: 'USD'
+              },
+              compareAtPrice: product.regular_price ? {
+                amount: product.regular_price,
+                currencyCode: 'USD'
+              } : null
+            }
+          }]
+        },
+        images: {
+          edges: product.images.map(image => ({
+            node: {
+              url: image.src,
+              altText: image.alt || product.name
+            }
+          }))
+        }
+      }
+    }));
+    
+    pagination = wooData.pagination;
+  } else {
+    throw new Error(`Unsupported data type: ${dataType}`);
+  }
+} catch (error) {
+  console.error(`❌ Error fetching products:`, error);
+  return new Response('Error fetching products', { status: 500 });
+}
 ---
 
 <Layout title={`Collections | ${siteName}`}>
@@ -27,21 +128,33 @@ const { products, pagination } = await getPaginatedTranslatedProducts(page, PROD
 
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {products.map((product) => {
-        // Safely access nested properties
-        const price = product.node.variants?.edges?.[0]?.node?.price?.amount || 
-                     product.node.priceRange?.minVariantPrice?.amount || 
-                     '0';
-        const imageUrl = product.node.images?.edges?.[0]?.node?.url || '';
+        // Handle both Shopify and WooCommerce data structures
+        const node = product.node;
+        const price = dataType === 'shopify' 
+          ? (node.variants?.edges?.[0]?.node?.price?.amount || 
+             node.priceRange?.minVariantPrice?.amount || 
+             '0')
+          : node.variants.edges[0].node.price.amount;
+          
+        const compareAtPrice = dataType === 'shopify'
+          ? node.variants?.edges?.[0]?.node?.compareAtPrice?.amount
+          : node.variants.edges[0].node.compareAtPrice?.amount;
+          
+        const imageUrl = dataType === 'shopify'
+          ? node.images?.edges?.[0]?.node?.url
+          : node.images.edges[0].node.url;
         
         return (
           <ProductCard
             client:load
-            id={product.node.id}
-            title={product.node.title}
+            id={node.id}
+            title={node.title}
             price={parseFloat(price)}
+            compareAtPrice={compareAtPrice ? parseFloat(compareAtPrice) : undefined}
             image={imageUrl}
-            description={product.node.description}
-            handle={product.node.handle}
+            imageAlt={node.title}
+            description={node.description}
+            handle={node.handle}
             lang={lang}
           />
         );
@@ -80,3 +193,24 @@ const { products, pagination } = await getPaginatedTranslatedProducts(page, PROD
   </main>
   <Footer />
 </Layout>
+
+<script>
+  // Handle dynamic loading states
+  document.addEventListener('astro:page-load', () => {
+    const grid = document.querySelector('.grid');
+    if (grid) {
+      grid.classList.add('fade-in');
+    }
+  });
+</script>
+
+<style>
+  .fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>

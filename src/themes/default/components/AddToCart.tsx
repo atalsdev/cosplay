@@ -20,6 +20,10 @@ interface Variant {
     value: string;
   }[];
   availableForSale: boolean;
+  compareAtPrice?: {
+    amount: string;
+    currencyCode: string;
+  };
 }
 
 interface Product {
@@ -312,8 +316,19 @@ export default function AddToCart({ product, language }: AddToCartProps) {
 
         {selectedVariant && (
           <div className="flex items-baseline justify-between mb-6">
-            <div className="text-3xl font-bold text-gray-900">
-              {currency} {convertedPrice}
+            <div className="flex items-baseline gap-2">
+              <div className="text-3xl font-bold text-gray-900">
+                {currency} {convertedPrice}
+              </div>
+              {selectedVariant.compareAtPrice && (
+                <div className="text-xl text-gray-500 line-through">
+                  {currency} {convert(
+                    parseFloat(selectedVariant.compareAtPrice.amount),
+                    selectedVariant.compareAtPrice.currencyCode,
+                    currency
+                  ).toFixed(2)}
+                </div>
+              )}
             </div>
             {selectedVariant.availableForSale ? (
               <span className="text-sm font-medium text-green-600">In Stock</span>

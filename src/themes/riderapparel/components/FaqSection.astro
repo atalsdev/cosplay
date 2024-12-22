@@ -1,0 +1,87 @@
+---
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  faqs: FaqItem[];
+}
+
+const { title, description, faqs } = Astro.props;
+---
+
+<section class="py-24 bg-white">
+  <div class="max-w-4xl mx-auto px-4">
+    <!-- Section Header -->
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-['Oswald'] uppercase tracking-wide mb-4">{title}</h2>
+      <p class="text-gray-600 max-w-2xl mx-auto">{description}</p>
+    </div>
+    
+    <!-- FAQ Items -->
+    <div class="space-y-6">
+      {faqs.map((faq, index) => (
+        <div class="group border-b border-gray-200 pb-6">
+          <button
+            class="w-full flex items-center justify-between text-left focus:outline-none"
+            aria-expanded="false"
+            aria-controls={`faq-${index}`}
+          >
+            <h3 class="font-['Oswald'] uppercase tracking-wide text-xl text-gray-900 group-hover:text-gray-600 transition-colors">
+              {faq.question}
+            </h3>
+            <span class="ml-6 flex-shrink-0">
+              <svg 
+                class="w-6 h-6 text-gray-900 group-hover:text-gray-600 transition-colors transform group-[.active]:rotate-180" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </span>
+          </button>
+          <div
+            id={`faq-${index}`}
+            class="mt-4 hidden group-[.active]:block"
+          >
+            <p class="text-gray-600 leading-relaxed">
+              {faq.answer}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  // FAQ Toggle functionality
+  document.querySelectorAll('button[aria-controls^="faq-"]').forEach(button => {
+    button.addEventListener('click', () => {
+      const group = button.closest('.group');
+      const isActive = group.classList.contains('active');
+      
+      // Close all FAQs
+      document.querySelectorAll('.group').forEach(g => g.classList.remove('active'));
+      
+      // Toggle clicked FAQ
+      if (!isActive) {
+        group.classList.add('active');
+      }
+      
+      // Update aria-expanded
+      button.setAttribute('aria-expanded', !isActive);
+    });
+  });
+</script>
+
+<style>
+  /* Ensure smooth transitions */
+  .group svg {
+    transition: transform 0.2s ease-in-out;
+  }
+</style> 

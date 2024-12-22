@@ -1,0 +1,139 @@
+---
+import { Button } from './ui/Button';
+import { ArrowRight } from 'lucide-react';
+
+interface BackgroundVideo {
+  type: 'youtube';
+  videoId: string;
+  fallbackImage: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  blogLink: string;
+  blogLinkText: string;
+  backgroundVideo: BackgroundVideo;
+}
+
+const { title, description, blogLink, blogLinkText, backgroundVideo } = Astro.props;
+---
+
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+  <!-- YouTube Background Video -->
+  <div class="absolute inset-0 w-full h-full pointer-events-none">
+    <div id="youtube-player" class="absolute inset-0 w-full h-full">
+      <div id="player" class="w-full h-full"></div>
+    </div>
+    <div class="absolute inset-0 bg-black/40 z-10"></div>
+  </div>
+  
+  <div class="relative z-20 max-w-4xl mx-auto text-center px-4">
+    <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 font-['Oswald'] uppercase tracking-wide leading-tight">
+      {title}
+    </h1>
+    
+    <p class="text-xl md:text-2xl text-gray-200 mb-8 max-w-2xl mx-auto font-light leading-relaxed">
+      {description}
+    </p>
+    
+    <a 
+      href={blogLink}
+      class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 px-8 py-4 rounded-none font-['Oswald'] uppercase tracking-wider hover:bg-white/20 transition-all duration-300"
+    >
+      {blogLinkText}
+      <ArrowRight className="w-5 h-5" />
+    </a>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-20">
+    <div class="w-[2px] h-16 bg-white/50"></div>
+  </div>
+</section>
+
+<script define:vars={{ backgroundVideo }}>
+  // Load YouTube IFrame API
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  const firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  // YouTube player setup
+  let player;
+  window.onYouTubeIframeAPIReady = function() {
+    player = new YT.Player('player', {
+      videoId: backgroundVideo.videoId, // Use videoId from props
+      playerVars: {
+        autoplay: 1,
+        loop: 1,
+        controls: 0,
+        showinfo: 0,
+        rel: 0,
+        enablejsapi: 1,
+        modestbranding: 1,
+        mute: 1,
+        playsinline: 1,
+        playlist: backgroundVideo.videoId // Required for looping
+      },
+      events: {
+        onReady: (event) => {
+          event.target.playVideo();
+        },
+        onStateChange: (event) => {
+          if (event.data === YT.PlayerState.ENDED) {
+            player.playVideo();
+          }
+        },
+        onError: (event) => {
+          // On error, show fallback image
+          document.getElementById('youtube-player').style.backgroundImage = 
+            `url(${backgroundVideo.fallbackImage})`;
+          document.getElementById('youtube-player').style.backgroundSize = 'cover';
+          document.getElementById('youtube-player').style.backgroundPosition = 'center';
+        }
+      }
+    });
+  };
+
+  // Resize handler for responsive video
+  function onResize() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const player = document.querySelector('#youtube-player');
+    
+    if (width / height > 16 / 9) {
+      player.style.width = '100vw';
+      player.style.height = 'calc(100vw * 9 / 16)';
+    } else {
+      player.style.width = 'calc(100vh * 16 / 9)';
+      player.style.height = '100vh';
+    }
+  }
+
+  window.addEventListener('resize', onResize);
+  onResize();
+</script>
+
+<style>
+  #youtube-player {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  #player {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  /* Hide YouTube iframe border */
+  iframe {
+    border: none;
+  }
+</style>

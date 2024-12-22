@@ -1,6 +1,6 @@
 ---
 import Layout from '@layouts/Layoutp.astro';
-import { getTranslatedProductByHandle } from '@libs/shopify';
+import { getTranslatedProductByHandle } from '@libs/controller';
 import AddToCart from '@themes/default/components/AddToCart';
 import SizeChart from '@components/SizeChart.astro';
 import Reviews from '@components/Reviews.astro';
@@ -35,6 +35,31 @@ if (cachedContent) {
       'X-Cache': 'HIT',
     },
   });
+}
+
+function stripHtml(html: string) {
+  if (!html) return '';
+  
+  // First, remove script and style tags and their contents
+  let text = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  text = text.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
+  
+  // Then remove all remaining HTML tags
+  text = text.replace(/<[^>]+>/g, ' ');
+  
+  // Replace multiple spaces, newlines, and tabs with a single space
+  text = text.replace(/\s+/g, ' ');
+  
+  // Decode HTML entities
+  text = text.replace(/&nbsp;/g, ' ')
+             .replace(/&amp;/g, '&')
+             .replace(/&lt;/g, '<')
+             .replace(/&gt;/g, '>')
+             .replace(/&quot;/g, '"')
+             .replace(/&#039;/g, "'");
+  
+  // Trim whitespace
+  return text.trim();
 }
 
 // If no cache, proceed with normal rendering
@@ -147,12 +172,18 @@ const currentCurrency = getCurrencyForLanguage(lang);
 
 // Process price for meta tags
 const originalPrice = product.processedVariants[0].price;
+const compareAtPrice = product.processedVariants[0].compareAtPrice;
 const priceInEUR = europeanCurrencies[lang] 
   ? convertGBPToEUR(originalPrice.amount)
   : parseFloat(originalPrice.amount);
 
+const compareAtPriceInEUR = compareAtPrice && europeanCurrencies[lang]
+  ? convertGBPToEUR(compareAtPrice.amount)
+  : compareAtPrice ? parseFloat(compareAtPrice.amount) : null;
+
 const metaPrice = {
   amount: priceInEUR.toFixed(2),
+  compareAtAmount: compareAtPriceInEUR?.toFixed(2),
   currency: currentCurrency
 };
 
@@ -168,7 +199,7 @@ if (reviewsError) {
   console.error('Error fetching reviews:', reviewsError);
 }
 
-// Then generate the schema with currency conversion
+// Then generate the schema with currency conversion and compare-at price
 const productSchema = {
   "@context": "https://schema.org/",
   "@type": "Product",
@@ -180,6 +211,14 @@ const productSchema = {
     "@type": "Offer",
     "price": metaPrice.amount,
     "priceCurrency": metaPrice.currency,
+    // Add compare-at price if it exists
+    ...(metaPrice.compareAtAmount && {
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "price": metaPrice.compareAtAmount,
+        "priceCurrency": metaPrice.currency
+      }
+    }),
     "availability": product.processedVariants[0].availableForSale 
       ? "https://schema.org/InStock" 
       : "https://schema.org/OutOfStock",
@@ -404,23 +443,35 @@ const initialCurrency = 'USD'; // Or get from store/session
               <div class="space-y-4 lg:sticky lg:top-24 lg:self-start">
                 <div class="relative bg-gray-50 rounded-2xl overflow-hidden group">
                   <div class="aspect-square relative">
-                    <img
-                      id="mainImage"
-                      src={`${product.processedImages[0].url}&width=800`}
-                      alt={product.title}
-                      class="w-full h-full object-contain absolute inset-0"
-                      loading="eager"
-                      fetchpriority="high"
-                      width="800"
-                      height="800"
-                      decoding="async"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
-                      srcset={`
-                        ${product.processedImages[0].url}&width=400 400w,
-                        ${product.processedImages[0].url}&width=800 800w,
-                        ${product.processedImages[0].url}&width=1200 1200w
-                      `}
-                    />
+                    {import.meta.env.DATA_TYPE?.toLowerCase() === 'shopify' ? (
+                      <img
+                        id="mainImage"
+                        src={`${product.processedImages[0].url}&width=800`}
+                        alt={product.title}
+                        class="w-full h-full object-contain absolute inset-0"
+                        loading="eager"
+                        fetchpriority="high"
+                        width="800"
+                        height="800"
+                        decoding="async"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+                        srcset={`
+                          ${product.processedImages[0].url}&width=400 400w,
+                          ${product.processedImages[0].url}&width=800 800w,
+                          ${product.processedImages[0].url}&width=1200 1200w
+                        `}
+                      />
+                    ) : (
+                      <img
+                        id="mainImage"
+                        src={product.processedImages[0].url}
+                        alt={product.title}
+                        class="w-full h-full object-contain absolute inset-0"
+                        loading="eager"
+                        width="800"
+                        height="800"
+                      />
+                    )}
                   </div>
                   
                   <!-- Navigation Arrows -->
@@ -452,27 +503,44 @@ const initialCurrency = 'USD'; // Or get from store/session
                   {product.processedImages.map((image, index) => (
                     <button
                       key={image.id}
-                      data-image-url={`${image.url}&width=800`}
-                      data-image-srcset={`
-                        ${image.url}&width=400 400w,
-                        ${image.url}&width=800 800w,
-                        ${image.url}&width=1200 1200w
-                      `}
+                      data-image-url={import.meta.env.DATA_TYPE?.toLowerCase() === 'shopify' 
+                        ? `${image.url}&width=800`
+                        : image.url
+                      }
+                      data-image-srcset={import.meta.env.DATA_TYPE?.toLowerCase() === 'shopify' 
+                        ? `
+                          ${image.url}&width=400 400w,
+                          ${image.url}&width=800 800w,
+                          ${image.url}&width=1200 1200w
+                        `
+                        : undefined
+                      }
                       data-image-id={image.id}
                       data-image-index={index}
                       class={`relative flex-none aspect-square w-20 rounded-lg overflow-hidden snap-start
                               ${index === 0 ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-gray-300'}
                               transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     >
-                      <img
-                        src={`${image.url}&width=80`}
-                        alt={`${product.title} - View ${index + 1}`}
-                        class="absolute inset-0 w-full h-full object-cover"
-                        loading={index === 0 ? "eager" : "lazy"}
-                        width="80"
-                        height="80"
-                        decoding="async"
-                      />
+                      {import.meta.env.DATA_TYPE?.toLowerCase() === 'shopify' ? (
+                        <img
+                          src={`${image.url}&width=80`}
+                          alt={`${product.title} - View ${index + 1}`}
+                          class="absolute inset-0 w-full h-full object-cover"
+                          loading={index === 0 ? "eager" : "lazy"}
+                          width="80"
+                          height="80"
+                          decoding="async"
+                        />
+                      ) : (
+                        <img
+                          src={image.url}
+                          alt={`${product.title} - View ${index + 1}`}
+                          class="absolute inset-0 w-full h-full object-cover"
+                          loading={index === 0 ? "eager" : "lazy"}
+                          width="80"
+                          height="80"
+                        />
+                      )}
                     </button>
                   ))}
                 </div>
@@ -689,20 +757,55 @@ const initialCurrency = 'USD'; // Or get from store/session
             <!-- Related Products -->
             <div class="mt-16 border-t pt-16">
               <h2 class="text-2xl font-bold mb-8">Related Products</h2>
+              
+              {/* Debug output */}
+              {import.meta.env.DEV && (
+                <script define:vars={{ 
+                  dataType: import.meta.env.DATA_TYPE,
+                  relatedProducts,
+                  debug: true 
+                }}>
+                  console.log('Data Type:', dataType);
+                  console.log('Related Products:', relatedProducts);
+                </script>
+              )}
+
               <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                {relatedProducts.map((product) => (
-                  <ProductCard
-                    client:load
-                    id={product.node.id}
-                    title={product.node.title}
-                    price={parseFloat(product.node.priceRange.minVariantPrice.amount)}
-                    image={product.node.images.edges[0]?.node.url}
-                    imageAlt={product.node.title}
-                    description={product.node.description}
-                    handle={product.node.handle}
-                    lang={lang}
-                  />
-                ))}
+                {import.meta.env.DATA_TYPE?.toLowerCase() === 'shopify' ? (
+                  relatedProducts.map((product) => {
+                    console.log('Shopify Product:', product);
+                    return (
+                      <ProductCard
+                        client:load
+                        id={product.node.id}
+                        title={product.node.title}
+                        price={parseFloat(product.node.priceRange.minVariantPrice.amount)}
+                        image={product.node.images.edges[0]?.node.url}
+                        imageAlt={product.node.title}
+                        description={product.node.description}
+                        handle={product.node.handle}
+                        lang={lang}
+                      />
+                    );
+                  })
+                ) : (
+                  relatedProducts.map((product) => {
+                    console.log('WooCommerce Product:', product);
+                    return (
+                      <ProductCard
+                        client:load
+                        id={product.node.id}
+                        title={product.node.title}
+                        price={parseFloat(product.node.priceRange.minVariantPrice.amount)}
+                        image={product.node.images.edges[0]?.node.url}
+                        imageAlt={product.node.title}
+                        description={stripHtml(product.node.description)}
+                        handle={product.node.handle}
+                        lang={lang}
+                      />
+                    );
+                  })
+                )}
               </div>
             </div>
           </main>

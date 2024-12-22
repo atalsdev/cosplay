@@ -47,7 +47,7 @@ const translations = {
     addToCart: '장바구니에 담기'
   },
   zh: {
-    addToCart: '添加到购物车'
+    addToCart: '添��到购物车'
   },
   ar: {
     addToCart: 'أضف إلى السلة'
@@ -79,6 +79,7 @@ interface ProductCardProps {
   id: string;
   title: string;
   price: number;
+  compareAtPrice?: number;
   image: string;
   imageAlt: string;
   description: string;
@@ -86,7 +87,7 @@ interface ProductCardProps {
   lang: string;
 }
 
-export default function ProductCard({ id, title, price, image, imageAlt, description, handle, lang }: ProductCardProps) {
+export default function ProductCard({ id, title, price, compareAtPrice, image, imageAlt, description, handle, lang }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -103,8 +104,17 @@ export default function ProductCard({ id, title, price, image, imageAlt, descrip
   // Get currency info based on language
   const currencyInfo = currencyMapping[lang as keyof typeof currencyMapping] || currencyMapping.en;
   
-  // Convert price if needed (price is already in GBP)
+  // Convert prices if needed (prices are already in GBP)
   const displayPrice = (price * currencyInfo.rate).toFixed(2);
+  const displayComparePrice = compareAtPrice 
+    ? (compareAtPrice * currencyInfo.rate).toFixed(2)
+    : null;
+  
+  // Calculate discount percentage if there's a compare price
+  const discountPercentage = compareAtPrice 
+    ? Math.round(((compareAtPrice - price) / compareAtPrice) * 100)
+    : null;
+
   const buttonText = translations[lang as keyof typeof translations]?.addToCart || translations.en.addToCart;
 
   return (
@@ -122,6 +132,12 @@ export default function ProductCard({ id, title, price, image, imageAlt, descrip
           width="400"
           height="400"
         />
+        {/* Discount Badge */}
+        {discountPercentage && (
+          <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-sm font-medium">
+            -{discountPercentage}%
+          </div>
+        )}
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300" />
       </div>
@@ -141,8 +157,15 @@ export default function ProductCard({ id, title, price, image, imageAlt, descrip
         {/* Price and Button Container */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2">
           {/* Price */}
-          <div className="text-xl font-bold text-gray-900">
-            {currencyInfo.symbol}{displayPrice}
+          <div className="flex items-baseline gap-2">
+            <div className="text-xl font-bold text-gray-900">
+              {currencyInfo.symbol}{displayPrice}
+            </div>
+            {displayComparePrice && (
+              <div className="text-sm text-gray-500 line-through">
+                {currencyInfo.symbol}{displayComparePrice}
+              </div>
+            )}
           </div>
 
           {/* Add to Cart Button */}

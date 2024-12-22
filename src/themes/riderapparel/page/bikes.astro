@@ -1,0 +1,46 @@
+---
+import { SITE_TITLE } from '../consts';
+import tableConfig from '../config/table-config.json';
+import { supabase } from '../config/supabase';
+import BikeFilterForm from '../components/BikeFilterForm.astro';
+import BikeDetails from '../components/BikeDetails.astro';
+
+// Remove the .bikes reference
+const config = tableConfig;
+
+// Fetch all records using the dynamic table name and key
+const { data: items } = await supabase
+  .from(config.table_name)
+  .select(config.key_input)
+  .order(config.key_input);
+
+// Component imports
+const { default: BaseHead } = await import(`../components/BaseHead.astro`);
+const { default: Header } = await import(`../components/Header.astro`);
+const { default: Footer } = await import(`../components/Footer.astro`);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`Bike Information | ${SITE_TITLE}`} description="View detailed information about different bikes." />
+  </head>
+  <body class="bg-gray-50">
+    <Header />
+    <main class="pt-20">
+      <!-- Move max-width container to only wrap the header and filter form -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+          <h1 class="text-4xl font-bold text-gray-900 mb-4">Bike Information Center</h1>
+          <p class="text-lg text-gray-600">Select a bike model to view detailed specifications</p>
+        </div>
+
+        <BikeFilterForm items={items} config={config} />
+      </div>
+      
+      <!-- Bike Details outside the container for full width -->
+      <BikeDetails config={config} />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -17,7 +17,8 @@ async function backgroundSyncProducts() {
   console.log('🔄 [BACKGROUND] Starting products sync');
   try {
     const client = await connectToDatabase();
-    const collection = client.db('shopify_cache').collection('products');
+    const dbName = getStoreName();
+    const collection = client.db(dbName).collection('products');
     await fetchAndSaveAllProducts(collection);
     
     // Invalidate page cache after sync
@@ -105,7 +106,8 @@ export async function getAllProducts() {
   try {
     // Try MongoDB
     const client = await connectToDatabase();
-    const collection = client.db('shopify_cache').collection('products');
+    const dbName = getStoreName();
+    const collection = client.db(dbName).collection('products');
 
     // Add this check before the existing MongoDB query
     const hasData = await collection.countDocuments({ type: 'products_cache' });
@@ -290,7 +292,8 @@ export async function refreshProductCache() {
 
   console.log('🔄 Manual cache refresh triggered during allowed window');
   const client = await connectToDatabase();
-  const collection = client.db('shopify_cache').collection('products');
+  const dbName = getStoreName();
+  const collection = client.db(dbName).collection('products');
   
   try {
     console.log('🗑️ Invalidating current cache...');
@@ -401,7 +404,8 @@ export async function getProductByHandle(handle: string) {
     try {
       // Try MongoDB
       const client = await connectToDatabase();
-      const collection = client.db('shopify_cache').collection('products');
+      const dbName = getStoreName();
+      const collection = client.db(dbName).collection('products');
 
       // Add background sync trigger
       const hasData = await collection.countDocuments({ type: 'products_cache' });
@@ -490,7 +494,8 @@ export async function getProductByHandle(handle: string) {
 // Helper function to get related products
 async function getRelatedProducts() {
   const client = await connectToDatabase();
-  const collection = client.db('shopify_cache').collection('products');
+  const dbName = getStoreName();
+  const collection = client.db(dbName).collection('products');
   const relatedProducts = await collection.findOne(
     { type: 'products_cache' },
     { 
@@ -507,7 +512,8 @@ async function getRelatedProducts() {
 // Update saveProductToMongo to handle the processed data
 async function saveProductToMongo(product) {
   const client = await connectToDatabase();
-  const collection = client.db('shopify_cache').collection('products');
+  const dbName = getStoreName();
+  const collection = client.db(dbName).collection('products');
   
   await collection.updateOne(
     { type: 'products_cache' },
@@ -541,7 +547,8 @@ export async function getProductFromCache(handle: string) {
   try {
     console.log('🔍 Checking MongoDB for product:', handle);
     const client = await connectToDatabase();
-    const collection = client.db('shopify_cache').collection('products');
+    const dbName = getStoreName();
+    const collection = client.db(dbName).collection('products');
     
     // Use projection to only fetch the specific product
     const cachedData = await collection.findOne(
@@ -572,7 +579,8 @@ export async function getProductFromCache(handle: string) {
 // Add index for faster queries
 export async function createIndexes() {
   const client = await connectToDatabase();
-  const collection = client.db('shopify_cache').collection('products');
+  const dbName = getStoreName();
+  const collection = client.db(dbName).collection('products');
   
   await collection.createIndex({ type: 1 });
   await collection.createIndex({ 'products.node.handle': 1 });
@@ -595,7 +603,8 @@ export async function getPaginatedProducts(page: number = 1, limit: number = 20)
     try {
       // Try MongoDB
       const client = await connectToDatabase();
-      const collection = client.db('shopify_cache').collection('products');
+      const dbName = getStoreName();
+      const collection = client.db(dbName).collection('products');
 
       // Add background sync trigger
       const hasData = await collection.countDocuments({ type: 'products_cache' });
@@ -749,7 +758,8 @@ export async function getPaginatedTranslatedProducts(page: number = 1, limit: nu
     
     // Try MongoDB first
     const client = await connectToDatabase();
-    const collection = client.db('shopify_cache').collection('products_language');
+    const dbName = getStoreName();
+    const collection = client.db(dbName).collection('products_language');
 
     // Check if we have cached data for this language
     const cachedData = await collection.findOne(
@@ -981,7 +991,8 @@ export async function getPaginatedTranslatedProducts(page: number = 1, limit: nu
 export async function refreshLanguageCache(language: string) {
   try {
     const client = await connectToDatabase();
-    const collection = client.db('shopify_cache').collection('products_language');
+    const dbName = getStoreName();
+    const collection = client.db(dbName).collection('products_language');
     
     console.log(`🔄 Refreshing cache for language: ${language}`);
     
@@ -1000,7 +1011,8 @@ export async function refreshLanguageCache(language: string) {
 export async function checkAndRefreshLanguageCache(language: string) {
   try {
     const client = await connectToDatabase();
-    const collection = client.db('shopify_cache').collection('products_language');
+    const dbName = getStoreName();
+    const collection = client.db(dbName).collection('products_language');
     
     const cacheData = await collection.findOne({ language: language.toUpperCase() });
     
@@ -1115,7 +1127,8 @@ export async function getTranslatedProductByHandle(handle: string, language: str
     // Try MongoDB
     console.log(`🔍 [MONGODB] Looking for product ${handle} in ${language}`);
     const client = await connectToDatabase();
-    const collection = client.db('shopify_cache').collection('products_language');
+    const dbName = getStoreName();
+    const collection = client.db(dbName).collection('products_language');
 
     // Find specific product and related products in one query
     const [productResult, relatedProducts] = await Promise.all([
@@ -1336,18 +1349,60 @@ export async function getCollectionByHandle(handle: string, language: string = '
       } 
     });
 
-    if (!response.body?.data?.collection) {
-      throw new Error('Collection not found');
+    if (response.body?.data?.collection) {
+      const collection = response.body.data.collection;
+      
+      // Cache in Redis
+      await setRedisData(redisKey, collection, 3600); // Cache for 1 hour
+      
+      return collection;
     }
 
-    const collection = response.body.data.collection;
+    // If collection not found, try MongoDB
+    console.log(`⚠️ [SHOPIFY] Collection ${handle} not found, falling back to MongoDB products`);
     
-    // Cache in Redis
-    await setRedisData(redisKey, collection, 3600); // Cache for 1 hour
-    
-    return collection;
+    const client = await connectToDatabase();
+    const dbName = getStoreName();
+    const collection = client.db(dbName).collection('products_language');
+
+    // Find all products for the specified language
+    const products = await collection
+      .findOne({ language: language.toUpperCase() });
+
+    if (products?.products) {
+      console.log(`✅ [MONGODB] Found ${products.products.length} products`);
+      
+      // Format the response to match Shopify's structure
+      const formattedResponse = {
+        id: `fallback_${handle}`,
+        title: handle.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+        handle: handle,
+        description: `All products from ${handle}`,
+        seo: {
+          title: `All Products - ${handle}`,
+          description: `Browse our complete collection of products`
+        },
+        image: products.products[0]?.node?.images?.edges?.[0]?.node || null,
+        products: {
+          edges: products.products
+        }
+      };
+
+      // Cache the fallback response
+      await setRedisData(redisKey, formattedResponse, 3600);
+
+      return formattedResponse;
+    }
+
+    throw new Error('Collection not found and no fallback products available');
+
   } catch (error) {
-    console.error('❌ Error fetching collection:', error);
+    console.error('❌ Error fetching collection:', {
+      handle,
+      language,
+      error: error.message,
+      stack: error.stack
+    });
     throw error;
   }
 }
@@ -1368,7 +1423,8 @@ export async function getAllTranslatedProducts(language: string = 'EN') {
     try {
       // Try MongoDB
       const client = await connectToDatabase();
-      const collection = client.db('shopify_cache').collection('products_language');
+      const dbName = getStoreName();
+      const collection = client.db(dbName).collection('products_language');
 
       // Check if we have cached data for this language
       const cachedData = await collection.findOne(
@@ -1420,6 +1476,76 @@ export async function getAllTranslatedProducts(language: string = 'EN') {
 
   } catch (error) {
     console.error(`❌ [ERROR] Error fetching translated products for ${language}:`, error);
+    throw error;
+  }
+}
+
+// Add this helper function at the top of the file (after imports)
+const getStoreName = () => {
+  const domain = import.meta.env.PUBLIC_SHOPIFY_SHOP?.split('.')[0] || 'default';
+  return `shopify_${domain}_cache`;
+};
+
+// Add this query constant at the top with your other queries
+const COLLECTION_PRODUCTS_QUERY = `
+  query CollectionProducts($handle: String!) {
+    collection(handle: $handle) {
+      products(first: 250) {
+        edges {
+          node {
+            id
+            title
+            handle
+            description
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            images(first: 1) {
+              edges {
+                node {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+// Add this new function to fetch collection products
+export async function getCollectionProducts(collectionHandle: string) {
+  const redisKey = `${getStorePrefix()}shopify_collection_${collectionHandle}`;
+  const redisCache = await getRedisData(redisKey);
+  
+  if (redisCache) {
+    console.log('🚀 [REDIS CACHE HIT] Retrieved collection products from Redis');
+    return redisCache;
+  }
+  
+  try {
+    const response = await shopifyFetch({
+      query: COLLECTION_PRODUCTS_QUERY,
+      variables: { handle: collectionHandle }
+    });
+
+    if (!response.body?.data?.collection?.products?.edges) {
+      throw new Error('Invalid response from Shopify');
+    }
+
+    const products = response.body.data.collection.products.edges;
+    
+    // Cache the results
+    await setRedisData(redisKey, products, 3600);
+    
+    return products;
+  } catch (error) {
+    console.error('Error fetching collection products:', error);
     throw error;
   }
 }

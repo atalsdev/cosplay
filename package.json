@@ -25,6 +25,7 @@
     "@types/node": "^22.8.6",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
+    "@woocommerce/woocommerce-rest-api": "^1.0.1",
     "astro": "^5.0.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

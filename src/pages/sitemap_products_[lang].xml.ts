@@ -18,7 +18,7 @@ function escapeXml(unsafe: string): string {
 export const prerender = true;
 
 export const getStaticPaths = () => {
-  return ['en', 'fr', 'de', 'es', 'it'].map(lang => ({ params: { lang } }));
+  return ['', 'en', 'fr', 'de', 'es', 'it'].map(lang => ({ params: { lang: lang || 'default' } }));
 };
 
 export const GET: APIRoute = async ({ params, site }) => {
@@ -26,7 +26,8 @@ export const GET: APIRoute = async ({ params, site }) => {
     throw new Error('Site URL is not defined');
   }
 
-  const lang = params.lang;
+  const lang = params.lang === 'default' ? 'en' : params.lang;
+  const isDefaultRoute = params.lang === 'default';
 
   try {
     // Fetch translated products for the specific language
@@ -37,8 +38,13 @@ export const GET: APIRoute = async ({ params, site }) => {
       // Get only the first image
       const firstImage = product.images.edges[0]?.node;
       
+      // Create URL based on whether it's default route or language-specific
+      const productUrl = isDefaultRoute
+        ? new URL(`products/${product.handle}`, site).href
+        : new URL(`${lang}/products/${product.handle}`, site).href;
+      
       return `<url>
-    <loc>${new URL(`${lang}/products/${product.handle}`, site).href}</loc>
+    <loc>${productUrl}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>${firstImage ? `

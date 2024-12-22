@@ -1,0 +1,110 @@
+---
+import { getCollectionByHandle } from '../../../lib/controller';
+import { ArrowRight } from 'lucide-react';
+
+interface Props {
+  title: string;
+  description: string;
+  viewAllLink: string;
+  lang: string;
+  collectionHandle: string;
+  limit?: number;
+}
+
+const { 
+  title, 
+  description, 
+  viewAllLink, 
+  lang, 
+  collectionHandle,
+  limit = 4 
+} = Astro.props;
+
+// Fetch collection products using getCollectionByHandle
+const collection = await getCollectionByHandle(collectionHandle, lang?.toUpperCase());
+const products = collection?.products?.edges?.slice(0, limit) || [];
+
+// Format price to locale string
+const formatPrice = (amount: string, currencyCode: string) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currencyCode,
+  }).format(parseFloat(amount));
+};
+---
+
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4">
+    <!-- Section Header -->
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-['Oswald'] uppercase tracking-wide mb-4">{title}</h2>
+      <p class="text-gray-600 max-w-2xl mx-auto">{description}</p>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {products.map(({ node: product }) => {
+        const firstVariant = product.variants.edges[0]?.node;
+        const price = firstVariant?.price;
+        
+        return (
+          <a 
+            href={`/${lang}/products/${product.handle}`}
+            class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
+          >
+            <div class="aspect-[3/4] overflow-hidden bg-gray-100">
+              {product.images?.edges[0]?.node ? (
+                <img
+                  src={product.images.edges[0].node.url}
+                  alt={product.images.edges[0].node.altText || product.title}
+                  class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="w-full h-full flex items-center justify-center bg-gray-50">
+                  <span class="text-gray-400">No image available</span>
+                </div>
+              )}
+            </div>
+            
+            <div class="p-4">
+              <h3 class="font-['Oswald'] uppercase text-lg mb-2 text-gray-900 group-hover:text-blue-600 transition-colors">
+                {product.title}
+              </h3>
+              
+              <div class="flex items-center justify-between mt-2">
+                {price && (
+                  <span class="text-sm font-medium text-gray-900">
+                    {formatPrice(price.amount, price.currencyCode)}
+                  </span>
+                )}
+                <span class="text-blue-600 group-hover:translate-x-1 transition-transform duration-300">
+                  <ArrowRight className="w-5 h-5" />
+                </span>
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+
+    <!-- View All Link -->
+    <div class="text-center mt-12">
+      <a
+        href={viewAllLink}
+        class="inline-flex items-center gap-2 font-['Oswald'] uppercase tracking-wide text-gray-900 hover:text-gray-600 transition-colors"
+      >
+        View All Products
+        <ArrowRight className="w-5 h-5" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Ensure smooth transitions */
+  .group {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+</style>

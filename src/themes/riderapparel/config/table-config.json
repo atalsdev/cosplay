@@ -1,0 +1,128 @@
+{
+  "table_name": "bikes",
+  "key_input": "Model",
+  "layout": "content",
+  "content": [
+    {
+      "title": "Overview",
+      "content": "The bike features impressive performance characteristics with a powerful engine and advanced technology..."
+    },
+    {
+      "title": "Performance",
+      "content": "With class-leading power output and torque figures, this motorcycle delivers exceptional performance..."
+    },
+    {
+      "title": "Features",
+      "content": "Equipped with cutting-edge features including advanced electronics, rider aids, and premium components..."
+    },
+    {
+      "title": "Features",
+      "content": "Equipped with cutting-edge features including advanced electronics, rider aids, and premium components..."
+    },
+    {
+      "title": "Features",
+      "content": "Equipped with cutting-edge features including advanced electronics, rider aids, and premium components..."
+    }
+  ],
+  "graph": [
+    {
+      "param": "Power",
+      "field": "Power (hp)",
+      "max": 200,
+      "color": "#4F46E5",
+      "suffix": "hp"
+    },
+    {
+      "param": "Torque",
+      "field": "Torque (Nm)",
+      "max": 150,
+      "color": "#7C3AED",
+      "suffix": "Nm"
+    },
+    {
+      "param": "Weight",
+      "field": "Dry weight (kg)",
+      "max": 300,
+      "color": "#EC4899",
+      "suffix": "kg"
+    },
+    {
+      "param": "Displacement",
+      "field": "Displacement (ccm)",
+      "max": 1200,
+      "color": "#EF4444",
+      "suffix": "cc"
+    },
+    {
+      "param": "Fuel Capacity",
+      "field": "Fuel capacity (lts)",
+      "max": 30,
+      "color": "#10B981",
+      "suffix": "L"
+    },
+    {
+      "param": "Rating",
+      "field": "Rating",
+      "max": 5,
+      "color": "#F59E0B",
+      "suffix": ""
+    }
+  ],
+  "outputs": [
+    {
+      "label": "Model",
+      "field": "Model",
+      "type": "text"
+    },
+    {
+      "label": "Year",
+      "field": "Year",
+      "type": "number"
+    },
+    {
+      "label": "Category",
+      "field": "Category",
+      "type": "text"
+    },
+    {
+      "label": "Rating",
+      "field": "Rating",
+      "type": "number"
+    },
+    {
+      "label": "Displacement",
+      "field": "Displacement (ccm)",
+      "type": "number",
+      "suffix": "cc"
+    },
+    {
+      "label": "Power",
+      "field": "Power (hp)",
+      "type": "number",
+      "suffix": "hp"
+    },
+    {
+      "label": "Torque",
+      "field": "Torque (Nm)",
+      "type": "number",
+      "suffix": "Nm"
+    },
+    {
+      "label": "Dry Weight",
+      "field": "Dry weight (kg)",
+      "type": "number",
+      "suffix": "kg"
+    },
+    {
+      "label": "Fuel Capacity",
+      "field": "Fuel capacity (lts)",
+      "type": "number",
+      "suffix": "L"
+    },
+    {
+      "label": "Ex-Showroom Price",
+      "field": "ex_showroom_price",
+      "type": "currency"
+    }
+  ]
+}

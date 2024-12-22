@@ -18,7 +18,7 @@ function escapeXml(unsafe: string): string {
 export const prerender = true;
 
 export const getStaticPaths = () => {
-  return ['en', 'fr', 'de', 'es', 'it'].map(lang => ({ params: { lang } }));
+  return ['', 'en', 'fr', 'de', 'es', 'it'].map(lang => ({ params: { lang: lang || 'default' } }));
 };
 
 export const GET: APIRoute = async ({ params, site }) => {
@@ -26,18 +26,26 @@ export const GET: APIRoute = async ({ params, site }) => {
     throw new Error('Site URL is not defined');
   }
 
-  const lang = params.lang;
+  const lang = params.lang === 'default' ? 'en' : params.lang;
+  const isDefaultRoute = params.lang === 'default';
 
   try {
     const collections = await getAllCollections();
     const lastmod = new Date().toISOString();
 
-    const urlBlocks = collections.map(({ node: collection }) => `<url>
-    <loc>${new URL(`${lang}/collections/${collection.handle}`, site).href}</loc>
+    const urlBlocks = collections.map(({ node: collection }) => {
+      // Create URL based on whether it's default route or language-specific
+      const collectionUrl = isDefaultRoute
+        ? new URL(`collections/${collection.handle}`, site).href
+        : new URL(`${lang}/collections/${collection.handle}`, site).href;
+
+      return `<url>
+    <loc>${collectionUrl}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
-</url>`);
+</url>`;
+    });
 
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
