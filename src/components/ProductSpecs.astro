@@ -49,15 +49,25 @@ const category = getProductCategory(productTitle);
 const specs = content.categories[category]?.specs || 
              specsContent.en.categories[category]?.specs || 
              specsContent.en.categories[PROJECT_TYPE === 'degital' ? 'digital' : 'jacket'].specs; // ultimate fallback
+
+const theme = import.meta.env.THEME || 'default';
+let styles = {};
+
+try {
+  const { luxuryComponentStyle } = await import(`../themes/${theme}/styles/components/luxury.mjs`);
+  styles = luxuryComponentStyle.specs;
+} catch (error) {
+  console.error('Failed to load component styles:', error);
+}
 ---
 
-<div class="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
-  <h3 class="text-xl font-bold text-gray-900 mb-4">{content.title}</h3>
-  <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class={styles.wrapper}>
+  <h3 class={styles.title}>{content.title}</h3>
+  <dl class={styles.grid}>
     {specs.map((spec) => (
-      <div class="flex items-center gap-2">
-        <dt class="font-medium text-gray-700">{spec.label}:</dt>
-        <dd class="text-gray-600">{spec.value}</dd>
+      <div class={styles.item}>
+        <dt class={styles.label}>{spec.label}:</dt>
+        <dd class={styles.value}>{spec.value}</dd>
       </div>
     ))}
   </dl>

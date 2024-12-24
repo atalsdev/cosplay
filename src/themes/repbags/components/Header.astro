@@ -1,0 +1,160 @@
+---
+// Header.astro
+import { Menu, Globe } from 'lucide-react';
+import { getLangFromUrl, getLocalizedPath } from '../../../utils/i18n';
+
+const navigation = [
+  { name: 'New Arrivals', href: '/new' },
+  { name: 'Collections', href: '/collections' },
+  { name: 'Bags', href: '/bags' },
+  { name: 'Accessories', href: '/accessories' },
+  { name: 'Sale', href: '/sale' },
+];
+
+const languages = [
+  { code: 'en', name: 'English' },
+  { code: 'fr', name: 'Français' },
+  { code: 'es', name: 'Español' },
+  { code: 'it', name: 'Italiano' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'nl', name: 'Nederlands' },
+  { code: 'pt', name: 'Português' },
+];
+
+const currentPath = Astro.url.pathname;
+const currentLang = getLangFromUrl(Astro.url);
+
+const siteName = import.meta.env.PUBLIC_SITE_NAME || 'MotoPalnet';
+
+// Localize navigation links
+const localizedNavigation = navigation.map(item => ({
+  ...item,
+  href: `/${currentLang}${item.href === '/' ? '' : item.href}`
+}));
+---
+
+<header class="fixed w-full top-0 z-50 bg-white/95 backdrop-blur-sm">
+  <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
+    <div class="flex h-16 items-center justify-between">
+      <!-- Left section -->
+      <div class="flex-1 flex justify-start">
+        <div class="relative group">
+          <button type="button" class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900">
+            <Globe className="h-4 w-4" />
+            <span class="text-xs uppercase tracking-wider font-light">{languages.find(lang => lang.code === currentLang)?.name}</span>
+          </button>
+          
+          <div class="absolute left-0 mt-2 w-40 bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            {languages.map((lang) => (
+              <a
+                href={getLocalizedPath(currentPath, lang.code)}
+                class={`block px-4 py-2 text-xs uppercase tracking-wider ${
+                  currentLang === lang.code 
+                    ? 'bg-gray-50 text-gray-900' 
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                }`}
+              >
+                {lang.name}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Logo -->
+      <div class="flex-1 flex justify-center">
+        <a href={`/${currentLang}`} class="flex items-center">
+          <span class="text-2xl font-extralight text-gray-900 font-['Montserrat'] tracking-[0.25em] uppercase">{siteName}</span>
+        </a>
+      </div>
+
+      <!-- Right section -->
+      <div class="flex-1 flex justify-end items-center gap-6">
+        <a
+          href={`/${currentLang}/account`}
+          class="hidden md:inline-flex items-center justify-center px-6 py-2 text-xs uppercase tracking-wider text-gray-900 hover:text-gray-600 font-light transition-colors"
+        >
+          Sign In
+        </a>
+        
+        <button
+          type="button"
+          id="mobile-menu-button"
+          class="md:hidden p-2 text-gray-600 hover:text-gray-900"
+          aria-expanded="false"
+        >
+          <Menu className="h-5 w-5" aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="hidden md:flex justify-center space-x-8 py-4">
+      {localizedNavigation.map((item) => (
+        <a
+          href={item.href}
+          class={`text-sm font-['Montserrat'] uppercase tracking-[0.15em] ${
+            item.name === 'Sale' 
+              ? 'text-red-600 hover:text-red-700' 
+              : 'text-gray-600 hover:text-gray-900'
+          } transition-colors font-light`}
+        >
+          {item.name}
+        </a>
+      ))}
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div 
+    id="mobile-menu-dropdown"
+    class="md:hidden absolute left-0 right-0 top-full bg-white/95 backdrop-blur-sm border-t border-gray-100 hidden"
+  >
+    <div class="py-2 px-4">
+      {localizedNavigation.map((item) => (
+        <a
+          href={item.href}
+          class={`block py-2 text-sm uppercase tracking-wider ${
+            item.name === 'Sale' 
+              ? 'text-red-600' 
+              : 'text-gray-600'
+          } hover:text-gray-900 font-light`}
+        >
+          {item.name}
+        </a>
+      ))}
+    </div>
+  </div>
+</header>
+
+<style>
+  header {
+    font-family: 'Montserrat', sans-serif;
+    border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+  }
+</style>
+
+<script>
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
+
+  mobileMenuButton?.addEventListener('click', () => {
+    const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+    mobileMenuButton.setAttribute('aria-expanded', (!isExpanded).toString());
+    mobileMenuDropdown?.classList.toggle('hidden');
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (event) => {
+    if (!mobileMenuButton?.contains(event.target as Node) && 
+        !mobileMenuDropdown?.contains(event.target as Node)) {
+      mobileMenuButton?.setAttribute('aria-expanded', 'false');
+      mobileMenuDropdown?.classList.add('hidden');
+    }
+  });
+</script>
+
+<!-- Add Oswald font -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet" />

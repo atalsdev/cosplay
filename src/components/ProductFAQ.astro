@@ -49,15 +49,25 @@ const category = getProductCategory(productTitle);
 const faqs = content.categories[category]?.questions || 
             faqContent.en.categories[category]?.questions || 
             faqContent.en.categories[PROJECT_TYPE === 'degital' ? 'digital' : 'jacket'].questions; // ultimate fallback
+
+const theme = import.meta.env.THEME || 'default';
+let styles = {};
+
+try {
+  const { luxuryComponentStyle } = await import(`../themes/${theme}/styles/components/luxury.mjs`);
+  styles = luxuryComponentStyle.faq;
+} catch (error) {
+  console.error('Failed to load component styles:', error);
+}
 ---
 
-<div class="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
-  <h3 class="text-xl font-bold text-gray-900 mb-4">{content.title}</h3>
-  <div class="space-y-4">
+<div class={styles.wrapper}>
+  <h3 class={styles.title}>{content.title}</h3>
+  <div class={styles.list}>
     {faqs.map((faq) => (
-      <div class="border-b border-gray-100 last:border-0 pb-4 last:pb-0">
-        <h4 class="font-medium text-gray-900 mb-2">{faq.q}</h4>
-        <p class="text-gray-600">{faq.a}</p>
+      <div class={styles.item}>
+        <h4 class={styles.question}>{faq.q}</h4>
+        <p class={styles.answer}>{faq.a}</p>
       </div>
     ))}
   </div>

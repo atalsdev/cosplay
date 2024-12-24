@@ -1,0 +1,67 @@
+---
+import type { ShopifyBlogPost } from '../utils/shopifyAPI';
+import { ArrowRight } from 'lucide-react';
+
+interface Props {
+  title: string;
+  posts: ShopifyBlogPost[];
+  exploreMoreLink: string;
+  exploreMoreText: string;
+}
+
+const { title, posts = [], exploreMoreLink, exploreMoreText } = Astro.props;
+
+// Ensure we always have content to display
+const hasContent = posts && posts.length > 0;
+---
+
+<section class="py-16 px-4 md:px-8">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">{title}</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {hasContent ? (
+        posts.slice(0, 3).map((post) => (
+          <article class="group">
+            <a href={`/blog/${post.handle}`} class="block">
+              <div class="relative overflow-hidden rounded-lg mb-4">
+                <img
+                  src={post.image?.src || '/images/placeholder.jpg'}
+                  alt={post.title}
+                  class="w-full aspect-[16/9] object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </div>
+              <h3 class="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                {post.title}
+              </h3>
+              <div class="flex items-center justify-between">
+                <time class="text-sm text-gray-500">
+                  {new Date(post.published_at).toLocaleDateString()}
+                </time>
+                <span class="text-primary group-hover:translate-x-1 transition-transform">
+                  <ArrowRight className="w-5 h-5" />
+                </span>
+              </div>
+            </a>
+          </article>
+        ))
+      ) : (
+        <div class="col-span-full text-center py-8">
+          <p class="text-gray-500">No posts available at the moment. Check back soon!</p>
+        </div>
+      )}
+    </div>
+    
+    {hasContent && (
+      <div class="text-center mt-12">
+        <a
+          href={exploreMoreLink}
+          class="inline-flex items-center gap-2 text-lg font-medium text-primary hover:text-primary/80 transition-colors"
+        >
+          {exploreMoreText}
+          <ArrowRight className="w-5 h-5" />
+        </a>
+      </div>
+    )}
+  </div>
+</section>

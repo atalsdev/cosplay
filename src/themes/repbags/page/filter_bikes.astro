@@ -1,0 +1,61 @@
+---
+import { SITE_TITLE } from '../consts';
+import tableConfig from '../config/data-config.json';
+import { supabase } from '../config/supabase';
+import AdvancedBikeFilterForm from '../components/AdvancedBikeFilterForm.astro';
+import AdvancedBikeDetails from '../components/AdvancedBikeDetails.astro';
+
+// Remove the .bikes reference
+const config = tableConfig;
+
+// Initial load without data
+const items = null;
+
+// Add this to the frontmatter
+let uniqueOptions = {};
+if (config.filters.some(f => f.filterType === 'select')) {
+  const { data } = await supabase
+    .from(config.table_name)
+    .select(config.filters.filter(f => f.filterType === 'select').map(f => f.field).join(','));
+  
+  if (data) {
+    uniqueOptions = config.filters
+      .filter(f => f.filterType === 'select')
+      .reduce((acc, filter) => {
+        acc[filter.field] = [...new Set(data.map(item => item[filter.field]))].filter(Boolean);
+        return acc;
+      }, {});
+  }
+}
+
+// Component imports
+const { default: BaseHead } = await import(`../components/BaseHead.astro`);
+const { default: Header } = await import(`../components/Header.astro`);
+const { default: Footer } = await import(`../components/Footer.astro`);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`Bike Information | ${SITE_TITLE}`} description="View detailed information about different bikes." />
+  </head>
+  <body class="bg-gray-50">
+    <Header />
+    <main class="pt-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+          <h1 class="text-4xl font-bold text-gray-900 mb-4">Bike Information Center</h1>
+          <p class="text-lg text-gray-600">Select a bike model to view detailed specifications</p>
+        </div>
+
+        <!-- Filter Form Component -->
+        <AdvancedBikeFilterForm config={config} uniqueOptions={uniqueOptions} />
+
+        <!-- Bike Details Component -->
+        <AdvancedBikeDetails config={config} />
+      </div>
+    </main>
+    <Footer />
+  </body>
+</html>

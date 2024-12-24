@@ -24,6 +24,7 @@ interface HeaderProps {
   currencies: {
     [key: string]: string;
   };
+  styles: any;
 }
 
 export default function Header({ 
@@ -32,7 +33,8 @@ export default function Header({
   languages, 
   projectType, 
   currentPath,
-  currencies 
+  currencies,
+  styles 
 }: HeaderProps) {
   // Extract initial language from current path
   const getInitialLanguage = () => {
@@ -84,76 +86,72 @@ export default function Header({
     useCartStore.persist.rehydrate();
   }, []);
 
-  const currencySelector = (
-    <div className="relative">
-      <button
-        onClick={() => setShowCurrencyMenu(!showCurrencyMenu)}
-        className="flex items-center space-x-2 text-gray-700 hover:text-black"
-        aria-label={`Select currency (current: ${currencies[currency]})`}
-      >
-        <span className="text-sm">{currencies[currency]}</span>
-      </button>
-
-      {showCurrencyMenu && (
-        <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-50">
-          {Object.entries(currencies).map(([code, symbol]) => (
-            <button
-              key={code}
-              onClick={() => {
-                setCurrency(code);
-                setShowCurrencyMenu(false);
-              }}
-              className={`block w-full text-left px-4 py-2 text-sm ${
-                currency === code ? 'bg-gray-100' : 'hover:bg-gray-50'
-              }`}
-              aria-label={`Change currency to ${code} (${symbol})`}
-            >
-              {`${code} (${symbol})`}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-[100]">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <a href={getHomeUrl()} className="text-2xl font-bold">{siteName}</a>
+    <header className={styles.wrapper}>
+      <div className={styles.container}>
+        <div className={styles.nav.wrapper}>
+          <a href={getHomeUrl()} className={styles.nav.brand}>{siteName}</a>
           
-          <nav className="hidden md:flex space-x-8">
+          <nav className={styles.nav.menu.wrapper}>
             {currentMenuItems.items.map((item, index) => (
               <a 
                 key={index}
                 href={item.href}
-                className="text-gray-700 hover:text-black"
+                className={styles.nav.menu.item}
               >
                 {item.label}
               </a>
             ))}
           </nav>
 
-          <div className="flex items-center space-x-4">
-            {currencySelector}
+          <div className={styles.actions.wrapper}>
+            {/* Currency Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setShowCurrencyMenu(!showCurrencyMenu)}
+                className={styles.actions.currency.button}
+              >
+                <span className={styles.actions.currency.text}>{currencies[currency]}</span>
+              </button>
+
+              {showCurrencyMenu && (
+                <div className={styles.actions.currency.dropdown}>
+                  {Object.entries(currencies).map(([code, symbol]) => (
+                    <button
+                      key={code}
+                      onClick={() => {
+                        setCurrency(code);
+                        setShowCurrencyMenu(false);
+                      }}
+                      className={`${styles.actions.currency.option} ${
+                        currency === code ? 'bg-gray-100' : 'hover:bg-gray-50'
+                      }`}
+                    >
+                      {`${code} (${symbol})`}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Language Switcher */}
             <div className="relative">
               <button
                 onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                className="flex items-center space-x-2 text-gray-700 hover:text-black"
+                className={styles.actions.language.button}
                 aria-label={`Select language (current: ${languages[language]})`}
               >
                 <Globe size={20} />
-                <span className="text-sm">{languages[language]}</span>
+                <span className={styles.actions.language.text}>{languages[language]}</span>
               </button>
 
               {showLanguageMenu && (
-                <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-50">
+                <div className={styles.actions.language.dropdown}>
                   {Object.entries(languages).map(([code, name]) => (
                     <button
                       key={code}
                       onClick={() => changeLanguage(code)}
-                      className={`block w-full text-left px-4 py-2 text-sm ${
+                      className={`${styles.actions.language.option} ${
                         language === code ? 'bg-gray-100' : 'hover:bg-gray-50'
                       }`}
                       aria-label={`Change language to ${name}`}
@@ -168,12 +166,12 @@ export default function Header({
             {/* Cart Button */}
             <button 
               onClick={() => setIsOpen(!isOpen)} 
-              className="text-gray-700 hover:text-black relative"
+              className={styles.actions.cart.button}
               aria-label={`Shopping cart${items.length > 0 ? ` (${items.length} items)` : ''}`}
             >
               <ShoppingCart size={24} />
               {items.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className={styles.actions.cart.count}>
                   {items.length}
                 </span>
               )}
@@ -183,17 +181,17 @@ export default function Header({
       </div>
       
       <div 
-        className={`fixed inset-y-0 right-0 w-96 bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-[200] ${
+        className={`${styles.actions.cart.drawer} ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="h-full flex flex-col">
-          <div className="p-4 border-b">
+          <div className={styles.actions.cart.header}>
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Shopping Cart</h2>
+              <h2 className={styles.actions.cart.title}>Shopping Cart</h2>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className={styles.actions.cart.closeButton}
                 aria-label="Close shopping cart"
               >
                 ✕
@@ -207,7 +205,7 @@ export default function Header({
       {/* Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-[150]"
+          className={styles.overlay}
           onClick={() => setIsOpen(false)}
         />
       )}

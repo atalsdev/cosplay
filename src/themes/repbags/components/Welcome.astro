@@ -1,0 +1,173 @@
+---
+import { Button } from './ui/Button';
+import { ArrowRight } from 'lucide-react';
+
+interface BackgroundVideo {
+  type: 'youtube';
+  videoId: string;
+  fallbackImage: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  blogLink: string;
+  blogLinkText: string;
+  backgroundVideo: BackgroundVideo;
+}
+
+const { title, description, blogLink, blogLinkText, backgroundVideo } = Astro.props;
+---
+
+<div class="w-full h-[calc(100vh-120px)]">
+  <!-- Background Video -->
+  <div class="absolute inset-0 w-full h-full pointer-events-none">
+    <div id="youtube-player" class="absolute inset-0 w-full h-full">
+      <div id="player" class="w-full h-full"></div>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/50 z-10"></div>
+  </div>
+  
+  <!-- Content -->
+  <div class="relative z-20 h-full flex flex-col justify-center items-center px-4">
+    <div class="max-w-6xl mx-auto text-center">
+      <h1 class="text-[3.5rem] md:text-[5rem] lg:text-[6rem] font-extralight text-white mb-8 font-['Montserrat'] tracking-[0.15em] leading-[1.1] uppercase">
+        {title.split(' ').map((word) => (
+          <span class="block">{word}</span>
+        ))}
+      </h1>
+      
+      <p class="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto font-light leading-relaxed tracking-wide">
+        {description}
+      </p>
+      
+      <div class="flex flex-col items-center gap-6">
+        <a 
+          href={blogLink}
+          class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm text-white border border-white/30 
+                 px-12 py-4 font-['Montserrat'] uppercase tracking-[0.3em] text-sm hover:bg-white/20 
+                 transition-all duration-500 group"
+        >
+          <span>{blogLinkText}</span>
+          <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-500" />
+        </a>
+        
+        <span class="text-white/70 text-xs uppercase tracking-[0.4em] font-light">Discover</span>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+      <div class="flex flex-col items-center gap-3">
+        <div class="w-[1px] h-16 bg-white/30 animate-pulse"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ backgroundVideo }}>
+  // Load YouTube IFrame API
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  const firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  // YouTube player setup
+  let player;
+  window.onYouTubeIframeAPIReady = function() {
+    player = new YT.Player('player', {
+      videoId: backgroundVideo.videoId,
+      playerVars: {
+        autoplay: 1,
+        loop: 1,
+        controls: 0,
+        showinfo: 0,
+        rel: 0,
+        enablejsapi: 1,
+        modestbranding: 1,
+        mute: 1,
+        playsinline: 1,
+        playlist: backgroundVideo.videoId
+      },
+      events: {
+        onReady: (event) => {
+          event.target.playVideo();
+          document.querySelector('.relative.z-20').classList.add('animate-fade-in');
+        },
+        onStateChange: (event) => {
+          if (event.data === YT.PlayerState.ENDED) {
+            player.playVideo();
+          }
+        },
+        onError: (event) => {
+          document.getElementById('youtube-player').style.backgroundImage = 
+            `url(${backgroundVideo.fallbackImage})`;
+          document.getElementById('youtube-player').style.backgroundSize = 'cover';
+          document.getElementById('youtube-player').style.backgroundPosition = 'center';
+        }
+      }
+    });
+  };
+
+  // Resize handler for responsive video
+  function onResize() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const player = document.querySelector('#youtube-player');
+    
+    if (width / height > 16 / 9) {
+      player.style.width = '100vw';
+      player.style.height = 'calc(100vw * 9 / 16)';
+    } else {
+      player.style.width = 'calc(100vh * 16 / 9)';
+      player.style.height = '100vh';
+    }
+  }
+
+  window.addEventListener('resize', onResize);
+  onResize();
+</script>
+<style>
+  /* Smooth fade-in animation for content */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 1.5s ease-out forwards;
+  }
+
+  /* Ensure video covers entire section */
+  #youtube-player {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  #player {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  /* Hide YouTube iframe border */
+  iframe {
+    border: none;
+  }
+
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+</style>

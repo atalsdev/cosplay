@@ -1,0 +1,110 @@
+---
+import { Button } from './ui/Button';
+
+interface Props {
+  headline: string;
+  description: string;
+  backgroundImage: string;
+  button1Text: string;
+  button1Link: string;
+  button2Text?: string;
+  button2Link?: string;
+}
+
+const { 
+  headline, 
+  description, 
+  backgroundImage,
+  button1Text,
+  button1Link,
+  button2Text,
+  button2Link
+} = Astro.props;
+---
+
+<section 
+  class="relative py-40 px-4 overflow-hidden"
+  style={`background-image: url(${backgroundImage}); background-size: cover; background-position: center; background-attachment: fixed;`}
+>
+  <!-- Dark Overlay with gradient -->
+  <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/80 backdrop-blur-sm"></div>
+  
+  <!-- Content -->
+  <div class="relative max-w-7xl mx-auto">
+    <div class="max-w-2xl">
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-['Montserrat'] font-extralight uppercase tracking-[0.25em] text-white/90 mb-8 leading-tight">
+        {headline}
+      </h2>
+      
+      <p class="text-lg md:text-xl text-white/70 mb-12 leading-relaxed font-light tracking-wide max-w-xl">
+        {description}
+      </p>
+      
+      <div class="flex flex-wrap gap-6">
+        <a 
+          href={button1Link}
+          class="inline-flex items-center px-12 py-4 border border-white/30 bg-black/40 
+                 text-white/90 font-['Montserrat'] uppercase tracking-[0.2em] text-sm 
+                 hover:bg-white hover:text-black transition-all duration-500"
+        >
+          {button1Text}
+        </a>
+        
+        {button2Text && button2Link && (
+          <a 
+            href={button2Link}
+            class="inline-flex items-center px-12 py-4 border border-white/30 text-white/90 
+                   font-['Montserrat'] uppercase tracking-[0.2em] text-sm hover:bg-black/40 
+                   backdrop-blur-sm transition-all duration-500"
+          >
+            {button2Text}
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <!-- Decorative Elements -->
+  <div class="absolute bottom-0 left-0 w-full">
+    <div class="h-px bg-gradient-to-r from-white/20 via-white/10 to-transparent"></div>
+  </div>
+  <div class="absolute top-0 left-0 w-full">
+    <div class="h-px bg-gradient-to-r from-white/20 via-white/10 to-transparent"></div>
+  </div>
+</section>
+
+<style>
+  section {
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  /* Smooth hover transitions */
+  a {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Elegant text rendering */
+  h2, p {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Parallax effect */
+  section {
+    background-attachment: fixed;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* Button hover effect */
+  a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Dark mode optimizations */
+  section {
+    color-scheme: dark;
+  }
+</style>

@@ -1,6 +1,7 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
 import { generateCanonicalURL, generateSchema, type SEOProps } from '../../../utils/seo';
+import GoogleAnalytics from '@components/GoogleAnalytics.astro';
 
 interface Props extends SEOProps {
   isProduct?: boolean;
@@ -103,3 +104,5 @@ const schema = generateSchema(Astro.props, Astro.url.pathname);
     color: var(--theme-text);
   }
 </style>
+
+{import.meta.env.PUBLIC_GA_MEASUREMENT_ID && <GoogleAnalytics />}

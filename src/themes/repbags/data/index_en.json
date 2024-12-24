@@ -1,0 +1,135 @@
+{
+  "siteTitle": "RepBag - Luxury Designer Bags & Accessories",
+  "siteDescription": "Your premier destination for luxury designer bags and accessories. Experience elegance and sophistication with our curated collection.",
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Welcome to Your Luxury Destination",
+      "description": "Discover an exquisite collection of designer bags and accessories, where elegance meets authenticity.",
+      "blogLinkText": "EXPLORE NOW",
+      "blogLink": "/collections",
+      "backgroundVideo": {
+        "type": "youtube",
+        "videoId": "sHUGodYbb2A",
+        "fallbackImage": "/images/hero-luxury.jpg"
+      }
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Timeless Elegance Awaits",
+      "description": "Explore our carefully curated selection of the most coveted designer bags and accessories.",
+      "backgroundImage": "/images/banner-luxury-bg.jpg",
+      "button1Text": "Shop Collection",
+      "button1Link": "/collections",
+      "button2Text": "Our Story",
+      "button2Link": "/about"
+    },
+    {
+      "type": "categoryGrid",
+      "title": "Shop by Category",
+      "description": "Browse our extensive collection of luxury designer pieces",
+      "categories": [
+        {
+          "id": "totes",
+          "name": "Tote Bags",
+          "description": "Elegant everyday companions",
+          "image": "https://cdn.shopify.com/s/files/1/0921/4063/4435/files/Chanel-Black-Quilted-Aged-Calfskin-Leather-Small-Gabrielle-Backpack-Mixed-Metal-Hardware-Front_87e895fe-b50d-45a5-8e10-6c0c4a2b5ec7.webp?v=1734730675&width=800",
+          "link": "/collections/tote-bags"
+        },
+        {
+          "id": "crossbody",
+          "name": "Crossbody Bags",
+          "description": "Sophisticated hands-free style",
+          "image": "https://cdn.shopify.com/s/files/1/0921/4063/4435/files/Chanel-Black-Quilted-Caviar-Leather-Jumbo-Double-Flap-Silver-Hardware-Front_0c6c585d-2891-443e-8c68-663d9ee6c685.webp?v=1734730675&width=800",
+          "link": "/collections/crossbody-bags"
+        },
+        {
+          "id": "shoulder",
+          "name": "Shoulder Bags",
+          "description": "Classic silhouettes reimagined",
+          "image": "https://cdn.shopify.com/s/files/1/0921/4063/4435/files/Chanel-Black-Quilted-Caviar-Leather-Large-Shopping-Tote-Light-Gold-Hardware-Front_53e04378-4d20-43b9-95c0-4ae1a2ddcb54.webp?v=1734730678&width=1200",
+          "link": "/collections/shoulder-bags"
+        }
+      ]
+    },
+    {
+      "type": "productShowcase",
+      "title": "New Arrivals",
+      "description": "Discover our latest additions from the world's most prestigious fashion houses",
+      "viewAllLink": "/new-arrivals",
+      "collectionHandle": "dior",
+      "products": [
+        {
+          "id": "dior-saddle",
+          "name": "Dior Saddle Bag",
+          "description": "Iconic silhouette in grained calfskin",
+          "price": "3,500.00",
+          "image": "/images/products/dior-saddle.jpg",
+          "category": "Shoulder Bags"
+        },
+        {
+          "id": "chanel-classic",
+          "name": "Chanel Classic Flap",
+          "description": "Timeless elegance in quilted leather",
+          "price": "8,800.00",
+          "image": "https://cdn.shopify.com/s/files/1/0257/4372/0495/products/chanel-classic-flap.jpg",
+          "category": "Shoulder Bags"
+        }
+      ]
+    },
+    {
+      "type": "testimonialSlider",
+      "title": "Client Testimonials",
+      "testimonials": [
+        {
+          "id": "1",
+          "author": "Sophie Laurent",
+          "role": "Fashion Enthusiast",
+          "content": "The quality and authenticity of their pieces are unmatched. A truly luxurious shopping experience.",
+          "avatar": ""
+        },
+        {
+          "id": "2",
+          "author": "Isabella Chen",
+          "role": "Style Consultant",
+          "content": "RepBag offers an exceptional collection of designer bags. Their attention to detail and customer service is outstanding.",
+          "avatar": ""
+        },
+        {
+          "id": "3",
+          "author": "Maria Rodriguez",
+          "role": "Luxury Lifestyle Blogger",
+          "content": "Every piece I've acquired from RepBag has exceeded my expectations. Their collection is simply magnificent.",
+          "avatar": ""
+        }
+      ]
+    },
+    {
+      "type": "faqSection",
+      "title": "Frequently Asked Questions",
+      "description": "Find answers to your questions about our products and services",
+      "faqs": [
+        {
+          "question": "How do I authenticate my purchase?",
+          "answer": "Each item comes with a certificate of authenticity and unique serial number that can be verified through our system."
+        },
+        {
+          "question": "What is your return policy?",
+          "answer": "We offer a 14-day return policy for all unused items in their original condition with all tags attached."
+        },
+        {
+          "question": "Do you offer international shipping?",
+          "answer": "Yes, we provide worldwide shipping with full insurance and tracking on all orders."
+        }
+      ]
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Join Our Exclusive Circle",
+      "description": "Subscribe to receive early access to new arrivals, exclusive offers, and luxury insights.",
+      "backgroundImage": "/images/newsletter-luxury-bg.jpg",
+      "formAction": "/api/subscribe",
+      "submitText": "Subscribe"
+    }
+  ]
+}

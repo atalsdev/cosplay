@@ -6,6 +6,15 @@ const theme = import.meta.env.THEME || 'default';
 const siteName = import.meta.env.PUBLIC_SITE_NAME || 'Drivi';
 const PROJECT_TYPE = import.meta.env.PROJECT_TYPE || 'default';
 
+// Import styles
+let headerStyles = {};
+try {
+  const { luxuryHeaderStyle } = await import(`../themes/${theme}/styles/header/luxury.mjs`);
+  headerStyles = luxuryHeaderStyle;
+} catch (error) {
+  console.error('Failed to load header styles:', error);
+}
+
 // Properly handle dynamic imports with default exports
 const { default: BaseHead } = await import(`../themes/${theme}/components/BaseHead.astro`);
 const { default: Footer } = await import(`../themes/${theme}/components/Footer.astro`);
@@ -140,6 +149,7 @@ try {
       projectType={PROJECT_TYPE}
       currentPath={currentPath}
       currencies={currencies}
+      styles={headerStyles}
     />
     <slot />
     <Footer />

@@ -1,0 +1,65 @@
+{
+  "table_name": "bikes",
+  "filters": [
+    {
+      "label": "Bike Model",
+      "field": "Model",
+      "type": "text",
+      "filterType": "contains"
+    },
+    {
+      "label": "Price Range",
+      "field": "ex_showroom_price",
+      "type": "currency",
+      "filterType": "range"
+    },
+    {
+      "label": "Category",
+      "field": "Category",
+      "type": "text",
+      "filterType": "select",
+      "options": []
+    },
+    {
+      "label": "Year Range",
+      "field": "Year",
+      "type": "number",
+      "filterType": "range"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "Ex-Showroom Price",
+      "field": "ex_showroom_price",
+      "type": "currency"
+    },
+    {
+      "label": "Year",
+      "field": "Year",
+      "type": "number"
+    },
+    {
+      "label": "Category",
+      "field": "Category",
+      "type": "text"
+    },
+    {
+      "label": "Displacement",
+      "field": "Displacement (ccm)",
+      "type": "number",
+      "suffix": "cc"
+    },
+    {
+      "label": "Power",
+      "field": "Power (hp)",
+      "type": "number",
+      "suffix": "hp"
+    },
+    {
+      "label": "Dry Weight",
+      "field": "Dry weight (kg)",
+      "type": "number",
+      "suffix": "kg"
+    }
+  ]
+}

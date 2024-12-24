@@ -2,11 +2,35 @@
 import type { AstroGlobal } from 'astro';
 
 export function getLangFromUrl(url: URL): string {
-  const [, lang] = url.pathname.split('/');
-  if (isValidLanguage(lang)) {
-    return lang;
+  // First check the path
+  const [, pathLang] = url.pathname.split('/');
+  if (isValidLanguage(pathLang)) {
+    return pathLang; // If valid language in path, use it regardless of subdomain
   }
-  return 'en';
+  
+  // If no valid language in path, check subdomain
+  const hostname = url.hostname;
+  const subdomain = hostname.split('.')[0];
+  
+  // Return language based on subdomain, or 'en' for main domain
+  switch (subdomain) {
+    case 'fr':
+      return 'fr';
+    case 'de':
+      return 'de';
+    case 'es':
+      return 'es';
+    case 'it':
+      return 'it';
+    case 'nl':
+      return 'nl';
+    case 'pt':
+      return 'pt';
+    case 'ar':
+      return 'ar';
+    default:
+      return 'en';
+  }
 }
 const theme = import.meta.env.THEME || 'default';
 

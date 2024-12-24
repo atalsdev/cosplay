@@ -5,6 +5,7 @@ import node from '@astrojs/node';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import * as dotenv from 'dotenv';
+import partytown from '@astrojs/partytown';
 
 
 // Helper function to load environment variables
@@ -27,7 +28,11 @@ const HOST = process.env.HOST || '0.0.0.0';
 export default defineConfig({
   site: DOMAINE,
   output: 'server',
-  integrations: [tailwind(), react()],
+  integrations: [tailwind(), react(), partytown({
+    config: {
+      forward: ['dataLayer.push', 'gtag'],
+    },
+  })],
   adapter: node({
     mode: 'standalone',
     host: HOST,

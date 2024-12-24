@@ -1,0 +1,128 @@
+---
+import { SITE_TITLE } from '../consts';
+
+const theme = import.meta.env.THEME || 'default';
+
+// Properly handle dynamic imports with default exports
+const { default: BaseHead } = await import(`../components/BaseHead.astro`);
+const { default: Header } = await import(`../components/Header.astro`);
+const { default: Footer } = await import(`../components/Footer.astro`);
+
+const reviews = [
+  {
+    category: 'Helmets',
+    items: [
+      {
+        name: 'X-1 Pro Racing Helmet',
+        rating: 4.8,
+        reviewCount: 128,
+        image: '/images/products/helmet-1.jpg',
+        summary: 'Professional grade protection with superior comfort',
+        pros: ['Excellent ventilation', 'Lightweight', 'Great visibility'],
+        cons: ['Premium price point', 'Limited color options'],
+        verdict: 'A top-tier helmet that justifies its premium price tag with exceptional quality and features.'
+      },
+      // Add more helmet reviews
+    ]
+  },
+  {
+    category: 'Jackets',
+    items: [
+      {
+        name: 'Adventure Touring Jacket',
+        rating: 4.6,
+        reviewCount: 95,
+        image: '/images/products/jacket-1.jpg',
+        summary: 'Versatile all-weather protection',
+        pros: ['Waterproof', 'Good ventilation', 'Multiple pockets'],
+        cons: ['Bulky armor inserts', 'Runs slightly large'],
+        verdict: 'An excellent choice for adventure touring with great weather protection and storage.'
+      },
+      // Add more jacket reviews
+    ]
+  }
+];
+
+function formatRating(rating: number): string {
+  return rating.toFixed(1);
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead 
+      title={`Gear Reviews | ${SITE_TITLE}`}
+      description="In-depth reviews of motorcycle gear, from helmets to boots. Find the perfect gear for your riding style."
+    />
+  </head>
+  <body>
+    <Header />
+    <main class="pt-20">
+      <!-- Hero Section -->
+      <section class="relative py-20 px-4 bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto">
+          <h1 class="text-4xl md:text-5xl font-bold mb-6">Gear Reviews</h1>
+          <p class="text-xl text-gray-300 max-w-2xl">
+            Honest, in-depth reviews of the latest motorcycle gear. We test everything thoroughly so you can make informed decisions.
+          </p>
+        </div>
+      </section>
+
+      <!-- Reviews -->
+      <section class="py-16 px-4">
+        <div class="max-w-7xl mx-auto">
+          {reviews.map(category => (
+            <div class="mb-16 last:mb-0">
+              <h2 class="text-2xl font-bold mb-8">{category.category}</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {category.items.map(item => (
+                  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="aspect-video relative">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        class="absolute inset-0 w-full h-full object-cover"
+                      />
+                    </div>
+                    <div class="p-6">
+                      <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold">{item.name}</h3>
+                        <div class="flex items-center">
+                          <span class="text-2xl font-bold mr-2">{formatRating(item.rating)}</span>
+                          <span class="text-sm text-gray-600">({item.reviewCount} reviews)</span>
+                        </div>
+                      </div>
+                      <p class="text-gray-600 mb-4">{item.summary}</p>
+                      <div class="mb-4">
+                        <h4 class="font-semibold mb-2">Pros:</h4>
+                        <ul class="list-disc list-inside text-gray-600">
+                          {item.pros.map(pro => (
+                            <li>{pro}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div class="mb-4">
+                        <h4 class="font-semibold mb-2">Cons:</h4>
+                        <ul class="list-disc list-inside text-gray-600">
+                          {item.cons.map(con => (
+                            <li>{con}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div class="border-t pt-4 mt-4">
+                        <h4 class="font-semibold mb-2">Verdict:</h4>
+                        <p class="text-gray-600">{item.verdict}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

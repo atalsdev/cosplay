@@ -1,0 +1,198 @@
+---
+interface Props {
+  config: any;
+  bikeData: any;
+}
+
+const { config, bikeData } = Astro.props;
+
+// Import all layouts
+import { listLayout } from '../datalayout/list';
+import { gridLayout } from '../datalayout/grid';
+import { tableLayout } from '../datalayout/table';
+import { cardsLayout } from '../datalayout/cards';
+import { dashboardLayout } from '../datalayout/dashboard';
+import { inlineLayout } from '../datalayout/inline';
+import { graphLayout } from '../datalayout/graph';
+import { chartLayout } from '../datalayout/chart';
+import { contentLayout } from '../datalayout/content';
+
+const layouts = {
+  grid: gridLayout,
+  list: listLayout,
+  table: tableLayout,
+  cards: cardsLayout,
+  dashboard: dashboardLayout,
+  inline: inlineLayout,
+  graph: graphLayout,
+  chart: chartLayout,
+  content: contentLayout
+};
+
+// Format functions
+const formatters = {
+  currency: (value) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0
+    }).format(value);
+  },
+  number: (value) => {
+    return new Intl.NumberFormat('en-IN').format(value);
+  },
+  text: (value) => value
+};
+
+const generateColumnHTML = (fields) => {
+  const layout = layouts[config.layout];
+  return fields.map(field => layout.field(
+    field.label,
+    `${formatters[field.type](bikeData[field.field])}${field.suffix ? ' ' + field.suffix : ''}`
+  )).join('');
+};
+
+const halfLength = Math.ceil(config.outputs.length / 2);
+const leftColumns = config.outputs.slice(0, halfLength);
+const rightColumns = config.outputs.slice(halfLength);
+---
+
+<div class="w-[90%] mx-auto">
+  <div class="bg-white shadow-md overflow-hidden">
+    <div class="border-b border-gray-200 bg-gray-50 px-6 py-4">
+      <div class="w-full">
+        <h2 class="text-xl font-semibold text-gray-900">
+          {bikeData[config.key_input]}
+        </h2>
+      </div>
+    </div>
+    
+    <div class="p-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column - Main Content -->
+        <div class="lg:col-span-2 space-y-8" id="mainContent">
+          {config.content.map(section => (
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <h3 class="text-lg font-semibold mb-4">{section.title}</h3>
+              <div class="prose max-w-none">
+                <p class="text-gray-600">{section.content}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Right Column -->
+        <div class="lg:col-span-1">
+          <!-- Characteristics Chart -->
+          <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h3 class="text-lg font-semibold mb-4">Characteristics</h3>
+            <div style="position: relative; height: 300px; width: 100%">
+              <canvas id="radarChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Specifications -->
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold mb-4">Specifications</h3>
+            <div class="space-y-3">
+              {config.outputs.map(field => (
+                <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                  <span class="text-sm text-gray-600">{field.label}</span>
+                  <span class="font-medium">
+                    {formatters[field.type](bikeData[field.field])}{field.suffix ? ` ${field.suffix}` : ''}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- First, load Chart.js -->
+<script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Then, initialize the chart -->
+<script define:vars={{ config, bikeData }}>
+  // Wait for the document to be ready
+  window.addEventListener('load', () => {
+    const ctx = document.getElementById('radarChart');
+    
+    if (ctx) {
+      console.log('Canvas found, initializing chart...'); // Debug log
+      
+      try {
+        const chartData = {
+          labels: config.graph.map(item => item.param),
+          datasets: [{
+            label: 'Characteristics',
+            data: config.graph.map(item => {
+              const value = bikeData[item.field];
+              return (value / item.max) * 100;
+            }),
+            fill: true,
+            backgroundColor: 'rgba(79, 70, 229, 0.2)',
+            borderColor: 'rgb(79, 70, 229)',
+            pointBackgroundColor: 'rgb(79, 70, 229)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgb(79, 70, 229)'
+          }]
+        };
+
+        new Chart(ctx, {
+          type: 'radar',
+          data: chartData,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                angleLines: {
+                  display: true
+                },
+                suggestedMin: 0,
+                suggestedMax: 100,
+                ticks: {
+                  callback: function(value) {
+                    return value + '%';
+                  }
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const index = context.dataIndex;
+                    const value = bikeData[config.graph[index].field];
+                    const suffix = config.graph[index].suffix;
+                    return `${value}${suffix}`;
+                  }
+                }
+              }
+            }
+          }
+        });
+        
+        console.log('Chart initialized successfully'); // Debug log
+      } catch (error) {
+        console.error('Error initializing chart:', error); // Error log
+      }
+    } else {
+      console.error('Canvas element not found'); // Error log
+    }
+  });
+</script>
+
+<!-- Pass data to the script -->
+<script define:vars={{ config, bikeData }}>
+  // Add data attributes to the previous script tag
+  document.currentScript.previousElementSibling.setAttribute('data-config', JSON.stringify(config));
+  document.currentScript.previousElementSibling.setAttribute('data-bike', JSON.stringify(bikeData));
+</script>

@@ -1,0 +1,135 @@
+{
+  "siteTitle": "MotoGear Pro - Premium Motorradbekleidung & Zubehör",
+  "siteDescription": "Ihre erste Adresse für Premium-Motorradausrüstung, Schutzausrüstung und Zubehör. Expertenkuratierte Produkte von Fahrern für Fahrer.",
+  "sections": [
+    {
+      "type": "welcomeSection",
+      "title": "Willkommen in Ihrem ultimativen Motorradgeschäft",
+      "description": "Entdecken Sie hochwertige Motorradausrüstung, Zubehör und Ratschläge für Ihre Leidenschaft auf der Straße.",
+      "blogLinkText": "JETZT EINKAUFEN",
+      "blogLink": "/collections",
+      "backgroundVideo": {
+        "type": "youtube",
+        "videoId": "laZ-m8hY9YM",
+        "fallbackImage": "/images/hero-motorcycle.jpg"
+      }
+    },
+    {
+      "type": "bannerSection",
+      "headline": "Rüsten Sie sich für Ihr nächstes Abenteuer",
+      "description": "Entdecken Sie unsere bestbewerteten Helme, Jacken und Zubehör für sicheres und stilvolles Fahren.",
+      "backgroundImage": "/images/banner-motorcycle-bg.jpg",
+      "button1Text": "Ausrüstung kaufen",
+      "button1Link": "/shop",
+      "button2Text": "Mehr erfahren",
+      "button2Link": "/about"
+    },
+    {
+      "type": "categoryGrid",
+      "title": "Nach Kategorie einkaufen",
+      "description": "Finden Sie Ausrüstung, die zu Ihrem Fahrstil passt, von Helmen und Jacken bis hin zu Handschuhen und Stiefeln.",
+      "categories": [
+        {
+          "id": "helmets",
+          "name": "Helme",
+          "description": "DOT-zertifizierte Helme für maximale Sicherheit.",
+          "image": "https://cdn.shopify.com/s/files/1/0257/4372/0495/products/98365-19EX_F.jpg?v=1703022404",
+          "link": "/collections/motorcycle-helmet"
+        },
+        {
+          "id": "jackets",
+          "name": "Jacken",
+          "description": "Schützende und stilvolle Motorradjacken.",
+          "image": "https://cdn.shopify.com/s/files/1/0257/4372/0495/products/Triumph-Triple-Leather-Jacket-in-Black-Rider-Apparel-Ridersapparel_shop.png?v=1701469305",
+          "link": "/collections/motorcycle-jacket"
+        },
+        {
+          "id": "gloves",
+          "name": "Handschuhe",
+          "description": "Langlebige Handschuhe für besseren Grip und Kontrolle.",
+          "image": "https://cdn.shopify.com/s/files/1/0257/4372/0495/products/Harley-Davidsonr-Mens-Grit-Adventure-Gloves-Rider-Apparel-Ridersapparel_shop.jpg?v=1701469494&width=800",
+          "link": "/collections/motorcycle-gloves"
+        }
+      ]
+    },
+    {
+      "type": "productShowcase",
+      "title": "Ausgewählte Produkte",
+      "description": "Entdecken Sie unsere meistverkauften Ausrüstungen und Zubehörteile.",
+      "viewAllLink": "/products",
+      "collectionHandle": "motorcycle-riding-jacket",
+      "products": [
+        {
+          "id": "helmet-1",
+          "name": "Integralhelm",
+          "description": "Ultimativer Schutz mit fortschrittlicher Belüftung.",
+          "price": "199,99",
+          "image": "/images/products/helmet-1.jpg",
+          "category": "Helme"
+        },
+        {
+          "id": "jacket-1",
+          "name": "Lederjacke",
+          "description": "Stilvoll und langlebig mit Protektoren.",
+          "price": "249,99",
+          "image": "/images/products/jacket-1.jpg",
+          "category": "Jacken"
+        }
+      ]
+    },
+    {
+      "type": "testimonialSlider",
+      "title": "Fahrer-Bewertungen",
+      "testimonials": [
+        {
+          "id": "1",
+          "author": "Alex Thompson",
+          "role": "Abenteuerfahrer",
+          "content": "Die Ausrüstung hier ist erstklassig. Ich habe mich noch nie sicherer auf meinem Motorrad gefühlt.",
+          "avatar": ""
+        },
+        {
+          "id": "2",
+          "author": "Lisa Schmidt",
+          "role": "Sportbike-Enthusiastin",
+          "content": "Fantastische Auswahl an Schutzausrüstung. Das Kundenservice-Team hat mir geholfen, die perfekte Passform für meinen Fahrstil zu finden.",
+          "avatar": ""
+        },
+        {
+          "id": "3",
+          "author": "Michael Weber",
+          "role": "Touring-Fahrer",
+          "content": "Qualitätsprodukte, die auch lange Strecken überstehen. Meine Ausrüstung von MotoGear Pro hat unzählige Abenteuer überdauert.",
+          "avatar": ""
+        }
+      ]
+    },
+    {
+      "type": "faqSection",
+      "title": "Häufig gestellte Fragen",
+      "description": "Finden Sie Antworten auf Ihre Fragen zu Motorradausrüstung, Sicherheit und Wartung.",
+      "faqs": [
+        {
+          "question": "Welches Motorrad ist am besten für Anfänger geeignet?",
+          "answer": "Für Anfänger empfehlen wir ein leichtes Motorrad (250-400ccm) für ein optimales Gleichgewicht zwischen Leistung und Kontrolle."
+        },
+        {
+          "question": "Wie wähle ich den richtigen Helm?",
+          "answer": "Wählen Sie einen DOT-zertifizierten Helm, der eng anliegt. Achten Sie auf Helmtyp, Belüftung und Sichtfeld."
+        },
+        {
+          "question": "Welche Schutzausrüstung ist beim Fahren unerlässlich?",
+          "answer": "Zu den wichtigsten Elementen gehören ein DOT-zugelassener Helm, eine Protektorenjacke, Handschuhe und robuste Stiefel für umfassenden Schutz."
+        }
+      ]
+    },
+    {
+      "type": "emailSignupSection",
+      "title": "Bleiben Sie auf dem Laufenden",
+      "description": "Melden Sie sich für unseren Newsletter an und erhalten Sie die neuesten Produktupdates, Tipps und exklusive Angebote.",
+      "backgroundImage": "/images/newsletter-motorcycle-bg.jpg",
+      "formAction": "/api/subscribe",
+      "submitText": "Abonnieren"
+    }
+  ]
+}
